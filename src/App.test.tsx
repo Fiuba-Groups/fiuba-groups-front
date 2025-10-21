@@ -2,7 +2,8 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders landing page title', () => {
+test('renders learn react link', () => {
   render(<App />);
-  // Since routing is handled in index.tsx, render App returns null in tests; instead we assert against the LandingPage component directly
+  const linkElement = screen.getByText(/learn react/i);
+  expect(linkElement).toBeInTheDocument();
 });

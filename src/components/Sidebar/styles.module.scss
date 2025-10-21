@@ -33,18 +33,28 @@
       (header-height - button-height)/2. Button height is 36px. */
     top: calc((#{$header-height} - 36px) / 2);
     transform: none;
-  width: 36px;
-  height: 36px;
-  border-radius: 6px;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
   border: none;
-  background: $color-accent;
-  color: white;
+  background: transparent; /* removed blue background */
+  color: $color-text-light; /* icon inherits this color */
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  box-shadow: none;
   z-index: 1200; /* above header (1000) and sidebar (1100) */
+}
+
+.toggleButton i {
+  /* make the primeicon larger */
+  font-size: 22px;
+}
+
+.toggleButton:hover {
+  background-color: $color-background;
+  color: $color-text;
 }
 
 .sidebar ul {

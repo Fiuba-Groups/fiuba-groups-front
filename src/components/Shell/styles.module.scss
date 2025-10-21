@@ -6,7 +6,7 @@
   /* toggle-left controls the absolute left position of the toggle button
     Default: place it just outside the right edge of the sidebar (expanded)
     When collapsed we override it below to center inside the collapsed width */
-  --toggle-left: calc(var(--sidebar-width) - 18px);
+  --toggle-left: calc(var(--sidebar-width) - 64px);
   display: flex;
   min-height: 100vh;
   background-color: $color-background;
@@ -22,12 +22,12 @@
 
 .shell[data-collapsed="false"] {
   /* move the toggle further to the left when expanded (closer to the sidebar edge) */
-  --toggle-left: calc(var(--sidebar-width) - 20px);
+  --toggle-left: calc(var(--sidebar-width) - 80px);
 }
 
 /* center toggle inside the small visible area when collapsed */
 .shell[data-collapsed="true"] {
-  --toggle-left: calc(var(--sidebar-width) / 2 - 18px);
+  --toggle-left: calc(var(--sidebar-width) / 2 - 40px);
 }
 
 .content {
