@@ -4,10 +4,20 @@ import GroupAdd from './components/group_add';
 import { useState } from 'react';
 import './App.css';
 import Header from './components/header/header';
+import LandingPage from './Screens/landingPage';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route
+} from 'react-router-dom';
 
 function App() {
   return (
-    <Header />
+    <Router>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+      </Routes>
+    </Router>
   );
 }
 
