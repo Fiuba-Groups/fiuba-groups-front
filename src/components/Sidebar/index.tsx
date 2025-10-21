@@ -48,12 +48,12 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
 		<aside ref={asideRef} className={`${styles.sidebar} ${collapsed ? styles.collapsed : ''}`} aria-hidden={collapsed}>
 			{/* toggle button positioned via inline styles computed from bounding rect */}
 			<button
-				className={styles.toggleButton}
+				className={`${styles.toggleButton} ${collapsed ? styles.rotated : ''}`}
 				onClick={onToggle}
 				aria-label="toggle sidebar"
 				style={{ position: 'fixed', left: pos.left, top: pos.top }}
 			>
-				<i className="pi pi-angle-double-right" aria-hidden />
+				<i className="pi pi-angle-double-left" aria-hidden />
 			</button>
 			{!collapsed && (
 				<nav>

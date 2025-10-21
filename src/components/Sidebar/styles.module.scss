@@ -57,6 +57,17 @@
   color: $color-text;
 }
 
+/* rotation state for the toggle when sidebar is collapsed */
+.rotated {
+  transform: rotate(180deg);
+  transition: transform 220ms ease;
+}
+
+/* ensure the button animates when toggling even if transform is not set initially */
+.toggleButton {
+  transition: transform 220ms ease;
+}
+
 .sidebar ul {
   list-style: none;
   padding: 0;
