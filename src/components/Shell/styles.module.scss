@@ -1,14 +1,39 @@
-@import '../../constants/variables.scss';
+@import '../../constants/styles-constants.scss';
 
 .shell {
+  /* expose a CSS variable so JS can change it when sidebar collapses/expands */
+  --sidebar-width: #{$sidebar-width};
+  /* toggle-left controls the absolute left position of the toggle button
+    Default: place it just outside the right edge of the sidebar (expanded)
+    When collapsed we override it below to center inside the collapsed width */
+  --toggle-left: calc(var(--sidebar-width) - 18px);
   display: flex;
   min-height: 100vh;
   background-color: $color-background;
 }
 
+/* when shell has data-collapsed=true, change the CSS variable so siblings (header, content)
+   inherit the collapsed sidebar width (so they shift accordingly) */
+.shell[data-collapsed="true"] {
+  --sidebar-width: #{$header-height};
+}
+
+/* when not collapsed, move the toggle button slightly to the right of the sidebar */
+
+.shell[data-collapsed="false"] {
+  /* move the toggle further to the left when expanded (closer to the sidebar edge) */
+  --toggle-left: calc(var(--sidebar-width) - 20px);
+}
+
+/* center toggle inside the small visible area when collapsed */
+.shell[data-collapsed="true"] {
+  --toggle-left: calc(var(--sidebar-width) / 2 - 18px);
+}
+
 .content {
   flex: 1;
-  margin-left: $sidebar-width;
+  /* content starts to the right of the sidebar; uses the CSS variable for dynamic updates */
+  margin-left: var(--sidebar-width);
   padding-top: $screen-padding-top;
   padding: $screen-padding;
 }

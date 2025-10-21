@@ -1,7 +1,8 @@
-@import '../../constants/variables.scss';
+@import '../../constants/styles-constants.scss';
 
 .appHeader {
-  width: 100%;
+  width: calc(100% - var(--sidebar-width));
+  margin-left: var(--sidebar-width);
   height: $header-height;
   background-color: $color-header;
   display: flex;
@@ -9,9 +10,8 @@
   justify-content: center;
   position: fixed;
   top: 0;
-  left: 0;
   z-index: 1000;
-  box-shadow: 0 2px 4px $color-shadow;
+  border-bottom: 1px solid darken($color-header, 8%);
 }
 
 .title {
@@ -23,7 +23,7 @@
 
 .sideButton {
   position: absolute;
-  left: 20px;
+  left: calc(var(--sidebar-width) - 48px);
   top: 50%;
   transform: translateY(-50%);
   width: 40px;
@@ -36,10 +36,4 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 6px;
-  transition: background 0.2s, color 0.2s;
-}
-
-.sideButton:hover {
-  background: rgba($color-accent, 0.1);
 }

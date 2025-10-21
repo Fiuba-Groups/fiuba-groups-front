@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useState } from "react";
 import Header from "../Header";
 import Sidebar from "../Sidebar";
 import styles from "./styles.module.scss";
@@ -8,10 +8,13 @@ interface AppShellProps {
 }
 
 export default function AppShell({ children }: AppShellProps) {
+  const [collapsed, setCollapsed] = useState(false);
+  const toggleCollapsed = () => setCollapsed((s) => !s);
+
   return (
-    <div className={styles.shell}>
+    <div className={styles.shell} data-collapsed={collapsed}>
       <Header />
-      <Sidebar />
+      <Sidebar collapsed={collapsed} onToggle={toggleCollapsed} />
       <main className={styles.content}>
         {children}
       </main>

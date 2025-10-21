@@ -1,15 +1,50 @@
-@import '../../constants/variables.scss';
+@import '../../constants/styles-constants.scss';
 
 .sidebar {
   position: fixed;
-  top: $header-height;
+  top: 0;
   left: 0;
+  /* expose width value for other components */
+  --sidebar-width: #{$sidebar-width};
   width: $sidebar-width;
-  height: calc(100vh - #{$header-height});
-  background: $color-sidebar;
-  padding: $sidebar-padding;
-  box-shadow: 2px 0 4px $color-shadow;
+  height: 100vh;
+  background-color: $color-sidebar;
+  padding-top: calc(#{$header-height} + #{$screen-padding});
+  padding-left: $screen-padding;
+  padding-right: $screen-padding;
+  border-right: 1px solid darken($color-sidebar, 8%);
   overflow-y: auto;
+  z-index: 1100;
+}
+
+/* collapsed state: hide content and reduce width to header-height width so the header toggle can sit */
+.collapsed {
+  width: $header-height; /* show only a sliver equal to header height */
+  --sidebar-width: #{$header-height};
+}
+
+/* button that sits at the header level on the right edge of the sidebar */
+.toggleButton {
+  position: fixed;
+    /* place the button at the right edge of the current sidebar width (so it follows it when collapsed).
+      The exact offset is controlled by --toggle-offset and can be changed by the shell depending on collapsed state. */
+    left: var(--toggle-left);
+    /* center vertically inside header: compute top so button is vertically centered
+      (header-height - button-height)/2. Button height is 36px. */
+    top: calc((#{$header-height} - 36px) / 2);
+    transform: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  border: none;
+  background: $color-accent;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  z-index: 1200; /* above header (1000) and sidebar (1100) */
 }
 
 .sidebar ul {
@@ -19,14 +54,18 @@
 }
 
 .sidebar li {
-  padding: 8px 0;
+  padding: 8px 12px;
   color: $color-text-light;
   font-family: $font-family-base;
   font-size: $font-size-base;
+  margin-bottom: 5px;
   cursor: pointer;
-  transition: color 0.2s;
+  transition: background 0.2s;
+  border-radius: 8px; 
 }
 
 .sidebar li:hover {
-  color: $color-accent;
+  background-color: $color-background;
+  color: $color-text;
 }
+
