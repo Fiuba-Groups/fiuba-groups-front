@@ -31,21 +31,19 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
 			let avatarLeftNum: number;
 			const padding = 8; // padding inside the sidebar for tight cases
 			const totalNeeded = avatarSize + avatarSpacing + buttonSize + padding * 2;
+			// align avatar with the start of nav items (sidebar padding)
+			const collapsedSidebarWidth = 128; // must match $sidebar-collapsed-width in styles
+			const sidebarPadding = 20; // must match $screen-padding in styles-constants.scss
+			let collapsedAvatarLeft = Math.round(aRect.left + sidebarPadding);
 
-			if (collapsed && aRect.width < totalNeeded) {
-				// not enough room to place avatar left of the button; pack them side-by-side inside the collapsed width
-				// place avatar at left padding, and button just to its right
-				avatarLeftNum = Math.round(aRect.left + padding);
-				buttonLeftNum = Math.round(avatarLeftNum + avatarSize + avatarSpacing);
-			} else if (collapsed) {
-				// when collapsed but there's enough width, center the pair inside the sidebar area
-				const center = Math.round(aRect.left + aRect.width / 2);
-				buttonLeftNum = Math.round(center - buttonSize / 2 + avatarSize / 2);
-				avatarLeftNum = Math.round(buttonLeftNum - avatarSize - avatarSpacing);
+			if (collapsed) {
+				// collapsed: keep button placed relative to collapsed area, avatar fixed to collapsed center
+				buttonLeftNum = Math.round(aRect.left + collapsedSidebarWidth - buttonSize - padding);
+				avatarLeftNum = collapsedAvatarLeft; // fixed collapsed spot
 			} else {
-				// expanded: keep the button near the right edge of the sidebar and avatar to its left
+				// expanded: keep the button near the right edge of the sidebar; avatar still stays at collapsed spot
 				buttonLeftNum = Math.round(aRect.right - buttonSize / 2 - 36); // push more left when expanded
-				avatarLeftNum = Math.round(buttonLeftNum - avatarSize - avatarSpacing);
+				avatarLeftNum = collapsedAvatarLeft; // keep avatar fixed at collapsed spot
 			}
 
 			setPos({ left: `${buttonLeftNum}px`, top: `${top}px` });
@@ -67,8 +65,8 @@ export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
 			{/* avatar fixed to the left of the toggle; visible in both collapsed and expanded */}
 			<img
 				className={styles.avatar}
-				src="../../images/logo.png"
-				alt="avatar"
+				src="/fiuba-logo.png"
+				alt="logo"
 				style={{ position: 'fixed', left: avatarPos.left, top: avatarPos.top, width: avatarSize, height: avatarSize }}
 			/>
 

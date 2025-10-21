@@ -36,4 +36,5 @@
   margin-left: var(--sidebar-width);
   padding-top: $screen-padding-top;
   padding: $screen-padding;
+  transition: margin-left 240ms ease, padding-top 240ms ease;
 }

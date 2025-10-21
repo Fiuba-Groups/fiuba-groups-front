@@ -104,5 +104,7 @@
   object-fit: cover;
   z-index: 1250; /* above toggle */
   box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+  /* center precisely on the provided left/top coordinates */
+  transform: translateX(0) translateY(0);
 }
 
