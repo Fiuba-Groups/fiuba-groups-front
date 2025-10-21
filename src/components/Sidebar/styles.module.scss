@@ -21,6 +21,11 @@
 .collapsed {
   width: $header-height; /* show only a sliver equal to header height */
   --sidebar-width: #{$header-height};
+  /* show only the top area that overlaps the header */
+  height: $header-height;
+  overflow: hidden;
+  /* remove the large top padding so inner nav/content stays hidden below */
+  padding-top: 0;
 }
 
 /* button that sits at the header level on the right edge of the sidebar */
