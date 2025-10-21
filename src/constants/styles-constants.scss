@@ -14,5 +14,6 @@ $font-size-title: 2rem;
 // --- Layout ---
 $header-height: 60px;
 $sidebar-width: 240px;
+$sidebar-collapsed-width: 128px; // wider collapsed width so header toggle and avatar fit
 $screen-padding: 10px;            // padding estándar para screens
 $screen-padding-top: $header-height + $screen-padding; // padding top para que no tape header
