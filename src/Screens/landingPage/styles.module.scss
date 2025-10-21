@@ -1,13 +1,16 @@
-.container {
-  text-align: center;
-  padding-top: 60px; /* espacio para el header fijo */
-}
+@import '../../constants/variables.scss';
 
 .landingContent {
-  padding: 24px;
+  padding: $screen-padding;
+  padding-top: $screen-padding-top;
+  text-align: center;
+  background-color: $color-background;
+  min-height: calc(100vh - #{$header-height});
 }
 
 .landingTitle {
-  font-size: 2rem;
+  font-size: $font-size-title;
   margin: 0;
+  color: $color-text;
+  font-family: $font-family-base;
 }

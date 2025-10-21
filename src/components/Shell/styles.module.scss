@@ -1,0 +1,14 @@
+@import '../../constants/variables.scss';
+
+.shell {
+  display: flex;
+  min-height: 100vh;
+  background-color: $color-background;
+}
+
+.content {
+  flex: 1;
+  margin-left: $sidebar-width;
+  padding-top: $screen-padding-top;
+  padding: $screen-padding;
+}

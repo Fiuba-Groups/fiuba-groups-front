@@ -1,11 +1,15 @@
 @import '../../constants/variables.scss';
 
 .sidebar {
-  width: 240px;
-  background: $secondary-color;
-  height: 100vh;
-  padding: 16px;
-  box-shadow: 2px 0 4px rgba(0,0,0,0.08);
+  position: fixed;
+  top: $header-height;
+  left: 0;
+  width: $sidebar-width;
+  height: calc(100vh - #{$header-height});
+  background: $color-sidebar;
+  padding: $sidebar-padding;
+  box-shadow: 2px 0 4px $color-shadow;
+  overflow-y: auto;
 }
 
 .sidebar ul {
@@ -16,4 +20,13 @@
 
 .sidebar li {
   padding: 8px 0;
+  color: $color-text-light;
+  font-family: $font-family-base;
+  font-size: $font-size-base;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.sidebar li:hover {
+  color: $color-accent;
 }

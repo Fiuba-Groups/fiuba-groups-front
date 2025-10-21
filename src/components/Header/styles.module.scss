@@ -3,7 +3,7 @@
 .appHeader {
   width: 100%;
   height: $header-height;
-  background-color: $header-bg-color;
+  background-color: $color-header;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -11,12 +11,14 @@
   top: 0;
   left: 0;
   z-index: 1000;
+  box-shadow: 0 2px 4px $color-shadow;
 }
 
 .title {
-  color: $title-color;
-  font-size: $title-font-size;
+  color: $color-text-light;
+  font-size: 1.5rem;
   font-weight: bold;
+  font-family: $font-family-base;
 }
 
 .sideButton {
@@ -24,11 +26,20 @@
   left: 20px;
   top: 50%;
   transform: translateY(-50%);
-  width: $button-size;
-  height: $button-size;
+  width: 40px;
+  height: 40px;
   background: transparent;
   border: none;
-  color: $title-color;
-  font-size: $button-font-size;
+  color: $color-text-light;
+  font-size: $font-size-base;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.sideButton:hover {
+  background: rgba($color-accent, 0.1);
 }

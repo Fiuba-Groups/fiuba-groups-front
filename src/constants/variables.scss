@@ -1,17 +1,20 @@
-// --- Header ---
-$header-height: 60px;
-$header-bg-color: #173352;
-$header-padding: 20px;
+// --- Colores ---
+$color-background: #f5f5f5;       // fondo general de screens
+$color-header: #ffffff;           // header blanco
+$color-sidebar: #ffffff;          // sidebar blanco
+$color-text: #252525;             // texto principal
+$color-text-light: #333333;       // texto secundario
+$color-accent: #007bff;           // azul secundario (hover, detalles)
+$color-shadow: rgba(0, 0, 0, 0.08);
 
 // --- Tipografía ---
-$title-color: white;
-$title-font-size: 1.5rem;
-$landing-title-font-size: 2rem;
+$font-family-base: 'Roboto', sans-serif;
+$font-size-base: 16px;
+$font-size-title: 2rem;
 
-// --- Botones ---
-$button-size: 40px;
-$button-font-size: 24px;
-
-// --- Colores generales ---
-$primary-color: #007bff;
-$secondary-color: #f5f5f5;
+// --- Layout ---
+$header-height: 60px;
+$sidebar-width: 240px;
+$sidebar-padding: 24px;
+$screen-padding: 10px;            // padding estándar para screens
+$screen-padding-top: $header-height + $screen-padding; // padding top para que no tape header
