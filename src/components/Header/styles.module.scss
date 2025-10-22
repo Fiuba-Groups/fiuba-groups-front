@@ -1,39 +1,130 @@
 @import '../../constants/styles-constants.scss';
 
 .appHeader {
-  width: calc(100% - var(--sidebar-width));
-  margin-left: var(--sidebar-width);
-  height: $header-height;
-  background-color: $color-header;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: fixed;
-  top: 0;
-  z-index: 1000;
-  border-bottom: 1px solid darken($color-header, 8%);
+  width: calc(100% - var(--sidebar-width)); // El ancho se ajusta dinámicamente según el sidebar
+  margin-left: var(--sidebar-width); // Se desplaza hacia la derecha para no solaparse con el sidebar
+  height: $header-height; // Altura fija definida en las constantes
+  background-color: $color-header; // Color de fondo del header
+  position: fixed; // Header fijo en la parte superior
+  top: 0; // Posicionado en la parte superior de la pantalla
+  z-index: 1000; // Para estar por encima de otros elementos
+  border-bottom: 1px solid darken($color-header, 8%); // Borde inferior con color más oscuro
 }
 
-.title {
-  color: $color-text-light;
-  font-size: 1.5rem;
-  font-weight: bold;
-  font-family: $font-family-base;
+.headerContent {
+  width: 100%; // Ocupa todo el ancho del header
+  height: 100%; // Ocupa toda la altura del header
+  display: flex; // Layout flexbox para organizar el contenido
+  align-items: center; // Centra verticalmente el contenido
+  justify-content: space-between; // Distribuye el contenido en los extremos
+  padding: 0 20px; // Espaciado horizontal interno
 }
 
-.sideButton {
-  position: absolute;
-  left: calc(var(--sidebar-width) - 48px);
-  top: 50%;
-  transform: translateY(-50%);
-  width: 40px;
-  height: 40px;
-  background: transparent;
-  border: none;
-  color: $color-text-light;
-  font-size: $font-size-base;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.headerLeft {
+  flex: 1; // Ocupa el espacio disponible del lado izquierdo
+}
+
+.headerRight {
+  display: flex; // Layout flexbox para el contenido del lado derecho
+  align-items: center; // Centra verticalmente el contenido
+  margin-right: 20px; // Margen derecho para separar del borde
+}
+
+/* ===== MENÚ DE USUARIO ===== */
+.userMenu {
+  position: relative; // Posición relativa para el dropdown
+  display: flex; // Layout flexbox
+  align-items: center; // Centra verticalmente el contenido
+}
+
+.userAvatar {
+  display: flex; // Layout flexbox para alinear avatar e icono
+  align-items: center; // Centra verticalmente el contenido
+  gap: 8px; // Separación entre avatar e icono
+  padding: 8px 12px; // Espaciado interno para área clickeable
+  border-radius: 8px; // Esquinas redondeadas
+  cursor: pointer; // Indica que el elemento es clickeable
+  transition: background-color 0.2s ease; // Animación suave para hover
+}
+
+.avatarImage {
+  width: 32px; // Tamaño del avatar
+  height: 32px; // Tamaño del avatar
+  border-radius: 50%; // Forma circular
+  object-fit: cover; // Mantiene las proporciones de la imagen
+  border: 0.5px solid $color-text-light; // Borde sutil
+  background-color: rgb(228, 238, 250); // Fondo blanco para el avatar
+  margin-right: 10px; // Margen derecho para separar del dropdown
+}
+
+.avatarImage:hover {
+  border: 0.5px solid $color-text; // Fondo sutil al pasar el cursor
+}
+
+.dropdownIcon {
+  font-size: 15px; // Tamaño del icono de dropdown
+  color: $color-text-light; // Color del icono
+  transition: transform 0.2s ease; // Animación suave para la rotación
+  margin-right: 20px; // Margen derecho para separar del borde
+}
+
+.dropdownIcon:hover {
+  color: $color-text; // Color del icono al pasar el cursor
+}
+
+.rotated {
+  transform: rotate(180deg); // Rotación del icono cuando el dropdown está abierto
+}
+
+/* ===== MENÚ DESPLEGABLE ===== */
+.dropdownMenu {
+  position: absolute; // Posición absoluta respecto al contenedor padre
+  top: 100%; // Posicionado debajo del avatar
+  right: 0; // Alineado al borde derecho del avatar
+  min-width: 200px; // Ancho mínimo del menú
+  background-color: white; // Fondo blanco del menú
+  border: 1px solid rgba(0, 0, 0, 0.1); // Borde sutil
+  border-radius: 8px; // Esquinas redondeadas
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); // Sombra para profundidad
+  z-index: 1001; // Nivel de apilamiento superior al header
+  padding: 8px 0; // Espaciado interno vertical
+  margin-top: 4px; // Separación del avatar
+  margin-right: 20px; // Margen derecho para separar del borde
+}
+
+.dropdownItem {
+  width: 100%; // Ocupa todo el ancho del menú
+  padding: 12px 16px; // Espaciado interno cómodo
+  background: transparent; // Fondo transparente por defecto
+  border: none; // Sin borde
+  color: $color-text-light; // Color del texto
+  font-family: $font-family-base; // Familia tipográfica consistente
+  font-size: $font-size-base; // Tamaño de fuente estándar
+  text-align: left; // Alineación del texto a la izquierda
+  cursor: pointer; // Indica que el elemento es clickeable
+  display: flex; // Layout flexbox para alinear icono y texto
+  align-items: center; // Centra verticalmente el contenido
+  gap: 12px; // Separación entre icono y texto
+  transition: background-color 0.2s ease; // Animación suave para hover
+}
+
+.dropdownItem:hover {
+  background-color: $color-background; // Fondo al pasar el cursor
+  color: $color-text; // Color del texto al pasar el cursor
+}
+
+.dropdownItem i {
+  font-size: 16px; // Tamaño de los iconos del menú
+  color: $color-text-light; // Color de los iconos
+  transition: color 0.2s ease; // Animación suave para el color
+}
+
+.dropdownItem:hover i {
+  color: $color-text; // Color de los iconos al pasar el cursor
+}
+
+.dropdownDivider {
+  height: 1px; // Grosor de la línea divisoria
+  background-color: rgba(0, 0, 0, 0.1); // Color de la línea divisoria
+  margin: 8px 0; // Espaciado vertical
 }
