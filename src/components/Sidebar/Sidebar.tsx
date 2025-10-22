@@ -37,6 +37,17 @@ export default function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
         items={navigationItems} 
         collapsed={collapsed} 
       />
+      <div className={`${styles.helpDivider} ${collapsed ? styles.collapsed : ''}`} />
+      <button 
+        className={`${styles.helpButton} ${collapsed ? styles.collapsed : ''}`}
+        onClick={() => {
+          console.log('Ayuda clickeada');
+        }}
+        aria-label="Obtener ayuda"
+      >
+        <i className="pi pi-megaphone" aria-hidden="true" />
+        <span>Ayuda</span>
+      </button>
     </aside>
   );
 }

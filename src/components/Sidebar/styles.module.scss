@@ -2,151 +2,207 @@
 
 /* ===== SIDEBAR PRINCIPAL ===== */
 .sidebar {
-  position: fixed; // Posición fija en la pantalla
-  top: 0; // Anclado en la parte superior
-  left: 0; // Anclado en el lado izquierdo
-  --sidebar-width: #{$sidebar-width}; // Variable CSS para controlar el ancho dinámicamente
-  width: $sidebar-width; // Ancho del sidebar expandido
-  height: 100vh; // Altura completa de la ventana
-  background-color: $color-sidebar; // Color de fondo del sidebar
-  padding-top: calc(#{$header-height} + #{$screen-padding}); // Espacio para el header
-  padding-left: $screen-padding; // Padding izquierdo
-  padding-right: $screen-padding; // Padding derecho
-  border-right: 1px solid darken($color-sidebar, 8%); // Borde derecho con color más oscuro
-  overflow-y: auto; // Scroll vertical si el contenido es muy largo
-  z-index: 1100; // Capa superior para estar por encima del contenido
-  transition: width 400ms cubic-bezier(0.4, 0, 0.2, 1), padding 400ms cubic-bezier(0.4, 0, 0.2, 1); // Animación suave con easing personalizado
+  position: fixed; // Mantiene el sidebar fijo en la pantalla
+  top: 0; // Alineado con el borde superior de la ventana
+  left: 0; // Alineado con el borde izquierdo de la ventana
+  --sidebar-width: #{$sidebar-width}; // Variable CSS dinámica para el ancho
+  width: $sidebar-width; // Ancho estándar del sidebar expandido
+  height: 100vh; // Ocupa toda la altura de la ventana
+  background-color: $color-sidebar; // Color de fondo principal del sidebar
+  padding-top: calc(#{$header-height} + #{$screen-padding}); // Espaciado superior para el header
+  padding-left: $screen-padding; // Espaciado interno izquierdo
+  padding-right: $screen-padding; // Espaciado interno derecho
+  padding-bottom: 80px; // Espaciado inferior para el botón de ayuda
+  border-right: 1px solid darken($color-sidebar, 8%); // Línea divisoria lateral sutil
+  overflow-y: auto; // Permite scroll vertical cuando el contenido excede la altura
+  z-index: 1100; // Nivel de apilamiento superior al contenido principal
+  transition: background 0.2s, color 0.2s, width 400ms cubic-bezier(0.4, 0, 0.2, 1); // Animaciones suaves para cambios de estado
+  display: flex; // Contenedor flexbox para organización vertical
+  flex-direction: column; // Distribución de elementos en columna
 }
 
 /* ===== ESTADO COLAPSADO ===== */
 .collapsed {
-  width: $sidebar-collapsed-width; // Ancho reducido cuando está colapsado
-  --sidebar-width: #{$sidebar-collapsed-width}; // Actualiza la variable CSS
-  height: $header-height; // Solo muestra el área del header
-  overflow: hidden; // Oculta el contenido que se desborda
-  padding-top: 0; // Elimina el padding superior para ocultar la navegación
-  padding-left: 0; // Elimina el padding izquierdo
-  padding-right: 0; // Elimina el padding derecho
+  width: $sidebar-collapsed-width; // Ancho mínimo para mostrar solo el toggle
+  --sidebar-width: #{$sidebar-collapsed-width}; // Actualiza la variable CSS para elementos hijos
+  height: $header-height; // Altura reducida que oculta la navegación
+  overflow: hidden; // Previene que el contenido se desborde del contenedor
+  padding-top: 0; // Elimina el espaciado superior para ocultar la navegación
+  padding-left: 0; // Elimina el espaciado izquierdo
+  padding-right: 0; // Elimina el espaciado derecho
+  padding-bottom: 0; // Elimina el espaciado inferior
 }
 
 /* ===== BOTÓN TOGGLE ===== */
 .toggleButton {
-  position: fixed; // Posición fija calculada dinámicamente
-  left: var(--toggle-left); // Posición izquierda controlada por CSS variable
-  top: calc((#{$header-height} - 36px) / 2); // Centrado verticalmente en el header
-  width: 44px; // Ancho del botón
-  height: 44px; // Alto del botón
-  border-radius: 8px; // Bordes redondeados
-  border: none; // Sin borde
-  background: transparent; // Fondo transparente
-  color: $color-text-light; // Color del icono
-  display: flex; // Layout flexbox para centrar el icono
-  align-items: center; // Centrado vertical
-  justify-content: center; // Centrado horizontal
-  cursor: pointer; // Cursor de puntero
-  box-shadow: none; // Sin sombra
-  z-index: 1200; // Por encima del header y sidebar
-  transition: transform 300ms ease, left 400ms cubic-bezier(0.4, 0, 0.2, 1); // Animación suave de rotación y posición
+  position: fixed; // Posición fija que se ajusta dinámicamente
+  left: var(--toggle-left); // Posición horizontal controlada por variable CSS
+  top: calc((#{$header-height} - 36px) / 2); // Centrado verticalmente respecto al header
+  width: 44px; // Tamaño estándar para facilitar la interacción
+  height: 44px; // Tamaño estándar para facilitar la interacción
+  border-radius: 8px; // Esquinas redondeadas para un diseño moderno
+  border: none; // Sin borde para un aspecto limpio
+  background: transparent; // Fondo transparente por defecto
+  color: $color-text-light; // Color del icono en estado normal
+  display: flex; // Contenedor flexbox para centrar el contenido
+  align-items: center; // Centrado vertical del icono
+  justify-content: center; // Centrado horizontal del icono
+  cursor: pointer; // Indica que el elemento es clickeable
+  box-shadow: none; // Sin sombra por defecto
+  z-index: 1200; // Nivel de apilamiento superior al sidebar
+  transition: background 0.2s, color 0.2s, transform 300ms ease, left 400ms cubic-bezier(0.4, 0, 0.2, 1); // Animaciones para hover, rotación y movimiento
 }
 
 .toggleButton i {
-  font-size: 22px; // Tamaño del icono
+  font-size: 22px; // Tamaño apropiado para buena visibilidad del icono
 }
 
 .toggleButton:hover {
-  background-color: $color-background; // Fondo al pasar el mouse
-  color: $color-text; // Color del texto al pasar el mouse
+  background-color: $color-background; // Fondo destacado al pasar el cursor
+  color: $color-text; // Color de texto con mejor contraste en hover
 }
 
 .rotated {
-  transform: rotate(180deg); // Rotación de 180 grados cuando está colapsado
+  transform: rotate(180deg); // Rotación completa del icono cuando el sidebar está colapsado
 }
 
 /* ===== NAVEGACIÓN ===== */
 .navigation {
-  opacity: 1; // Visible por defecto
+  opacity: 1; // Visible cuando el sidebar está expandido
+  flex: 1; // Ocupa todo el espacio disponible en el contenedor
+  display: flex; // Contenedor flexbox para organización vertical
+  flex-direction: column; // Distribución de elementos en columna
+  transition: opacity 300ms ease-out; // Animación suave de desvanecimiento
 }
 
 .collapsed .navigation {
-  opacity: 0; // Invisible cuando está colapsado
-  pointer-events: none; // No interfiere con clics
+  opacity: 0; // Se desvanece cuando el sidebar está colapsado
+  pointer-events: none; // Desactiva la interacción para evitar clics accidentales
 }
 
 .navigationList {
-  list-style: none; // Sin viñetas
-  padding: 0; // Sin padding
-  margin: 0; // Sin margen
+  list-style: none; // Elimina las viñetas por defecto de la lista
+  padding: 0; // Sin espaciado interno para control total
+  margin: 0; // Sin espaciado externo para control total
 }
 
 .navigationItem {
-  margin-bottom: 5px; // Espacio entre elementos
+  margin-bottom: 5px; // Separación vertical entre elementos de navegación
   opacity: 1; // Visible por defecto
-  transform: translateX(0); // Posición normal
+  transform: translateX(0); // Posición inicial sin desplazamiento
+  transition: opacity 300ms ease-out, transform 300ms ease-out; // Animaciones de desvanecimiento y movimiento
 }
 
 .collapsed .navigationItem {
-  opacity: 0; // Invisible cuando está colapsado
-  transform: translateX(-15px); // Se desplaza hacia la izquierda
+  opacity: 0; // Se desvanece cuando el sidebar está colapsado
+  transform: translateX(-15px); // Se desplaza hacia la izquierda al colapsar
 }
 
-// Animación escalonada para los elementos de navegación
-.navigationItem:nth-child(1) { transition-delay: 0ms; }
-.navigationItem:nth-child(2) { transition-delay: 20ms; }
-.navigationItem:nth-child(3) { transition-delay: 40ms; }
-.navigationItem:nth-child(4) { transition-delay: 60ms; }
-.navigationItem:nth-child(5) { transition-delay: 80ms; }
-.navigationItem:nth-child(6) { transition-delay: 100ms; }
-
 .navigationButton {
-  width: 100%; // Ancho completo del contenedor
-  padding: 8px 12px; // Padding interno
-  color: $color-text-light; // Color del texto
-  font-family: $font-family-base; // Familia de fuente
-  font-size: $font-size-base; // Tamaño de fuente
-  background: transparent; // Fondo transparente
-  border: none; // Sin borde
-  border-radius: 8px; // Bordes redondeados
-  cursor: pointer; // Cursor de puntero
-  transition: background 0.2s, color 0.2s; // Transiciones suaves
-  display: flex; // Layout flexbox
-  align-items: center; // Centrado vertical
-  gap: 8px; // Espacio entre icono y texto
+  width: 100%; // Ocupa todo el ancho disponible del contenedor
+  padding: 8px 12px; // Espaciado interno cómodo para la interacción
+  color: $color-text-light; // Color de texto en estado normal
+  font-family: $font-family-base; // Familia tipográfica consistente
+  font-size: $font-size-base; // Tamaño de fuente estándar
+  background: transparent; // Fondo transparente por defecto
+  border: none; // Sin borde para un aspecto limpio
+  border-radius: 8px; // Esquinas redondeadas para un diseño moderno
+  cursor: pointer; // Indica que el elemento es clickeable
+  transition: background 0.2s, color 0.2s, width 400ms cubic-bezier(0.4, 0, 0.2, 1); // Animaciones suaves para hover y cambios de estado
+  display: flex; // Contenedor flexbox para alinear icono y texto
+  align-items: center; // Centrado vertical del contenido
+  gap: 8px; // Separación consistente entre icono y texto
 }
 
 .navigationButton:hover {
-  background-color: $color-background; // Fondo al pasar el mouse
-  color: $color-text; // Color del texto al pasar el mouse
+  background-color: $color-background; // Fondo destacado al pasar el cursor
+  color: $color-text; // Color de texto con mejor contraste en hover
 }
 
 .navigationButton i {
-  font-size: 16px; // Tamaño del icono
+  font-size: 16px; // Tamaño apropiado para los iconos de navegación
 }
 
 /* ===== LOGO ===== */
 .logo {
-  position: fixed; // Posición fija calculada dinámicamente
-  width: 40px; // Ancho del logo
-  height: 40px; // Alto del logo
-  border-radius: 50%; // Forma circular
-  object-fit: cover; // Ajuste de imagen
-  z-index: 1250; // Por encima del botón toggle
-  box-shadow: 0 1px 3px rgba(0,0,0,0.12); // Sombra sutil
+  position: fixed; // Posición fija que se ajusta dinámicamente
+  width: 40px; // Tamaño estándar para el logo
+  height: 40px; // Tamaño estándar para el logo
+  border-radius: 50%; // Forma circular para un diseño moderno
+  object-fit: cover; // Mantiene las proporciones de la imagen
+  z-index: 1250; // Nivel de apilamiento superior al botón toggle
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12); // Sombra sutil para dar profundidad
 }
 
 /* ===== TÍTULO ===== */
 .title {
-  position: fixed; // Posición fija calculada dinámicamente
-  color: $color-text; // Color del texto
-  font-family: $font-family-base; // Familia de fuente
-  font-size: 16px; // Tamaño de fuente
-  font-weight: 600; // Peso de la fuente (semi-bold)
-  white-space: nowrap; // Evita que el texto se divida en líneas
-  z-index: 1250; // Por encima del botón toggle
-  pointer-events: none; // No interfiere con clics
-  opacity: 1; // Visible por defecto
-  transform: translateX(0); // Posición normal
+  position: fixed; // Posición fija que se ajusta dinámicamente
+  color: $color-text; // Color de texto con buen contraste
+  font-family: $font-family-base; // Familia tipográfica consistente
+  font-size: 16px; // Tamaño de fuente apropiado para el título
+  font-weight: 600; // Peso semi-bold para destacar el título
+  white-space: nowrap; // Previene que el texto se divida en múltiples líneas
+  z-index: 1250; // Nivel de apilamiento superior al botón toggle
+  pointer-events: none; // Desactiva la interacción para evitar clics accidentales
+  opacity: 1; // Visible cuando el sidebar está expandido
+  transform: translateX(0); // Posición inicial sin desplazamiento
 }
 
 .collapsed .title {
-  opacity: 0; // Invisible cuando está colapsado
+  opacity: 0; // Se desvanece cuando el sidebar está colapsado
 }
+
+/* ===== LÍNEA DIVISORA ===== */
+.helpDivider {
+  position: fixed; // Posición fija para mantener la línea siempre visible
+  bottom: 60px; // Posicionada arriba del botón de ayuda
+  width: calc(var(--sidebar-width)); // Ancho que se adapta al estado del sidebar
+  height: 0.5px; // Grosor sutil para la línea divisoria
+  background-color: $color-text-light; // Color con buena visibilidad
+  z-index: 1200; // Nivel de apilamiento superior al contenido
+  transition: background 0.2s, color 0.2s, width 400ms cubic-bezier(0.4, 0, 0.2, 1); // Animaciones suaves para cambios de estado
+}
+
+/* ===== BOTÓN DE AYUDA ===== */
+.helpButton {
+  position: fixed; // Posición fija para mantener el botón siempre visible
+  bottom: 0; // Anclado en la parte inferior de la ventana
+  left: 0; // Anclado al borde izquierdo de la ventana
+  width: var(--sidebar-width); // Ancho que se adapta al estado del sidebar
+  padding: 10px 8px 10px 16px; // Espaciado interno asimétrico para mejor alineación
+  margin-bottom: 10px; // Separación del borde inferior
+  margin-left: 8px; // Separación del borde izquierdo
+  margin-right: 4px; // Separación reducida del borde derecho
+  color: $color-text-light; // Color de texto en estado normal
+  font-family: $font-family-base; // Familia tipográfica consistente
+  font-size: $font-size-base; // Tamaño de fuente estándar
+  background: $color-sidebar; // Fondo que se integra con el sidebar
+  border: none; // Sin borde para un aspecto limpio
+  border-radius: 8px; // Esquinas redondeadas para un diseño moderno
+  cursor: pointer; // Indica que el elemento es clickeable
+  transition: background 0.2s, color 0.2s, width 400ms cubic-bezier(0.4, 0, 0.2, 1); // Animaciones suaves para hover y cambios de estado
+  display: flex; // Contenedor flexbox para alinear icono y texto
+  align-items: center; // Centrado vertical del contenido
+  gap: 8px; // Separación consistente entre icono y texto
+  opacity: 1; // Visible cuando el sidebar está expandido
+  z-index: 1200; // Nivel de apilamiento superior al contenido
+}
+
+.helpButton:hover {
+  background-color: $color-background; // Fondo destacado al pasar el cursor
+  color: $color-text; // Color de texto con mejor contraste en hover
+}
+
+.helpButton i {
+  font-size: 16px; // Tamaño apropiado para el icono de ayuda
+}
+
+.collapsed .helpDivider {
+  opacity: 0; // Se desvanece cuando el sidebar está colapsado
+}
+
+.collapsed .helpButton {
+  opacity: 0; // Se desvanece cuando el sidebar está colapsado
+  pointer-events: none; // Desactiva la interacción para evitar clics accidentales
+}
+
