@@ -1,0 +1,27 @@
+@import '../../constants/styles-constants.scss';
+
+.shell {
+  --sidebar-width: #{$sidebar-width}; // Variable CSS para controlar el ancho del sidebar dinámicamente
+  --toggle-left: calc(var(--sidebar-width) - 64px); // Posición inicial del botón toggle (expandido)
+  display: flex; // Layout flexbox para organizar header y contenido
+  min-height: 100vh; // Altura mínima de toda la ventana
+  background-color: $color-background; // Color de fondo principal
+}
+
+/* Estado colapsado: reduce el ancho del sidebar y centra el botón toggle */
+.shell[data-collapsed="true"] {
+  --sidebar-width: #{$header-height}; // Ancho mínimo cuando está colapsado
+  --toggle-left: calc(var(--sidebar-width) / 2 - 40px); // Centra el botón en el área visible
+}
+
+/* Estado expandido: ajusta la posición del botón toggle */
+.shell[data-collapsed="false"] {
+  --toggle-left: calc(var(--sidebar-width) - 80px); // Posiciona el botón cerca del borde del sidebar
+}
+
+.content {
+  flex: 1; // Ocupa todo el espacio disponible
+  margin-left: var(--sidebar-width); // Se desplaza según el ancho del sidebar
+  padding: $screen-padding; // Padding uniforme en todos los lados
+  transition: margin-left 500ms ease; // Animación suave al cambiar el margen
+}
