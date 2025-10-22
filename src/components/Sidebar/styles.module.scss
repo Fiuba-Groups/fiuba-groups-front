@@ -15,6 +15,7 @@
   border-right: 1px solid darken($color-sidebar, 8%); // Borde derecho con color más oscuro
   overflow-y: auto; // Scroll vertical si el contenido es muy largo
   z-index: 1100; // Capa superior para estar por encima del contenido
+  transition: width 400ms cubic-bezier(0.4, 0, 0.2, 1), padding 400ms cubic-bezier(0.4, 0, 0.2, 1); // Animación suave con easing personalizado
 }
 
 /* ===== ESTADO COLAPSADO ===== */
@@ -24,6 +25,8 @@
   height: $header-height; // Solo muestra el área del header
   overflow: hidden; // Oculta el contenido que se desborda
   padding-top: 0; // Elimina el padding superior para ocultar la navegación
+  padding-left: 0; // Elimina el padding izquierdo
+  padding-right: 0; // Elimina el padding derecho
 }
 
 /* ===== BOTÓN TOGGLE ===== */
@@ -43,7 +46,7 @@
   cursor: pointer; // Cursor de puntero
   box-shadow: none; // Sin sombra
   z-index: 1200; // Por encima del header y sidebar
-  transition: transform 300ms ease; // Animación suave de rotación
+  transition: transform 300ms ease, left 400ms cubic-bezier(0.4, 0, 0.2, 1); // Animación suave de rotación y posición
 }
 
 .toggleButton i {
@@ -60,6 +63,15 @@
 }
 
 /* ===== NAVEGACIÓN ===== */
+.navigation {
+  opacity: 1; // Visible por defecto
+  transition: opacity 300ms ease-in-out; // Solo animación de opacidad
+}
+
+.collapsed .navigation {
+  opacity: 0; // Invisible cuando está colapsado
+  pointer-events: none; // No interfiere con clics
+}
 
 .navigationList {
   list-style: none; // Sin viñetas
@@ -69,7 +81,23 @@
 
 .navigationItem {
   margin-bottom: 5px; // Espacio entre elementos
+  opacity: 1; // Visible por defecto
+  transform: translateX(0); // Posición normal
+  transition: opacity 200ms ease-out, transform 200ms ease-out; // Animación más rápida para elementos individuales
 }
+
+.collapsed .navigationItem {
+  opacity: 0; // Invisible cuando está colapsado
+  transform: translateX(-15px); // Se desplaza hacia la izquierda
+}
+
+// Animación escalonada para los elementos de navegación
+.navigationItem:nth-child(1) { transition-delay: 0ms; }
+.navigationItem:nth-child(2) { transition-delay: 20ms; }
+.navigationItem:nth-child(3) { transition-delay: 40ms; }
+.navigationItem:nth-child(4) { transition-delay: 60ms; }
+.navigationItem:nth-child(5) { transition-delay: 80ms; }
+.navigationItem:nth-child(6) { transition-delay: 100ms; }
 
 .navigationButton {
   width: 100%; // Ancho completo del contenedor
@@ -105,6 +133,7 @@
   object-fit: cover; // Ajuste de imagen
   z-index: 1250; // Por encima del botón toggle
   box-shadow: 0 1px 3px rgba(0,0,0,0.12); // Sombra sutil
+  transition: left 400ms cubic-bezier(0.4, 0, 0.2, 1), top 400ms cubic-bezier(0.4, 0, 0.2, 1); // Animación suave de posición
 }
 
 /* ===== TÍTULO ===== */
@@ -117,5 +146,13 @@
   white-space: nowrap; // Evita que el texto se divida en líneas
   z-index: 1250; // Por encima del botón toggle
   pointer-events: none; // No interfiere con clics
+  opacity: 1; // Visible por defecto
+  transform: translateX(0); // Posición normal
+  transition: opacity 200ms ease-out, transform 200ms ease-out, left 400ms cubic-bezier(0.4, 0, 0.2, 1), top 400ms cubic-bezier(0.4, 0, 0.2, 1); // Animación más rápida para el título y posición
+}
+
+.collapsed .title {
+  opacity: 0; // Invisible cuando está colapsado
+  transform: translateX(-10px); // Se desplaza hacia la izquierda
 }
 

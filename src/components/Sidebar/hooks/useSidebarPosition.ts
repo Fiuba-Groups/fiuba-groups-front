@@ -44,11 +44,11 @@ export default function useSidebarPosition(collapsed?: boolean): SidebarPosition
     // Calcular posición del botón según el estado
     let buttonLeft: number;
     if (collapsed) {
-      // Cuando está colapsado: centrar en el área visible
-      buttonLeft = Math.round(asideRect.left + SIDEBAR_COLLAPSED_WIDTH - BUTTON_SIZE - LOGO_SPACING);
+      buttonLeft = Math.round(asideRect.left + SIDEBAR_COLLAPSED_WIDTH - BUTTON_SIZE - LOGO_SPACING - 10);
     } else {
-      // Cuando está expandido: cerca del borde derecho
-      buttonLeft = Math.round(asideRect.right - BUTTON_SIZE / 2 - 36);
+      // Cuando está expandido: usar el ancho expandido fijo
+      const expandedWidth = parseInt(getComputedStyle(aside).getPropertyValue('--sidebar-width') || '280px');
+      buttonLeft = Math.round(asideRect.left + expandedWidth - BUTTON_SIZE / 2 - 20);
     }
 
     setButtonPos({ left: `${buttonLeft}px`, top: `${buttonTop}px` });
@@ -57,13 +57,20 @@ export default function useSidebarPosition(collapsed?: boolean): SidebarPosition
   }, [collapsed]);
 
   useLayoutEffect(() => {
+    // Actualizar posiciones inmediatamente
     updatePositions();
+    
+    // Actualizar posiciones después de que termine la animación del sidebar (400ms)
+    const animationTimeout = setTimeout(() => {
+      updatePositions();
+    }, 450); // 450ms para asegurar que la animación termine
     
     // Agregar listeners para actualizar posiciones en cambios de ventana
     window.addEventListener('resize', updatePositions);
     window.addEventListener('scroll', updatePositions, true);
     
     return () => {
+      clearTimeout(animationTimeout);
       window.removeEventListener('resize', updatePositions);
       window.removeEventListener('scroll', updatePositions, true);
     };
