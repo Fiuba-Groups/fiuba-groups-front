@@ -65,7 +65,6 @@
 /* ===== NAVEGACIÓN ===== */
 .navigation {
   opacity: 1; // Visible por defecto
-  transition: opacity 300ms ease-in-out; // Solo animación de opacidad
 }
 
 .collapsed .navigation {
@@ -83,7 +82,6 @@
   margin-bottom: 5px; // Espacio entre elementos
   opacity: 1; // Visible por defecto
   transform: translateX(0); // Posición normal
-  transition: opacity 200ms ease-out, transform 200ms ease-out; // Animación más rápida para elementos individuales
 }
 
 .collapsed .navigationItem {
@@ -133,7 +131,6 @@
   object-fit: cover; // Ajuste de imagen
   z-index: 1250; // Por encima del botón toggle
   box-shadow: 0 1px 3px rgba(0,0,0,0.12); // Sombra sutil
-  transition: left 400ms cubic-bezier(0.4, 0, 0.2, 1), top 400ms cubic-bezier(0.4, 0, 0.2, 1); // Animación suave de posición
 }
 
 /* ===== TÍTULO ===== */
@@ -148,11 +145,8 @@
   pointer-events: none; // No interfiere con clics
   opacity: 1; // Visible por defecto
   transform: translateX(0); // Posición normal
-  transition: opacity 200ms ease-out, transform 200ms ease-out, left 400ms cubic-bezier(0.4, 0, 0.2, 1), top 400ms cubic-bezier(0.4, 0, 0.2, 1); // Animación más rápida para el título y posición
 }
 
 .collapsed .title {
   opacity: 0; // Invisible cuando está colapsado
-  transform: translateX(-10px); // Se desplaza hacia la izquierda
 }
-
