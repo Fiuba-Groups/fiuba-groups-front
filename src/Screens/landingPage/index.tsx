@@ -16,7 +16,7 @@ export default function LandingPage() {
       <FloatingButton 
         onClick={handleCreatePost}
         icon="pi pi-plus"
-        label="Crear Publicación"
+        label="Crear búsqueda"
       />
     </AppShell>
   );
