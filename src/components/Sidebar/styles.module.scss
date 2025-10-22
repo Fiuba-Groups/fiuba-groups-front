@@ -1,110 +1,121 @@
 @import '../../constants/styles-constants.scss';
 
+/* ===== SIDEBAR PRINCIPAL ===== */
 .sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  /* expose width value for other components */
-  --sidebar-width: #{$sidebar-width};
-  width: $sidebar-width;
-  height: 100vh;
-  background-color: $color-sidebar;
-  padding-top: calc(#{$header-height} + #{$screen-padding});
-  padding-left: $screen-padding;
-  padding-right: $screen-padding;
-  border-right: 1px solid darken($color-sidebar, 8%);
-  overflow-y: auto;
-  z-index: 1100;
+  position: fixed; // Posición fija en la pantalla
+  top: 0; // Anclado en la parte superior
+  left: 0; // Anclado en el lado izquierdo
+  --sidebar-width: #{$sidebar-width}; // Variable CSS para controlar el ancho dinámicamente
+  width: $sidebar-width; // Ancho del sidebar expandido
+  height: 100vh; // Altura completa de la ventana
+  background-color: $color-sidebar; // Color de fondo del sidebar
+  padding-top: calc(#{$header-height} + #{$screen-padding}); // Espacio para el header
+  padding-left: $screen-padding; // Padding izquierdo
+  padding-right: $screen-padding; // Padding derecho
+  border-right: 1px solid darken($color-sidebar, 8%); // Borde derecho con color más oscuro
+  overflow-y: auto; // Scroll vertical si el contenido es muy largo
+  z-index: 1100; // Capa superior para estar por encima del contenido
 }
 
-/* collapsed state: hide content and reduce width to header-height width so the header toggle can sit */
+/* ===== ESTADO COLAPSADO ===== */
 .collapsed {
-  width: $sidebar-collapsed-width; /* slightly wider collapsed width so toggle fits */
-  --sidebar-width: #{$sidebar-collapsed-width};
-  /* show only the top area that overlaps the header */
-  height: $header-height;
-  overflow: hidden;
-  /* remove the large top padding so inner nav/content stays hidden below */
-  padding-top: 0;
+  width: $sidebar-collapsed-width; // Ancho reducido cuando está colapsado
+  --sidebar-width: #{$sidebar-collapsed-width}; // Actualiza la variable CSS
+  height: $header-height; // Solo muestra el área del header
+  overflow: hidden; // Oculta el contenido que se desborda
+  padding-top: 0; // Elimina el padding superior para ocultar la navegación
 }
 
-/* button that sits at the header level on the right edge of the sidebar */
+/* ===== BOTÓN TOGGLE ===== */
 .toggleButton {
-  position: fixed;
-    /* place the button at the right edge of the current sidebar width (so it follows it when collapsed).
-      The exact offset is controlled by --toggle-offset and can be changed by the shell depending on collapsed state. */
-    left: var(--toggle-left);
-    /* center vertically inside header: compute top so button is vertically centered
-      (header-height - button-height)/2. Button height is 36px. */
-    top: calc((#{$header-height} - 36px) / 2);
-    transform: none;
-  width: 44px;
-  height: 44px;
-  border-radius: 8px;
-  border: none;
-  background: transparent; /* removed blue background */
-  color: $color-text-light; /* icon inherits this color */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: none;
-  z-index: 1200; /* above header (1000) and sidebar (1100) */
+  position: fixed; // Posición fija calculada dinámicamente
+  left: var(--toggle-left); // Posición izquierda controlada por CSS variable
+  top: calc((#{$header-height} - 36px) / 2); // Centrado verticalmente en el header
+  width: 44px; // Ancho del botón
+  height: 44px; // Alto del botón
+  border-radius: 8px; // Bordes redondeados
+  border: none; // Sin borde
+  background: transparent; // Fondo transparente
+  color: $color-text-light; // Color del icono
+  display: flex; // Layout flexbox para centrar el icono
+  align-items: center; // Centrado vertical
+  justify-content: center; // Centrado horizontal
+  cursor: pointer; // Cursor de puntero
+  box-shadow: none; // Sin sombra
+  z-index: 1200; // Por encima del header y sidebar
+  transition: transform 300ms ease; // Animación suave de rotación
 }
 
 .toggleButton i {
-  /* make the primeicon larger */
-  font-size: 22px;
+  font-size: 22px; // Tamaño del icono
 }
 
 .toggleButton:hover {
-  background-color: $color-background;
-  color: $color-text;
+  background-color: $color-background; // Fondo al pasar el mouse
+  color: $color-text; // Color del texto al pasar el mouse
 }
 
-/* rotation state for the toggle when sidebar is collapsed */
 .rotated {
-  transform: rotate(180deg);
-  transition: transform 220ms ease;
+  transform: rotate(180deg); // Rotación de 180 grados cuando está colapsado
 }
 
-/* ensure the button animates when toggling even if transform is not set initially */
-.toggleButton {
-  transition: transform 220ms ease;
+/* ===== NAVEGACIÓN ===== */
+
+.navigationList {
+  list-style: none; // Sin viñetas
+  padding: 0; // Sin padding
+  margin: 0; // Sin margen
 }
 
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.navigationItem {
+  margin-bottom: 5px; // Espacio entre elementos
 }
 
-.sidebar li {
-  padding: 8px 12px;
-  color: $color-text-light;
-  font-family: $font-family-base;
-  font-size: $font-size-base;
-  margin-bottom: 5px;
-  cursor: pointer;
-  transition: background 0.2s;
-  border-radius: 8px; 
+.navigationButton {
+  width: 100%; // Ancho completo del contenedor
+  padding: 8px 12px; // Padding interno
+  color: $color-text-light; // Color del texto
+  font-family: $font-family-base; // Familia de fuente
+  font-size: $font-size-base; // Tamaño de fuente
+  background: transparent; // Fondo transparente
+  border: none; // Sin borde
+  border-radius: 8px; // Bordes redondeados
+  cursor: pointer; // Cursor de puntero
+  transition: background 0.2s, color 0.2s; // Transiciones suaves
+  display: flex; // Layout flexbox
+  align-items: center; // Centrado vertical
+  gap: 8px; // Espacio entre icono y texto
 }
 
-.sidebar li:hover {
-  background-color: $color-background;
-  color: $color-text;
+.navigationButton:hover {
+  background-color: $color-background; // Fondo al pasar el mouse
+  color: $color-text; // Color del texto al pasar el mouse
 }
 
-/* avatar that sits left of the toggle; visible in both states */
-.avatar {
-  position: fixed; /* positioned by inline styles set from TSX */
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-  z-index: 1250; /* above toggle */
-  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-  /* center precisely on the provided left/top coordinates */
-  transform: translateX(0) translateY(0);
+.navigationButton i {
+  font-size: 16px; // Tamaño del icono
+}
+
+/* ===== LOGO ===== */
+.logo {
+  position: fixed; // Posición fija calculada dinámicamente
+  width: 40px; // Ancho del logo
+  height: 40px; // Alto del logo
+  border-radius: 50%; // Forma circular
+  object-fit: cover; // Ajuste de imagen
+  z-index: 1250; // Por encima del botón toggle
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12); // Sombra sutil
+}
+
+/* ===== TÍTULO ===== */
+.title {
+  position: fixed; // Posición fija calculada dinámicamente
+  color: $color-text; // Color del texto
+  font-family: $font-family-base; // Familia de fuente
+  font-size: 16px; // Tamaño de fuente
+  font-weight: 600; // Peso de la fuente (semi-bold)
+  white-space: nowrap; // Evita que el texto se divida en líneas
+  z-index: 1250; // Por encima del botón toggle
+  pointer-events: none; // No interfiere con clics
 }
 

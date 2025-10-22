@@ -1,40 +1,27 @@
 @import '../../constants/styles-constants.scss';
 
 .shell {
-  /* expose a CSS variable so JS can change it when sidebar collapses/expands */
-  --sidebar-width: #{$sidebar-width};
-  /* toggle-left controls the absolute left position of the toggle button
-    Default: place it just outside the right edge of the sidebar (expanded)
-    When collapsed we override it below to center inside the collapsed width */
-  --toggle-left: calc(var(--sidebar-width) - 64px);
-  display: flex;
-  min-height: 100vh;
-  background-color: $color-background;
+  --sidebar-width: #{$sidebar-width}; // Variable CSS para controlar el ancho del sidebar dinámicamente
+  --toggle-left: calc(var(--sidebar-width) - 64px); // Posición inicial del botón toggle (expandido)
+  display: flex; // Layout flexbox para organizar header y contenido
+  min-height: 100vh; // Altura mínima de toda la ventana
+  background-color: $color-background; // Color de fondo principal
 }
 
-/* when shell has data-collapsed=true, change the CSS variable so siblings (header, content)
-   inherit the collapsed sidebar width (so they shift accordingly) */
+/* Estado colapsado: reduce el ancho del sidebar y centra el botón toggle */
 .shell[data-collapsed="true"] {
-  --sidebar-width: #{$header-height};
+  --sidebar-width: #{$header-height}; // Ancho mínimo cuando está colapsado
+  --toggle-left: calc(var(--sidebar-width) / 2 - 40px); // Centra el botón en el área visible
 }
 
-/* when not collapsed, move the toggle button slightly to the right of the sidebar */
-
+/* Estado expandido: ajusta la posición del botón toggle */
 .shell[data-collapsed="false"] {
-  /* move the toggle further to the left when expanded (closer to the sidebar edge) */
-  --toggle-left: calc(var(--sidebar-width) - 80px);
-}
-
-/* center toggle inside the small visible area when collapsed */
-.shell[data-collapsed="true"] {
-  --toggle-left: calc(var(--sidebar-width) / 2 - 40px);
+  --toggle-left: calc(var(--sidebar-width) - 80px); // Posiciona el botón cerca del borde del sidebar
 }
 
 .content {
-  flex: 1;
-  /* content starts to the right of the sidebar; uses the CSS variable for dynamic updates */
-  margin-left: var(--sidebar-width);
-  padding-top: $screen-padding-top;
-  padding: $screen-padding;
-  transition: margin-left 240ms ease, padding-top 240ms ease;
+  flex: 1; // Ocupa todo el espacio disponible
+  margin-left: var(--sidebar-width); // Se desplaza según el ancho del sidebar
+  padding: $screen-padding; // Padding uniforme en todos los lados
+  transition: margin-left 500ms ease; // Animación suave al cambiar el margen
 }
