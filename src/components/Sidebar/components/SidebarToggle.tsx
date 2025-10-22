@@ -24,7 +24,7 @@ export default function SidebarToggle({ collapsed, onToggle, position }: Sidebar
         top: position.top 
       }}
     >
-      <i className="pi pi-angle-double-right" aria-hidden="true" />
+      <i className="pi pi-angle-double-left" aria-hidden="true" />
     </button>
   );
 }
