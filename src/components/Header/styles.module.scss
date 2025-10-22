@@ -1,0 +1,39 @@
+@import '../../constants/styles-constants.scss';
+
+.appHeader {
+  width: calc(100% - var(--sidebar-width));
+  margin-left: var(--sidebar-width);
+  height: $header-height;
+  background-color: $color-header;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 1px solid darken($color-header, 8%);
+}
+
+.title {
+  color: $color-text-light;
+  font-size: 1.5rem;
+  font-weight: bold;
+  font-family: $font-family-base;
+}
+
+.sideButton {
+  position: absolute;
+  left: calc(var(--sidebar-width) - 48px);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: none;
+  color: $color-text-light;
+  font-size: $font-size-base;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
