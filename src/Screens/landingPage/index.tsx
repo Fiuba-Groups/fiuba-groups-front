@@ -6,6 +6,9 @@ export default function LandingPage() {
     <AppShell>
       <div className={styles.landingContent}> 
         <h1 className={styles.landingTitle}>TITULO</h1>
+        <div className={styles.cardContainer} > Soy un container
+          <button className={styles.showButton}></button>
+        </div>
       </div>
     </AppShell>
   );
