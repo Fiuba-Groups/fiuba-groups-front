@@ -35,7 +35,8 @@ export default function UserProfile() {
   return (
     <div className={styles.settingsContainer}>
       <div className={styles.profileContainer}>
-        <h1 className={styles.profileTitle}>Edit Profile</h1>
+        {/* TÍTULO CORREGIDO */}
+        <h1 className={styles.profileTitle}>Editar Perfil</h1>
         
         <div className={styles.profileContent}>
           {/* Sección de foto de perfil */}
@@ -79,7 +80,8 @@ export default function UserProfile() {
             </div>
 
             <div className={styles.formRow}>
-              <label>Descripcion</label>
+              {/* LABEL CORREGIDO */}
+              <label>Descripción</label>
               <div className={styles.inputWrapper}>
                 <textarea
                   name="bio"
@@ -94,7 +96,8 @@ export default function UserProfile() {
             </div>
 
             <div className={styles.formRow}>
-              <label>Genero</label>
+              {/* LABEL CORREGIDO */}
+              <label>Género</label>
               <div className={styles.inputWrapper}>
                 <select
                   name="genero"
@@ -112,7 +115,8 @@ export default function UserProfile() {
             </div>
 
             <div className={styles.formRow}>
-              <label>Mostrar amigos a agregar</label>
+              {/* LABEL CORREGIDO */}
+              <label>Mostrar amigos</label>
               <div className={styles.inputWrapper}>
                 <label className={styles.checkboxLabel}>
                   <input type="checkbox" />
