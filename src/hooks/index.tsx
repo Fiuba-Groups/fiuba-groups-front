@@ -1,0 +1,1 @@
+export { useGroupOffers } from './useGroupOffers';

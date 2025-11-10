@@ -1,0 +1,61 @@
+@import '../../constants/styles-constants.scss';
+
+.searchBar {
+  width: 100%;
+  max-width: 450px;
+}
+
+.searchContainer {
+  display: flex;
+  align-items: center;
+  background-color: $color-header;
+  border: 1px solid #e0e0e0;
+  border-radius: 30px;
+  padding: 10px 16px;
+  gap: 12px;
+
+  &:focus-within {
+    border-color: $color-accent;
+    box-shadow: 0 0 0 3px rgba($color-accent, 0.1);
+  }
+
+  i {
+    color: $color-text-light;
+    font-size: 18px;
+  }
+}
+
+.searchInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: $font-size-base;
+  color: $color-text;
+  font-family: $font-family-base;
+
+  &::placeholder {
+    color: $color-text-light;
+  }
+}
+
+.clearButton {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $color-text-light;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: $color-text;
+  }
+
+  i {
+    font-size: 16px;
+  }
+}
+
