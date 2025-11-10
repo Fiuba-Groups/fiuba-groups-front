@@ -27,7 +27,7 @@
   background-color: $color-accent;
   color: white;
   border: none;
-  border-radius: 10px;
+  border-radius: 30px;
   font-family: $font-family-base;
   font-size: $font-size-base;
   font-weight: 500;
@@ -44,5 +44,48 @@
 
   &:active {
     transform: scale(0.98);
+  }
+}
+
+.offersContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.loadingState,
+.errorState,
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 60px 20px;
+  color: $color-text-light;
+
+  i {
+    font-size: 3rem;
+  }
+
+  p {
+    margin: 0;
+    font-size: 1.1rem;
+    font-family: $font-family-base;
+  }
+}
+
+.errorState {
+  color: #d32f2f;
+
+  i {
+    color: #d32f2f;
+  }
+}
+
+.loadingState {
+  i {
+    color: $color-accent;
   }
 }

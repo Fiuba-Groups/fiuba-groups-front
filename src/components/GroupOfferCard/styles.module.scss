@@ -1,0 +1,141 @@
+@import '../../constants/styles-constants.scss';
+
+.card {
+  background-color: $color-header;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: $color-text;
+  font-family: $font-family-base;
+  flex: 1;
+  line-height: 1.4;
+}
+
+.slotsInfo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background-color: rgba($color-accent, 0.1);
+  border-radius: 20px;
+  font-size: 0.875rem;
+  color: $color-accent;
+  white-space: nowrap;
+
+  i {
+    font-size: 14px;
+  }
+}
+
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.description {
+  margin: 0;
+  color: $color-text;
+  font-family: $font-family-base;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  flex: 1;
+}
+
+.cathedraInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+  gap: 12px;
+}
+
+.cathedraName {
+  color: $color-text;
+  font-weight: 500;
+}
+
+.semester {
+  color: $color-text-light;
+  font-weight: 400;
+}
+
+.cardFooter {
+  display: flex;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.detailsButton {
+  flex: 1;
+  padding: 10px 16px;
+  background-color: transparent;
+  color: $color-accent;
+  border: 1px solid $color-accent;
+  border-radius: 8px;
+  font-family: $font-family-base;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: rgba($color-accent, 0.05);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.joinButton {
+  flex: 1;
+  padding: 10px 16px;
+  background-color: $color-accent;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-family: $font-family-base;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background-color: darken($color-accent, 10%);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  &:disabled {
+    background-color: $color-text-light;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
