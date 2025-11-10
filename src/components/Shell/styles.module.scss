@@ -10,7 +10,7 @@
 
 /* Estado colapsado: reduce el ancho del sidebar y centra el botón toggle */
 .shell[data-collapsed="true"] {
-  --sidebar-width: #{$header-height}; // Ancho mínimo cuando está colapsado
+  --sidebar-width: 10px; // Ancho mínimo cuando está colapsado
   --toggle-left: calc(var(--sidebar-width) / 2 - 40px); // Centra el botón en el área visible
 }
 

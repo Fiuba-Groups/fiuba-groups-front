@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ProtectedRoute } from './components/protectedRoute';
-import LandingPage from './Screens/landingPage/index';
-import LoginScreen from './Screens/LoginScreen/LoginScreen';
+import GroupOffers from './screens/GroupOffers/index';
+import LoginScreen from './screens/LoginScreen/LoginScreen';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
 function App() {
@@ -27,7 +27,7 @@ function App() {
         path="/home" 
         element={
           <ProtectedRoute isAuthenticated={isLoggedIn}>
-            <LandingPage />
+            <GroupOffers />
           </ProtectedRoute>
         } 
       />
