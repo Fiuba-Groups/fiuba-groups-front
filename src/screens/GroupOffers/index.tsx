@@ -7,6 +7,7 @@ import SubjectAccordion from '../../components/SubjectAccordion/SubjectAccordion
 import { useGroupOffers } from '../../hooks/useGroupOffers';
 import { requestToJoinGroup } from '../../services/groupOffersService';
 import { GroupOffer } from '../../types/groupOffer';
+import { useNavigate } from 'react-router-dom';
 
 /**
  * Componente principal de la pantalla de ofertas de grupos
@@ -14,6 +15,7 @@ import { GroupOffer } from '../../types/groupOffer';
  */
 export default function GroupOffers() {
   const { offers, loading, error } = useGroupOffers();
+  const navigate = useNavigate();
 
   /**
    * Agrupa las ofertas por materia
@@ -37,8 +39,7 @@ export default function GroupOffers() {
    * Maneja la lógica para navegar a crear publicación
    */
   const handleCreatePost = () => {
-    console.log('Crear nueva publicación');
-    // TODO: lógica para navegar a crear publicación
+    navigate('/new-group-search');
   };
 
   /**

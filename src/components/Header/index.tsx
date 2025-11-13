@@ -1,10 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styles from './styles.module.scss';
 import 'primeicons/primeicons.css';
+import { useNavigate } from 'react-router-dom';
 
 export default function Header() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   // Cerrar dropdown al hacer clic fuera
   useEffect(() => {
@@ -21,7 +23,7 @@ export default function Header() {
   }, []);
 
   const handleProfileClick = () => {
-    console.log('Perfil clickeado');
+    navigate('/profile');
     setIsDropdownOpen(false);
   };
 
