@@ -33,8 +33,13 @@ export default function Header() {
   };
 
   const handleLogoutClick = () => {
-    console.log('Cerrar sesión clickeado');
+    // Limpiar el estado de sesión
+    sessionStorage.removeItem('isLoggedIn');
     setIsDropdownOpen(false);
+    // Redirigir al login
+    navigate('/login');
+    // Recargar la página para que App.tsx detecte el cambio
+    window.location.reload();
   };
 
   return (

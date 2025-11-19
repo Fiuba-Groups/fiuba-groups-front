@@ -9,6 +9,10 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const backgroundStyle = {
+    backgroundImage: `url(${process.env.PUBLIC_URL}/fondo_login_2.jpg)`,
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Aquí iría la lógica de login
@@ -21,7 +25,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
   };
 
   return (
-      <div className={styles.loginContent}>
+      <div className={styles.loginContent} style={backgroundStyle}>
         <div className={styles.loginForm}>
           <h1 className={styles.loginTitle}>Iniciar Sesión</h1>
           <form onSubmit={handleSubmit} className={styles.form}>

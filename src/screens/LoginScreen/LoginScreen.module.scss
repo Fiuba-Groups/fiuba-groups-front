@@ -6,8 +6,22 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   background-color: $color-background;
   min-height: calc(100vh - #{$header-height});
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(1px);
+    z-index: 0;
+  }
 }
 
 .loginForm {
@@ -17,6 +31,8 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 400px;
+  position: relative;
+  z-index: 1;
 }
 
 .loginTitle {

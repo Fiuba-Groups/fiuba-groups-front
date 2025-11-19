@@ -8,7 +8,7 @@ import CreateGroupOffer from './screens/GroupOffers/CreateOfferGroup';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    return localStorage.getItem('isLoggedIn') === 'true';
+    return sessionStorage.getItem('isLoggedIn') === 'true';
   });
 
   return (
@@ -22,7 +22,7 @@ function App() {
         element={
           !isLoggedIn ? (
             <LoginScreen onLogin={() => {
-              localStorage.setItem('isLoggedIn', 'true');
+              sessionStorage.setItem('isLoggedIn', 'true');
               setIsLoggedIn(true);
             }} />
           ) : (
