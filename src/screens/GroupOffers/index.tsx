@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import styles from './styles.module.scss';
 import AppShell from '../../components/Shell';
 import FloatingButton from '../../components/FloatingButton/FloatingButton';
@@ -8,6 +9,7 @@ import { useGroupOffers } from '../../hooks/useGroupOffers';
 import { requestToJoinGroup } from '../../services/groupOffersService';
 import { GroupOffer } from '../../types/groupOffer';
 import { useNavigate } from 'react-router-dom';
+import GroupOfferDetailModal from '../../components/GroupOfferDetailModal/GroupOfferDetailModal';
 
 /**
  * Componente principal de la pantalla de ofertas de grupos
@@ -16,6 +18,7 @@ import { useNavigate } from 'react-router-dom';
 export default function GroupOffers() {
   const { offers, loading, error } = useGroupOffers();
   const navigate = useNavigate();
+  const [selectedOffer, setSelectedOffer] = useState<GroupOffer | null>(null);
 
   /**
    * Agrupa las ofertas por materia
@@ -64,8 +67,17 @@ export default function GroupOffers() {
    * @param offerId - ID de la oferta a ver
    */
   const handleViewDetails = (offerId: string) => {
-    console.log('Ver detalles de oferta:', offerId);
-    // TODO: lógica para navegar a los detalles de la oferta
+    const offer = offers.find((item) => item.id === offerId);
+    if (offer) {
+      setSelectedOffer(offer);
+    }
+  };
+
+  /**
+   * Cierra el modal de detalles
+   */
+  const handleCloseDetails = () => {
+    setSelectedOffer(null);
   };
 
   /**
@@ -151,6 +163,14 @@ export default function GroupOffers() {
           icon="pi pi-plus"
           label="Crear búsqueda"
         />
+
+        {selectedOffer && (
+          <GroupOfferDetailModal
+            offer={selectedOffer}
+            onClose={handleCloseDetails}
+            onRequestJoin={handleRequestJoin}
+          />
+        )}
       </div>
     </AppShell>
   );
