@@ -1,6 +1,6 @@
 @import '../../constants/styles-constants.scss';
 
-.loginContent {
+.registerContent {
   padding: $screen-padding;
   padding-top: $screen-padding-top;
   display: flex;
@@ -24,7 +24,7 @@
   }
 }
 
-.loginForm {
+.registerForm { 
   background: white;
   padding: 2rem;
   border-radius: 12px;
@@ -35,7 +35,7 @@
   z-index: 1;
 }
 
-.loginTitle {
+.registerTitle {
   font-size: $font-size-title;
   margin: 0 0 2rem 0;
   color: $color-text;
@@ -69,13 +69,13 @@
   font-size: 1rem;
   font-family: $font-family-base;
   transition: border-color 0.2s ease;
-  
+
   &:focus {
     outline: none;
     border-color: #007bff;
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
   }
-  
+
   &::placeholder {
     color: #999;
   }
@@ -91,7 +91,7 @@
 .submitButton {
   background-color: #007bff;
   color: white;
-  border: none; 
+  border: none;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
   font-size: 1rem;
@@ -114,7 +114,7 @@
   }
 }
 
-.registerLink {
+.loginLink {
   text-align: center;
   margin-top: 1.5rem;
   font-size: 0.9rem;
