@@ -1,55 +1,56 @@
-import { useState } from 'react';
 import { ProtectedRoute } from './components/protectedRoute';
 import GroupOffers from './screens/GroupOffers/index';
 import LoginScreen from './screens/LoginScreen/LoginScreen';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import ProfileScreen from './screens/ProfileScreen/ProfileScreen';
 import CreateGroupOffer from './screens/CreateGroupOffer/CreateGroupOffer';
+import { useAuth } from './hooks';
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    return sessionStorage.getItem('isLoggedIn') === 'true';
-  });
+  const { isAuthenticated } = useAuth();
 
   return (
     <Routes>
-      <Route 
-        path="/" 
-        element={<Navigate to="/login" replace />} 
-      />
-      <Route 
-        path="/login" 
+      <Route
+        path="/"
         element={
-          !isLoggedIn ? (
-            <LoginScreen onLogin={() => {
-              sessionStorage.setItem('isLoggedIn', 'true');
-              setIsLoggedIn(true);
-            }} />
+          isAuthenticated ? (
+            <Navigate to="/home" replace />
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
+      <Route
+        path="/login"
+        element={
+          !isAuthenticated ? (
+            <LoginScreen onLogin={() => window.location.reload()} />
           ) : (
             <Navigate to="/home" replace />
           )
-        } 
+        }
       />
-      <Route 
-        path="/home" 
+      <Route
+        path="/home"
         element={
-          <ProtectedRoute isAuthenticated={isLoggedIn}>
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
             <GroupOffers />
           </ProtectedRoute>
-        } 
+        }
       />
-      <Route 
-        path="/profile" 
+      <Route
+        path="/profile"
         element={
-          <ProtectedRoute isAuthenticated={isLoggedIn}>
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
             <ProfileScreen />
           </ProtectedRoute>
-        } 
+        }
       />
       <Route
         path="/new-group-search"
         element={
-          <ProtectedRoute isAuthenticated={isLoggedIn}>
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
             <CreateGroupOffer />
           </ProtectedRoute>
         }
