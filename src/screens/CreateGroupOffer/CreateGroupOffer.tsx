@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ArrowLeft, Users, DollarSign, Calendar, Info } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import  styles from "./createOffer.module.scss";
+import  styles from "./CreateGroupOffer.module.scss";
 
 const CreateGroupOffer = () => {
   const navigate = useNavigate();

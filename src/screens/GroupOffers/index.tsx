@@ -10,6 +10,7 @@ import { requestToJoinGroup } from '../../services/groupOffersService';
 import { GroupOffer } from '../../types/groupOffer';
 import { useNavigate } from 'react-router-dom';
 import GroupOfferDetailModal from '../../components/GroupOfferDetailModal/GroupOfferDetailModal';
+import FilterModal from '../../components/FilterModal/FilterModal';
 
 /**
  * Componente principal de la pantalla de ofertas de grupos
@@ -19,6 +20,11 @@ export default function GroupOffers() {
   const { offers, loading, error } = useGroupOffers();
   const navigate = useNavigate();
   const [selectedOffer, setSelectedOffer] = useState<GroupOffer | null>(null);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [slotFilter, setSlotFilter] = useState<'all' | 'available' | 'full'>('all');
+  const [subjectFilter, setSubjectFilter] = useState<string>('all');
+  const [semesterFilter, setSemesterFilter] = useState<string>('all');
+  const [cathedraFilter, setCathedraFilter] = useState<string>('all');
 
   /**
    * Agrupa las ofertas por materia
@@ -35,7 +41,75 @@ export default function GroupOffers() {
     }, {} as Record<string, GroupOffer[]>);
   };
 
-  const groupedOffers = groupOffersBySubject(offers);
+  /**
+   * Filtra las ofertas según todos los filtros aplicados
+   * @param offers - Lista de ofertas a filtrar
+   * @returns Lista filtrada de ofertas
+   */
+  const filterOffers = (offers: GroupOffer[]): GroupOffer[] => {
+    let filtered = offers;
+
+    // Filtro por cupo disponible
+    switch (slotFilter) {
+      case 'available':
+        filtered = filtered.filter(offer => offer.availableSlots > 0);
+        break;
+      case 'full':
+        filtered = filtered.filter(offer => offer.availableSlots === 0);
+        break;
+      case 'all':
+      default:
+        break;
+    }
+
+    // Filtro por materia
+    if (subjectFilter !== 'all') {
+      filtered = filtered.filter(offer => offer.subject === subjectFilter);
+    }
+
+    // Filtro por cuatrimestre
+    if (semesterFilter !== 'all') {
+      filtered = filtered.filter(offer => offer.semester === semesterFilter);
+    }
+
+    // Filtro por cátedra
+    if (cathedraFilter !== 'all') {
+      filtered = filtered.filter(offer => offer.cathedra === cathedraFilter);
+    }
+
+    return filtered;
+  };
+
+  /**
+   * Extrae las opciones únicas de materia de todas las ofertas
+   */
+  const getUniqueSubjects = (offers: GroupOffer[]): string[] => {
+    const subjects = offers.map(offer => offer.subject);
+    return ['all', ...Array.from(new Set(subjects)).sort()];
+  };
+
+  /**
+   * Extrae las opciones únicas de cuatrimestre de todas las ofertas
+   */
+  const getUniqueSemesters = (offers: GroupOffer[]): string[] => {
+    const semesters = offers.map(offer => offer.semester);
+    return ['all', ...Array.from(new Set(semesters)).sort()];
+  };
+
+  /**
+   * Extrae las opciones únicas de cátedra de todas las ofertas
+   */
+  const getUniqueCathedras = (offers: GroupOffer[]): string[] => {
+    const cathedras = offers.map(offer => offer.cathedra);
+    return ['all', ...Array.from(new Set(cathedras)).sort()];
+  };
+
+  const uniqueSubjects = getUniqueSubjects(offers);
+  const uniqueSemesters = getUniqueSemesters(offers);
+  const uniqueCathedras = getUniqueCathedras(offers);
+
+  const filteredOffers = filterOffers(offers);
+  const groupedOffers = groupOffersBySubject(filteredOffers);
 
   /**
    * Función para crear una nueva publicación
@@ -58,8 +132,7 @@ export default function GroupOffers() {
    * Función para manejar el filtrado
    */
   const handleFilter = () => {
-    console.log('Filtrar');
-    // TODO: lógica para abrir modal de filtros
+    setIsFilterModalOpen(true);
   };
 
   /**
@@ -78,6 +151,32 @@ export default function GroupOffers() {
    */
   const handleCloseDetails = () => {
     setSelectedOffer(null);
+  };
+
+  /**
+   * Cierra el modal de filtros
+   */
+  const handleCloseFilterModal = () => {
+    setIsFilterModalOpen(false);
+  };
+
+  /**
+   * Limpia los filtros aplicados
+   */
+  const handleClearFilters = () => {
+    setSlotFilter('all');
+    setSubjectFilter('all');
+    setSemesterFilter('all');
+    setCathedraFilter('all');
+    console.log('Filtros limpiados');
+  };
+
+  /**
+   * Aplica los filtros seleccionados
+   */
+  const handleApplyFilters = () => {
+    console.log('Aplicando filtros');
+    setIsFilterModalOpen(false);
   };
 
   /**
@@ -171,6 +270,24 @@ export default function GroupOffers() {
             onRequestJoin={handleRequestJoin}
           />
         )}
+
+        <FilterModal
+          isOpen={isFilterModalOpen}
+          onClose={handleCloseFilterModal}
+          onClear={handleClearFilters}
+          onApply={handleApplyFilters}
+          slotFilter={slotFilter}
+          onSlotFilterChange={setSlotFilter}
+          subjectFilter={subjectFilter}
+          onSubjectFilterChange={setSubjectFilter}
+          semesterFilter={semesterFilter}
+          onSemesterFilterChange={setSemesterFilter}
+          cathedraFilter={cathedraFilter}
+          onCathedraFilterChange={setCathedraFilter}
+          availableSubjects={uniqueSubjects}
+          availableSemesters={uniqueSemesters}
+          availableCathedras={uniqueCathedras}
+        />
       </div>
     </AppShell>
   );
