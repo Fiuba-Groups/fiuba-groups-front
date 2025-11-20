@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styles from './Profile.module.scss';
+import AppShell from '../../components/Shell';
 import { User, Bell, Lock, Shield, HelpCircle, BookOpen, GraduationCap } from 'lucide-react';
 
 type Section = 'edit-profile' | 'notifications' | 'privacy';
@@ -32,63 +33,64 @@ export default function ProfileScreen() {
   };
 
   return (
-    <div className={styles.settingsContainer}>
-      {/* Sidebar */}
-      <aside className={styles.sidebar}>
-        <h1 className={styles.sidebarTitle}>Ajustes</h1>
-        
-        <div className={styles.sectionGroup}>
-          <h3 className={styles.sectionGroupTitle}>Cuenta</h3>
-          <button 
-            className={`${styles.sidebarOption} ${activeSection === 'edit-profile' ? styles.active : ''}`}
-            onClick={() => setActiveSection('edit-profile')}
-          >
-            <User className={styles.icon} />
-            Editar Perfil
-          </button>
-          <button 
-            className={`${styles.sidebarOption} ${activeSection === 'notifications' ? styles.active : ''}`}
-            onClick={() => setActiveSection('notifications')}
-          >
-            <Bell className={styles.icon} />
-            Notificaciones
-          </button>
-          <button 
-            className={`${styles.sidebarOption} ${activeSection === 'privacy' ? styles.active : ''}`}
-            onClick={() => setActiveSection('privacy')}
-          >
-            <Shield className={styles.icon} />
-            Privacidad
-          </button>
-        </div>
+    <AppShell>
+      <div className={styles.settingsContainer}>
+        {/* Sidebar interno del perfil */}
+        <aside className={styles.sidebar}>
+          <h1 className={styles.sidebarTitle}>Ajustes</h1>
 
-        <div className={styles.sectionGroup}>
-          <h3 className={styles.sectionGroupTitle}>Académico</h3>
-          <button className={styles.sidebarOption}>
-            <GraduationCap className={styles.icon} />
-            Mi Carrera
-          </button>
-          <button className={styles.sidebarOption}>
-            <BookOpen className={styles.icon} />
-            Historial Académico
-          </button>
-        </div>
+          <div className={styles.sectionGroup}>
+            <h3 className={styles.sectionGroupTitle}>Cuenta</h3>
+            <button
+              className={`${styles.sidebarOption} ${activeSection === 'edit-profile' ? styles.active : ''}`}
+              onClick={() => setActiveSection('edit-profile')}
+            >
+              <User className={styles.icon} />
+              Editar Perfil
+            </button>
+            <button
+              className={`${styles.sidebarOption} ${activeSection === 'notifications' ? styles.active : ''}`}
+              onClick={() => setActiveSection('notifications')}
+            >
+              <Bell className={styles.icon} />
+              Notificaciones
+            </button>
+            <button
+              className={`${styles.sidebarOption} ${activeSection === 'privacy' ? styles.active : ''}`}
+              onClick={() => setActiveSection('privacy')}
+            >
+              <Shield className={styles.icon} />
+              Privacidad
+            </button>
+          </div>
 
-        <div className={styles.sectionGroup}>
-          <h3 className={styles.sectionGroupTitle}>Soporte</h3>
-          <button className={styles.sidebarOption}>
-            <HelpCircle className={styles.icon} />
-            Centro de Ayuda
-          </button>
-          <button className={styles.sidebarOption}>
-            <Lock className={styles.icon} />
-            Contraseña y Seguridad
-          </button>
-        </div>
-      </aside>
+          <div className={styles.sectionGroup}>
+            <h3 className={styles.sectionGroupTitle}>Académico</h3>
+            <button className={styles.sidebarOption}>
+              <GraduationCap className={styles.icon} />
+              Mi Carrera
+            </button>
+            <button className={styles.sidebarOption}>
+              <BookOpen className={styles.icon} />
+              Historial Académico
+            </button>
+          </div>
 
-      {/* Contenido Principal */}
-      <div className={styles.profileContainer}>
+          <div className={styles.sectionGroup}>
+            <h3 className={styles.sectionGroupTitle}>Soporte</h3>
+            <button className={styles.sidebarOption}>
+              <HelpCircle className={styles.icon} />
+              Centro de Ayuda
+            </button>
+            <button className={styles.sidebarOption}>
+              <Lock className={styles.icon} />
+              Contraseña y Seguridad
+            </button>
+          </div>
+        </aside>
+
+        {/* Contenido Principal */}
+        <div className={styles.profileContainer}>
         <div className={styles.photoSection}>
           <img 
             src="https://via.placeholder.com/150" 
@@ -179,6 +181,7 @@ export default function ProfileScreen() {
           </div>
         </form>
       </div>
-    </div>
+      </div>
+    </AppShell>
   );
 }

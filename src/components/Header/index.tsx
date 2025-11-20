@@ -2,11 +2,13 @@ import React, { useState, useRef, useEffect } from 'react';
 import styles from './styles.module.scss';
 import 'primeicons/primeicons.css';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../hooks';
 
 export default function Header() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
   // Cerrar dropdown al hacer clic fuera
   useEffect(() => {
@@ -33,13 +35,10 @@ export default function Header() {
   };
 
   const handleLogoutClick = () => {
-    // Limpiar el estado de sesión
-    sessionStorage.removeItem('isLoggedIn');
     setIsDropdownOpen(false);
-    // Redirigir al login
-    navigate('/login');
-    // Recargar la página para que App.tsx detecte el cambio
-    window.location.reload();
+    logout();
+    // Forzar recarga completa de la página para limpiar todo el estado
+    window.location.href = '/login';
   };
 
   return (
