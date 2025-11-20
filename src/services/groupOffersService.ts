@@ -533,8 +533,9 @@ export const fetchGroupOffers = async (): Promise<GroupOffer[]> => {
  * @param offerId - ID de la oferta a la que se quiere unir
  * @returns Promise con el resultado de la solicitud
  */
+const URL = 'http://localhost:8080/groups';
 export const requestToJoinGroup = async (offerId: string): Promise<void> => {
   // TODO: Implementar llamada al API del backend
-  // Ejemplo: await fetch(`/api/group-offers/${offerId}/join`, { method: 'POST' });
-  console.log(`Solicitando unirse al grupo: ${offerId}`);
+  let responde = await fetch(URL, { method: 'GET' });
+  return responde.json();
 };

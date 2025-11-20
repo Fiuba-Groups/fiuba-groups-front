@@ -6,30 +6,29 @@ interface GroupOfferCardProps {
   offer: GroupOffer;
   onViewDetails: (offerId: string) => void;
   onRequestJoin: (offerId: string) => void;
+  isJoined?: boolean; // Nueva prop
 }
 
-/**
- * Componente Card para mostrar una oferta de grupo
- */
-const GroupOfferCard: React.FC<GroupOfferCardProps> = ({ 
-  offer, 
-  onViewDetails, 
-  onRequestJoin 
-}) => {
-  const occupiedSlots = offer.totalSlots - offer.availableSlots;
+export default function GroupOfferCard({
+  offer,
+  onViewDetails,
+  onRequestJoin,
+  isJoined = false, // Valor por defecto
+}: GroupOfferCardProps) {
+  const { id, description, availableSlots, totalSlots } = offer;
+  const occupiedSlots = totalSlots - availableSlots;
 
   return (
     <div className={styles.card}>
       <div className={styles.cardHeader}>
-        <h3 className={styles.cardTitle}>{offer.title}</h3>
         <div className={styles.slotsInfo}>
           <i className="pi pi-users" />
-          <span>{occupiedSlots}/{offer.totalSlots}</span>
+          <span>{occupiedSlots}/{totalSlots}</span>
         </div>
       </div>
 
       <div className={styles.cardBody}>
-        <p className={styles.description}>{offer.description}</p>
+        <p className={styles.description}>{description}</p>
         
         <div className={styles.cathedraInfo}>
           <span className={styles.cathedraName}>{offer.cathedra}</span>
@@ -40,21 +39,19 @@ const GroupOfferCard: React.FC<GroupOfferCardProps> = ({
       <div className={styles.cardFooter}>
         <button 
           className={styles.detailsButton}
-          onClick={() => onViewDetails(offer.id)}
+          onClick={() => onViewDetails(id)}
         >
-          Ver más
+          {isJoined ? 'Ver Grupo' : 'Ver Detalles'}
         </button>
         <button 
-          className={styles.joinButton}
-          onClick={() => onRequestJoin(offer.id)}
-          disabled={offer.availableSlots === 0}
+          className={`${styles.joinButton} ${isJoined ? styles.leaveButton : ''}`}
+          onClick={() => onRequestJoin(id)}
+          disabled={availableSlots === 0 && !isJoined}
         >
-          {offer.availableSlots === 0 ? 'Completo' : 'Solicitar unirme'}
+          {isJoined ? 'Salir del Grupo' : (availableSlots > 0 ? 'Unirse' : 'Cupos Llenos')}
         </button>
       </div>
     </div>
   );
-};
-
-export default GroupOfferCard;
+}
 
