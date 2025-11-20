@@ -36,6 +36,12 @@ export const navigationItems: NavigationItem[] = [
     route: '/my-groups'
   },
   {
+    id: 'my-friends',
+    label: 'Mis amigos',
+    icon: 'pi pi-user',
+    route: '/my-friends'
+  },
+  {
     id: 'settings',
     label: 'Ajustes',
     icon: 'pi pi-cog',

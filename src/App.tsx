@@ -7,6 +7,8 @@ import ProfileScreen from './screens/ProfileScreen/ProfileScreen';
 import CreateGroupOffer from './screens/CreateGroupOffer/CreateGroupOffer';
 import UserGroup from './screens/UserGroups/UserGroup';
 import { useAuth } from './hooks';
+import UserRequests from './screens/UserRequests/UserRequests';
+import UserFriends from './screens/UserFriends/UserFriends';
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -90,10 +92,15 @@ function App() {
         path="/my-requests"
         element={
           <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <div style={{ padding: '2rem' }}>
-              <h2>Mis solicitudes</h2>
-              <p>Esta funcionalidad estará disponible próximamente.</p>
-            </div>
+            <UserRequests />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/my-friends"
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <UserFriends />
           </ProtectedRoute>
         }
       />
