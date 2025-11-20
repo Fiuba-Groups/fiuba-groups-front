@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import styles from './LoginScreen.module.scss';
 import { login } from "../../services/authService";
 
@@ -9,6 +10,8 @@ interface LoginScreenProps {
 export default function LoginScreen({ onLogin }: LoginScreenProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const backgroundStyle = {
     backgroundImage: `url(${process.env.PUBLIC_URL}/fondo_login_2.jpg)`,
@@ -16,11 +19,16 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
+    setIsLoading(true);
+
     try {
       await login(email, password);
       onLogin();
-    } catch {
-      alert("Credenciales inválidas");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al iniciar sesión');
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -59,11 +67,21 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
               />
             </div>
             
-            <button type="submit" className={styles.submitButton}>
-              Iniciar Sesión
+            {error && <div className={styles.error}>{error}</div>}
+
+            <button
+              type="submit"
+              className={styles.submitButton}
+              disabled={isLoading}
+            >
+              {isLoading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
             </button>
           </form>
+
+          <div className={styles.registerLink}>
+            ¿No tienes cuenta? <Link to="/register">Regístrate</Link>
+          </div>
         </div>
       </div>
-  );
-}
+    );
+  } 

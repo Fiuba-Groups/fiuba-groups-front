@@ -1,14 +1,35 @@
 export async function login(email: string, password: string): Promise<void> {
     const res = await fetch("http://localhost:8080/auth/login", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      mode: 'cors',
+      headers: {
+        "Content-Type": "application/json",
+        "accept": "*/*"
+      },
       body: JSON.stringify({ email, password })
     });
-  
+
     if (!res.ok) throw new Error("Credenciales inválidas");
-  
+
     const data = await res.json();
     localStorage.setItem("token", data.token);
+  }
+
+  export async function register(email: string, password: string): Promise<number> {
+    const res = await fetch("http://localhost:8080/auth/register", {
+      method: "POST",
+      mode: 'cors',
+      headers: {
+        "Content-Type": "application/json",
+        "accept": "*/*"
+      },
+      body: JSON.stringify({ email, password })
+    });
+
+    if (!res.ok) throw new Error("Error al registrar usuario");
+
+    const userId = await res.json();
+    return userId;
   }
   
   export function logout() {
