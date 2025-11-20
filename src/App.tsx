@@ -5,6 +5,7 @@ import RegisterScreen from './screens/RegisterScreen/RegisterScreen';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import ProfileScreen from './screens/ProfileScreen/ProfileScreen';
 import CreateGroupOffer from './screens/CreateGroupOffer/CreateGroupOffer';
+import UserGroup from './screens/UserGroups/UserGroup';
 import { useAuth } from './hooks';
 
 function App() {
@@ -15,7 +16,7 @@ function App() {
       <Route
         path="/"
         element={
-          isAuthenticated ? (
+          isAuthenticated ? ( 
             <Navigate to="/home" replace />
           ) : (
             <Navigate to="/login" replace />
@@ -63,6 +64,36 @@ function App() {
         element={
           <ProtectedRoute isAuthenticated={isAuthenticated}>
             <CreateGroupOffer />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/my-groups"
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <UserGroup />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/my-searches"
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <div style={{ padding: '2rem' }}>
+              <h2>Mis búsquedas</h2>
+              <p>Esta funcionalidad estará disponible próximamente.</p>
+            </div>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/my-requests"
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <div style={{ padding: '2rem' }}>
+              <h2>Mis solicitudes</h2>
+              <p>Esta funcionalidad estará disponible próximamente.</p>
+            </div>
           </ProtectedRoute>
         }
       />

@@ -22,6 +22,7 @@ export interface NavigationItem {
   label: string;
   onClick?: () => void;
   icon?: string;
+  route?: string;
 }
 
 export interface SidebarNavigationProps {

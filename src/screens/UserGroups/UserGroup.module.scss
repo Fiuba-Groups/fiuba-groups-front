@@ -12,12 +12,48 @@ $text-gray: #64748b;
 $border-color: #e2e8f0;
 
 .groups-container {
-    min-height: 100vh;
-    background: linear-gradient(135deg, $off-white 0%, $white 100%);
-    padding: 2rem;
+    padding: 0 20px;
+    padding-top: 20px;
+    background-color: $color-background;
+    min-height: calc(100vh - #{$header-height});
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
 
-    @media (max-width: 768px) {
-        padding: 1rem;
+.loadingState,
+.errorState,
+.emptyState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 60px 20px;
+    color: $color-text-light;
+
+    i {
+        font-size: 3rem;
+    }
+
+    p {
+        margin: 0;
+        font-size: 1.1rem;
+        font-family: $font-family-base;
+    }
+}
+
+.errorState {
+    color: #d32f2f;
+
+    i {
+        color: #d32f2f;
+    }
+}
+
+.loadingState {
+    i {
+        color: $color-accent;
     }
 }
 
@@ -125,6 +161,7 @@ $border-color: #e2e8f0;
         line-height: 1.6;
         margin-bottom: 1.25rem;
         display: -webkit-box;
+        line-clamp: 2;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;

@@ -1,40 +1,31 @@
-/**
- * Tipos relacionados con las ofertas de grupos
- */
+// Interfaces para el componente Sidebar
 
-/**
- * Autor/creador de una oferta de grupo
- */
-export interface GroupOfferAuthor {
+export interface SidebarProps {
+  collapsed?: boolean;
+  onToggle?: () => void;
+}
+
+export interface Position {
+  left: string;
+  top: string;
+}
+
+export interface SidebarPosition {
+  asideRef: React.RefObject<HTMLElement | null>;
+  buttonPos: Position;
+  logoPos: Position;
+  titlePos: Position;
+}
+
+export interface NavigationItem {
   id: string;
-  name: string;
-  profileUrl?: string;
+  label: string;
+  onClick?: () => void;
+  icon?: string;
+  route?: string;
 }
 
-/**
- * Oferta de grupo
- */
-export interface GroupOffer {
-  id: string;
-  title: string;
-  description: string;
-  subject: string; // Materia a la que pertenece
-  cathedra: string; // Nombre de la cátedra (apellido del profesor)
-  semester: string; // Cuatrimestre (ej: 1C 2025)
-  totalSlots: number;
-  availableSlots: number;
-  author: GroupOfferAuthor;
-  createdAt: string;
-  updatedAt: string;
+export interface SidebarNavigationProps {
+  items: NavigationItem[];
+  collapsed?: boolean;
 }
-
-/**
- * Estado del hook useGroupOffers
- */
-export interface UseGroupOffersResult {
-  offers: GroupOffer[];
-  loading: boolean;
-  error: string | null;
-  refetch: () => void;
-}
-

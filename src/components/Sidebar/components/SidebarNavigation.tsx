@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from '../styles.module.scss';
 import { SidebarNavigationProps, NavigationItem } from '../types/types';
 
@@ -7,9 +8,19 @@ import { SidebarNavigationProps, NavigationItem } from '../types/types';
  * Renderiza una lista de elementos de navegación cuando el sidebar está expandido
  */
 export default function SidebarNavigation({ items, collapsed }: SidebarNavigationProps) {
+  const navigate = useNavigate();
+
   if (collapsed) {
     return null; // No renderizar cuando está colapsado
   }
+
+  const handleNavigation = (item: NavigationItem) => { 
+    if (item.onClick) {
+      item.onClick();
+    } else if (item.route) {
+      navigate(item.route);
+    }
+  };
 
   return (
     <nav className={styles.navigation} role="navigation" aria-label="Navegación principal">
@@ -18,7 +29,7 @@ export default function SidebarNavigation({ items, collapsed }: SidebarNavigatio
           <li key={item.id} className={styles.navigationItem}>
             <button
               className={styles.navigationButton}
-              onClick={item.onClick}
+              onClick={() => handleNavigation(item)}
               aria-label={item.label}
             >
               {item.icon && <i className={item.icon} aria-hidden="true" />}
