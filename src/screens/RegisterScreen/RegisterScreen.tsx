@@ -13,6 +13,7 @@ export default function RegisterScreen({ onRegister }: RegisterScreenProps) {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const backgroundStyle = {
     backgroundImage: `url(${process.env.PUBLIC_URL}/fondo_login_2.jpg)`,
@@ -36,7 +37,10 @@ export default function RegisterScreen({ onRegister }: RegisterScreenProps) {
 
     try {
       await register(email, password);
-      onRegister();
+      setSuccess('¡Registro exitoso! Redirigiendo al login...');
+      setTimeout(() => {
+        onRegister();
+      }, 1500); // Esperar 1.5 segundos para mostrar el mensaje
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al registrar usuario');
     } finally {
@@ -95,6 +99,7 @@ export default function RegisterScreen({ onRegister }: RegisterScreenProps) {
           </div>
 
           {error && <div className={styles.error}>{error}</div>}
+          {success && <div className={styles.success}>{success}</div>}
 
           <button
             type="submit"

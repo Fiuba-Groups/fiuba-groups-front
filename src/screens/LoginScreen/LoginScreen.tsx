@@ -12,6 +12,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const backgroundStyle = {
     backgroundImage: `url(${process.env.PUBLIC_URL}/fondo_login_2.jpg)`,
@@ -20,11 +21,15 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setSuccess('');
     setIsLoading(true);
 
     try {
       await login(email, password);
-      onLogin();
+      setSuccess('¡Inicio de sesión exitoso!');
+      setTimeout(() => {
+        onLogin();
+      }, 1500); // Esperar 1.5 segundos para mostrar el mensaje
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al iniciar sesión');
     } finally {
@@ -67,9 +72,10 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
               />
             </div>
             
-            {error && <div className={styles.error}>{error}</div>}
+          {error && <div className={styles.error}>{error}</div>}
+          {success && <div className={styles.success}>{success}</div>}
 
-            <button
+          <button
               type="submit"
               className={styles.submitButton}
               disabled={isLoading}
