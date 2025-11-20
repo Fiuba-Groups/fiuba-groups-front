@@ -1,6 +1,7 @@
 import { ProtectedRoute } from './components/protectedRoute';
 import GroupOffers from './screens/GroupOffers/index';
 import LoginScreen from './screens/LoginScreen/LoginScreen';
+import RegisterScreen from './screens/RegisterScreen/RegisterScreen';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import ProfileScreen from './screens/ProfileScreen/ProfileScreen';
 import CreateGroupOffer from './screens/CreateGroupOffer/CreateGroupOffer';
@@ -32,11 +33,21 @@ function App() {
         }
       />
       <Route
+        path="/register"
+        element={
+          !isAuthenticated ? (
+            <RegisterScreen onRegister={() => window.location.href = '/login'} />
+          ) : (
+            <Navigate to="/home" replace />
+          )
+        }
+      />
+      <Route
         path="/home"
         element={
           <ProtectedRoute isAuthenticated={isAuthenticated}>
             <GroupOffers />
-          </ProtectedRoute>
+          </ProtectedRoute> 
         }
       />
       <Route
