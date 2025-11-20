@@ -1,5 +1,3 @@
-
-
 export async function login(email: string, password: string): Promise<void> {
     const res = await fetch("http://localhost:8080/auth/login", {
       method: "POST",
