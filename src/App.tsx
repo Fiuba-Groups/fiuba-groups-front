@@ -4,7 +4,7 @@ import GroupOffers from './screens/GroupOffers/index';
 import LoginScreen from './screens/LoginScreen/LoginScreen';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import ProfileScreen from './screens/ProfileScreen/ProfileScreen';
-import CreateGroupOffer from './screens/GroupOffers/CreateOfferGroup';
+import CreateGroupOffer from './screens/CreateGroupOffer/CreateGroupOffer';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
