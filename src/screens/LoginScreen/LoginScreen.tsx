@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styles from './LoginScreen.module.scss';
+import { login } from "../../services/authService";
 
 interface LoginScreenProps {
   onLogin: () => void;
@@ -13,16 +14,15 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
     backgroundImage: `url(${process.env.PUBLIC_URL}/fondo_login_2.jpg)`,
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Aquí iría la lógica de login
-    console.log('Login attempt:', { email, password });
-    
-    // Simular login exitoso (aquí iría la validación real)
-    if (email && password) {
-      onLogin(); // Llama a la función para cambiar el estado de login
+    try {
+      await login(email, password);
+      onLogin();
+    } catch {
+      alert("Credenciales inválidas");
     }
-  };
+  }
 
   return (
       <div className={styles.loginContent} style={backgroundStyle}>
