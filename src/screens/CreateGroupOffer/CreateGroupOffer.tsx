@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ArrowLeft, Users, DollarSign, Calendar, Info } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { createGroupOffer } from "../../services/groupOffersService";
 import  styles from "./CreateGroupOffer.module.scss";
 
 const CreateGroupOffer = () => {
@@ -8,10 +9,39 @@ const CreateGroupOffer = () => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
+    subject: "",
+    cathedra: "",
     groupSize: "",
     duration: "",
     terms: "",
   });
+
+  const [isPublishing, setIsPublishing] = useState(false);
+  const [publishError, setPublishError] = useState<string | null>(null);
+
+  // Opciones de materias disponibles
+  const subjectOptions = [
+    { value: "1", label: "Análisis Matemático II", cathedras: ["García", "Pérez"] },
+    { value: "2", label: "Álgebra Lineal", cathedras: ["Rodríguez", "Gómez"] },
+    { value: "3", label: "Física I", cathedras: ["López", "Martínez"] },
+    { value: "4", label: "Química Orgánica", cathedras: ["Fernández", "Silva"] },
+    { value: "5", label: "Programación I", cathedras: ["Silva", "López"] },
+    { value: "6", label: "Estadística y Probabilidades", cathedras: ["Mendoza", "Vega"] },
+    { value: "7", label: "Cálculo Numérico", cathedras: ["Ramírez"] },
+    { value: "8", label: "Economía Política", cathedras: ["Gutiérrez", "Moreno"] },
+  ];
+
+  // Función para mapear materia+cátedra a courseOfferingId
+  const getCourseOfferingId = (subject: string, cathedra: string): number => {
+    const subjectOption = subjectOptions.find(s => s.value === subject);
+    if (!subjectOption) return 1; // default
+
+    const cathedraIndex = subjectOption.cathedras.indexOf(cathedra);
+    if (cathedraIndex === -1) return parseInt(subject); // default to first cathedra
+
+    // Map to courseOfferingId (1-15 as defined in the service)
+    return parseInt(subject) + cathedraIndex;
+  };
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -21,10 +51,33 @@ const CreateGroupOffer = () => {
 
   };
 
-  const handlePublish = () => {
-    if (!formData.title || !formData.description || !formData.groupSize) {
-
+  const handlePublish = async () => {
+    if (!formData.title || !formData.description || !formData.groupSize || !formData.subject) {
+      setPublishError("Por favor completa todos los campos obligatorios");
       return;
+    }
+
+    setIsPublishing(true);
+    setPublishError(null);
+
+    try {
+      const courseOfferingId = getCourseOfferingId(formData.subject, formData.cathedra);
+
+      await createGroupOffer({
+        title: formData.title,
+        description: formData.description,
+        courseOfferingId: courseOfferingId,
+        maxMembers: parseInt(formData.groupSize),
+        creatorStudentRegister: 12345, // TODO: Obtener del contexto de autenticación
+      });
+
+      // Navegar de vuelta a la lista de grupos
+      navigate("/home");
+    } catch (error) {
+      console.error("Error al publicar grupo:", error);
+      setPublishError("Error al publicar el grupo. Inténtalo de nuevo.");
+    } finally {
+      setIsPublishing(false);
     }
   };
 
@@ -53,13 +106,24 @@ const CreateGroupOffer = () => {
               >
                 Guardar Borrador
               </button>
-              <button className={`${styles.button} ${styles.primary}`} onClick={handlePublish}>
-                Publicar Grupo
+              <button
+                className={`${styles.button} ${styles.primary}`}
+                onClick={handlePublish}
+                disabled={isPublishing}
+              >
+                {isPublishing ? "Publicando..." : "Publicar Grupo"}
               </button>
             </div>
           </div>
         </div>
       </header>
+
+      {/* Error Message */}
+      {publishError && (
+        <div className={styles.errorBanner}>
+          <p>{publishError}</p>
+        </div>
+      )}
 
       {/* Main Content */}
       <main className={styles.main}>
@@ -70,17 +134,52 @@ const CreateGroupOffer = () => {
               <div className={styles.cardHeader}>
                 <h2 className={styles.cardTitle}>
                   <Info />
-                  Información Básica
+                  Información del Grupo
                 </h2>
-                <p className={styles.cardDescription}>Contanos sobre el grupo de estudio</p>
+                <p className={styles.cardDescription}>Seleccioná la materia y contanos sobre el grupo de estudio</p>
               </div>
               <div className={styles.cardContent}>
+                <div className={styles.gridTwo}>
+                  <div className={styles.formGroup}>
+                    <label htmlFor="subject">Materia *</label>
+                    <select
+                      id="subject"
+                      value={formData.subject}
+                      onChange={(e) => handleInputChange("subject", e.target.value)}
+                    >
+                      <option value="">Seleccionar materia</option>
+                      {subjectOptions.map((subject) => (
+                        <option key={subject.value} value={subject.value}>
+                          {subject.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label htmlFor="cathedra">Cátedra</label>
+                    <select
+                      id="cathedra"
+                      value={formData.cathedra}
+                      onChange={(e) => handleInputChange("cathedra", e.target.value)}
+                      disabled={!formData.subject}
+                    >
+                      <option value="">Seleccionar cátedra</option>
+                      {formData.subject && subjectOptions
+                        .find(s => s.value === formData.subject)
+                        ?.cathedras.map((cathedra) => (
+                          <option key={cathedra} value={cathedra}>
+                            {cathedra}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
+                </div>
                 <div className={styles.formGroup}>
-                  <label htmlFor="title">Nombre de la Materia o Tema *</label>
+                  <label htmlFor="title">Nombre del Grupo *</label>
                   <input
                     id="title"
                     type="text"
-                    placeholder="e.g., Álgebra II - Práctica 3"
+                    placeholder="e.g., Grupo de práctica Álgebra Lineal"
                     value={formData.title}
                     onChange={(e) => handleInputChange("title", e.target.value)}
                   />
@@ -161,8 +260,12 @@ const CreateGroupOffer = () => {
               >
                 Guardar Borrador
               </button>
-              <button className={`${styles.button} ${styles.primary}`} onClick={handlePublish}>
-                Publicar
+              <button
+                className={`${styles.button} ${styles.primary}`}
+                onClick={handlePublish}
+                disabled={isPublishing}
+              >
+                {isPublishing ? "Publicando..." : "Publicar"}
               </button>
             </div>
           </div>
