@@ -5,11 +5,12 @@ import LoginScreen from './screens/LoginScreen/LoginScreen';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import ProfileScreen from './screens/ProfileScreen/ProfileScreen';
 import CreateGroupOffer from './screens/GroupOffers/CreateOfferGroup';
+import { isAuthenticated, logout } from "./services/authService";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    return sessionStorage.getItem('isLoggedIn') === 'true';
-  });
+  const [logged, setLogged] = useState(isAuthenticated());
+
+  if (!logged) return <LoginScreen onLogin={() => setLogged(true)} />;
 
   return (
     <Routes>
@@ -20,10 +21,10 @@ function App() {
       <Route 
         path="/login" 
         element={
-          !isLoggedIn ? (
+          !logged ? (
             <LoginScreen onLogin={() => {
               sessionStorage.setItem('isLoggedIn', 'true');
-              setIsLoggedIn(true);
+              setLogged(true);
             }} />
           ) : (
             <Navigate to="/home" replace />
@@ -33,7 +34,7 @@ function App() {
       <Route 
         path="/home" 
         element={
-          <ProtectedRoute isAuthenticated={isLoggedIn}>
+          <ProtectedRoute isAuthenticated={logged}>
             <GroupOffers />
           </ProtectedRoute>
         } 
@@ -41,7 +42,7 @@ function App() {
       <Route 
         path="/profile" 
         element={
-          <ProtectedRoute isAuthenticated={isLoggedIn}>
+          <ProtectedRoute isAuthenticated={logged}>
             <ProfileScreen />
           </ProtectedRoute>
         } 
@@ -49,7 +50,7 @@ function App() {
       <Route
         path="/new-group-search"
         element={
-          <ProtectedRoute isAuthenticated={isLoggedIn}>
+          <ProtectedRoute isAuthenticated={logged}>
             <CreateGroupOffer />
           </ProtectedRoute>
         }

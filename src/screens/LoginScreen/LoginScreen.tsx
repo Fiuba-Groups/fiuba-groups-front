@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { login } from "../../services/authService";
 import styles from './LoginScreen.module.scss';
 
 interface LoginScreenProps {
@@ -13,7 +14,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
     backgroundImage: `url(${process.env.PUBLIC_URL}/fondo_login_2.jpg)`,
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  /*const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Aquí iría la lógica de login
     console.log('Login attempt:', { email, password });
@@ -22,7 +23,17 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
     if (email && password) {
       onLogin(); // Llama a la función para cambiar el estado de login
     }
-  };
+  };*/
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    try {
+      await login(email, password);
+      onLogin();
+    } catch {
+      alert("Credenciales inválidas");
+    }
+  }
 
   return (
       <div className={styles.loginContent} style={backgroundStyle}>
@@ -39,7 +50,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className={styles.input}
-                placeholder="tu@email.com"
+                placeholder="Email"
                 required
               />
             </div>
@@ -54,7 +65,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className={styles.input}
-                placeholder="Tu contraseña"
+                placeholder="Contraseña"
                 required
               />
             </div>
