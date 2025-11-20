@@ -53,10 +53,11 @@ export async function login(email: string, password: string): Promise<void> {
   export async function apiFetch<T>(url: string, options: RequestInit = {}): Promise<T> {
     const token = getToken();
   
-    const headers = {
-      ...(options.headers || {}),
-      Authorization: token ? `Bearer ${token}` : ""
-    };
+  const headers = {
+    ...(options.headers || {}),
+    Authorization: token ? `Bearer ${token}` : "",
+    "accept": "*/*"
+  };
   
     const res = await fetch(url, { ...options, headers });
   
