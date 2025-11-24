@@ -1,0 +1,489 @@
+@import '../../constants/styles-constants.scss';
+
+// Steam-inspired color scheme
+$steam-dark: #171a21;
+$steam-darker: #0e141b;
+$steam-blue: #1b2838;
+$steam-light-blue: #2a475e;
+$steam-accent: #66c0f4;
+$steam-gold: #c6a55c;
+$steam-green: #90ba3c;
+$steam-red: #d32f2f;
+
+.profileContainer {
+  min-height: calc(100vh - #{$header-height});
+  background-color: $steam-dark;
+  color: white;
+}
+
+.header {
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  .backButton {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: white;
+    font-family: $font-family-base;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  }
+}
+
+.profileHeader {
+  position: relative;
+  height: 300px;
+  overflow: hidden;
+}
+
+.banner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, $steam-blue 0%, $steam-light-blue 100%);
+}
+
+.bannerGradient {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    45deg,
+    rgba(27, 40, 56, 0.9) 0%,
+    rgba(42, 71, 94, 0.8) 50%,
+    rgba(27, 40, 56, 0.9) 100%
+  );
+}
+
+.avatarSection {
+  position: absolute;
+  bottom: -60px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  align-items: flex-end;
+  gap: 24px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    bottom: -80px;
+  }
+}
+
+.avatarContainer {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.mainAvatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 8px;
+  border: 4px solid $steam-dark;
+  object-fit: cover;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+  @media (max-width: 768px) {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+.onlineIndicator {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 20px;
+  height: 20px;
+  background-color: $steam-green;
+  border: 3px solid $steam-dark;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.userInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nameSection {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    justify-content: center;
+  }
+}
+
+.displayName {
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: 300;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
+}
+
+.statusBadge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+
+  &.online {
+    background-color: $steam-green;
+    box-shadow: 0 0 6px $steam-green;
+  }
+
+  &.offline {
+    background-color: rgba(255, 255, 255, 0.4);
+  }
+}
+
+.levelSection {
+  margin-top: 4px;
+}
+
+.levelBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: linear-gradient(135deg, $steam-gold 0%, #b8860b 100%);
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: $steam-dark;
+  box-shadow: 0 2px 8px rgba(198, 165, 92, 0.3);
+}
+
+.actionButtons {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+
+  @media (max-width: 768px) {
+    justify-content: center;
+    margin-top: 12px;
+  }
+}
+
+.messageButton,
+.friendButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-family: $font-family-base;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+
+  svg {
+    color: rgba(255, 255, 255, 0.8);
+  }
+}
+
+.messageButton {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+}
+
+.friendButton {
+  background: $steam-accent;
+  color: $steam-dark;
+
+  &:hover {
+    background: lighten($steam-accent, 10%);
+  }
+}
+
+.contentGrid {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 24px;
+  padding: 100px 20px 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  @media (max-width: 768px) {
+    padding: 120px 16px 20px;
+  }
+}
+
+.card {
+  background: $steam-darker;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.cardTitle {
+  margin: 0 0 16px 0;
+  padding: 20px 20px 0;
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  svg {
+    color: $steam-accent;
+  }
+}
+
+.leftColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  @media (max-width: 1024px) {
+    order: -1;
+  }
+}
+
+.infoGrid {
+  padding: 0 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.infoItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+
+  svg {
+    color: $steam-accent;
+    flex-shrink: 0;
+  }
+}
+
+.bioSection {
+  padding: 0 20px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 16px;
+  padding-top: 16px;
+
+  h3 {
+    margin: 0 0 8px 0;
+    font-size: 1rem;
+    font-weight: 500;
+    color: white;
+  }
+
+  p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.5;
+    font-size: 0.9rem;
+  }
+}
+
+.groupsList {
+  padding: 0 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.groupItem {
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+}
+
+.groupInfo {
+  h4 {
+    margin: 0 0 4px 0;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: white;
+  }
+
+  .subject {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+  }
+}
+
+.statsGrid {
+  padding: 0 20px 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.statItem {
+  text-align: center;
+  padding: 16px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.statValue {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: $steam-accent;
+  margin-bottom: 4px;
+}
+
+.statLabel {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.activityList {
+  padding: 0 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.activityItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.activityIcon {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+
+  svg {
+    color: $steam-accent;
+  }
+}
+
+.activityContent {
+  flex: 1;
+
+  p {
+    margin: 0 0 4px 0;
+    font-size: 0.9rem;
+    color: white;
+    line-height: 1.4;
+  }
+
+  .activityTime {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+  }
+}
+
+.errorContainer {
+  min-height: calc(100vh - #{$header-height});
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 40px 20px;
+  text-align: center;
+  color: white;
+
+  h2 {
+    margin: 0;
+    font-size: 2rem;
+    color: $steam-accent;
+  }
+
+  p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.1rem;
+  }
+
+  .backButton {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: $steam-accent;
+    color: $steam-dark;
+    border: none;
+    border-radius: 6px;
+    font-family: $font-family-base;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: lighten($steam-accent, 10%);
+    }
+  }
+}

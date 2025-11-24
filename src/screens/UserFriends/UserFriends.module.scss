@@ -1,13 +1,140 @@
-.container {
-  padding: 2rem;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  h2 {
-    margin-bottom: 1rem;
-    color: #2c3e50;
+@import '../../constants/styles-constants.scss';
+
+.friendsContainer {
+  padding: 0 20px;
+  padding-top: $screen-padding-top;
+  background-color: $color-background;
+  min-height: calc(100vh - #{$header-height});
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.friendsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 8px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
   }
-  p {
-    color: #666;
+}
+
+.headerInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.title {
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: $color-text;
+  font-family: $font-family-base;
+
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
+}
+
+.stats {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 0.9rem;
+  color: $color-text-light;
+  font-family: $font-family-base;
+}
+
+
+.totalCount {
+  color: $color-text-light;
+}
+
+.loadingState,
+.errorState,
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 60px 20px;
+  color: $color-text-light;
+  text-align: center;
+
+  i {
+    font-size: 3rem;
+  }
+
+  p, h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-family: $font-family-base;
+  }
+
+  h3 {
+    color: $color-text;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+}
+
+.errorState {
+  color: #d32f2f;
+
+  i {
+    color: #d32f2f;
+  }
+}
+
+.loadingState {
+  i {
+    color: $color-accent;
+  }
+}
+
+.emptyState {
+  i {
+    color: $color-accent;
+  }
+
+  h3 {
+    color: $color-text;
+    margin-bottom: 8px;
+  }
+}
+
+.retryButton {
+  padding: 10px 20px;
+  background-color: $color-accent;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-family: $font-family-base;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: darken($color-accent, 10%);
+  }
+}
+
+.friendsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 20px;
+  margin-top: 8px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
 }

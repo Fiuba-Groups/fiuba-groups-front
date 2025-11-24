@@ -9,6 +9,7 @@ import UserGroup from './screens/UserGroups/UserGroup';
 import { useAuth } from './hooks';
 import UserRequests from './screens/UserRequests/UserRequests';
 import UserFriends from './screens/UserFriends/UserFriends';
+import OtherUserProfile from './screens/OtherUserProfile/OtherUserProfile';
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -104,6 +105,17 @@ function App() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/user/:userId"
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <OtherUserProfile />
+          </ProtectedRoute>
+        }
+      />
+      {/* Ruta temporal para preview sin autenticación */}
+      <Route path="/preview-friends" element={<UserFriends />} />
+      <Route path="/preview-profile/:userId" element={<OtherUserProfile />} />
     </Routes>
   );
 }

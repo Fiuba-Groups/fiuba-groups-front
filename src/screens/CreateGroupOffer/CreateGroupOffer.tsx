@@ -71,7 +71,7 @@ const CreateGroupOffer = () => {
         creatorStudentRegister: 12345, // TODO: Obtener del contexto de autenticación
       });
 
-      // Navegar de vuelta a la lista de grupos
+      // Navegar de vuelta a la lista de búsquedas
       navigate("/home");
     } catch (error) {
       console.error("Error al publicar grupo:", error);

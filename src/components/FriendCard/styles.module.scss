@@ -1,0 +1,134 @@
+@import '../../constants/styles-constants.scss';
+
+.card {
+  background-color: $color-header;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.avatarSection {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid $color-background;
+}
+
+
+.userInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.name {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: $color-text;
+  font-family: $font-family-base;
+}
+
+.email {
+  margin: 0;
+  font-size: 0.875rem;
+  color: $color-text-light;
+  font-family: $font-family-base;
+}
+
+
+.cardBody {
+  flex: 1;
+}
+
+.bio {
+  margin: 0;
+  color: $color-text;
+  font-family: $font-family-base;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.cardFooter {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.profileButton {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background-color: $color-accent;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-family: $font-family-base;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: darken($color-accent, 10%);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  i {
+    font-size: 14px;
+  }
+}
+
+.removeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background-color: transparent;
+  color: #dc3545;
+  border: 1px solid #dc3545;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: rgba(220, 53, 69, 0.1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  i {
+    font-size: 14px;
+  }
+}

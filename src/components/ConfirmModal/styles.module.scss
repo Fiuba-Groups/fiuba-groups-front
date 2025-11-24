@@ -1,0 +1,177 @@
+@import '../../constants/styles-constants.scss';
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal {
+  background-color: $color-header;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideIn 0.2s ease-out;
+  position: relative;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.closeButton {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: $color-text-light;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background-color: rgba($color-text-light, 0.1);
+    color: $color-text;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+.header {
+  padding: 24px 24px 16px;
+  border-bottom: 1px solid rgba($color-text-light, 0.2);
+}
+
+.title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: $color-text;
+  font-family: $font-family-base;
+  text-align: center;
+}
+
+.content {
+  padding: 16px 24px;
+}
+
+.message {
+  margin: 0;
+  font-size: 1rem;
+  color: $color-text;
+  font-family: $font-family-base;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.footer {
+  padding: 16px 24px 24px;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+  }
+}
+
+.cancelButton {
+  flex: 1;
+  padding: 12px 24px;
+  background-color: $color-accent;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-family: $font-family-base;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background-color: darken($color-accent, 10%);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  &:disabled {
+    background-color: $color-text-light;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  @media (max-width: 480px) {
+    order: 2;
+  }
+}
+
+.confirmButton {
+  flex: 1;
+  padding: 12px 24px;
+  background-color: $color-text-light;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-family: $font-family-base;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background-color: #dc3545;
+    color: white;
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  @media (max-width: 480px) {
+    order: 1;
+  }
+}
