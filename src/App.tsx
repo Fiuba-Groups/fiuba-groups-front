@@ -30,7 +30,7 @@ function App() {
         path="/login"
         element={
           !isAuthenticated ? (
-            <LoginScreen onLogin={() => window.location.reload()} />
+            <LoginScreen onLogin={() => window.location.href = '/'} />
           ) : (
             <Navigate to="/home" replace />
           )
@@ -40,7 +40,7 @@ function App() {
         path="/register"
         element={
           !isAuthenticated ? (
-            <RegisterScreen onRegister={() => window.location.href = '/login'} />
+            <RegisterScreen onRegister={() => window.location.href = '/'} />
           ) : (
             <Navigate to="/home" replace />
           )

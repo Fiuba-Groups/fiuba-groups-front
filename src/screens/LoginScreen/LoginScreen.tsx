@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styles from './LoginScreen.module.scss';
 import { login } from "../../services/authService";
 
@@ -13,6 +13,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const navigate = useNavigate();
 
   const backgroundStyle = {
     backgroundImage: `url(${process.env.PUBLIC_URL}/fondo_login_2.jpg)`,
@@ -28,7 +29,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
       await login(email, password);
       setSuccess('¡Inicio de sesión exitoso!');
       setTimeout(() => {
-        onLogin();
+        navigate('/');
       }, 1500); // Esperar 1.5 segundos para mostrar el mensaje
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al iniciar sesión');
