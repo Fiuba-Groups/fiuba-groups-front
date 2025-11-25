@@ -30,7 +30,7 @@ function App() {
         path="/login"
         element={
           !isAuthenticated ? (
-            <LoginScreen onLogin={() => window.location.href = '/'} />
+            <LoginScreen onLogin={() => window.location.reload()} />
           ) : (
             <Navigate to="/home" replace />
           )
@@ -40,7 +40,7 @@ function App() {
         path="/register"
         element={
           !isAuthenticated ? (
-            <RegisterScreen onRegister={() => window.location.href = '/'} />
+            <RegisterScreen onRegister={() => window.location.href = '/login'} />
           ) : (
             <Navigate to="/home" replace />
           )
@@ -105,17 +105,6 @@ function App() {
           </ProtectedRoute>
         }
       />
-      <Route
-        path="/user/:userId"
-        element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <OtherUserProfile />
-          </ProtectedRoute>
-        }
-      />
-      {/* Ruta temporal para preview sin autenticación */}
-      <Route path="/preview-friends" element={<UserFriends />} />
-      <Route path="/preview-profile/:userId" element={<OtherUserProfile />} />
     </Routes>
   );
 }

@@ -42,3 +42,4 @@ export interface FriendResponse {
   isOnline?: boolean;
   lastSeen?: string;
 }
+

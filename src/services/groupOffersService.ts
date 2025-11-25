@@ -161,5 +161,3 @@ export const requestToJoinGroup = async (offerId: string): Promise<void> => {
   // Simular delay de red para testing
   await new Promise(resolve => setTimeout(resolve, 300));
 };
-
-// Eliminado: inicialización de localStorage con datos mock
