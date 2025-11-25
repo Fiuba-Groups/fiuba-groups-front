@@ -1,9 +1,10 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import styles from './Profile.module.scss';
 import AppShell from '../../components/Shell';
-import { User, Bell, Lock, Shield, HelpCircle, BookOpen, GraduationCap } from 'lucide-react';
+import { User, Lock, Shield, HelpCircle, BookOpen, GraduationCap } from 'lucide-react';
 
-type Section = 'edit-profile' | 'notifications' | 'privacy';
+type Section = 'edit-profile';
 
 export default function ProfileScreen() {
   const [activeSection, setActiveSection] = useState<Section>('edit-profile');
@@ -48,20 +49,13 @@ export default function ProfileScreen() {
               <User className={styles.icon} />
               Editar Perfil
             </button>
-            <button
-              className={`${styles.sidebarOption} ${activeSection === 'notifications' ? styles.active : ''}`}
-              onClick={() => setActiveSection('notifications')}
-            >
-              <Bell className={styles.icon} />
-              Notificaciones
-            </button>
-            <button
-              className={`${styles.sidebarOption} ${activeSection === 'privacy' ? styles.active : ''}`}
-              onClick={() => setActiveSection('privacy')}
+            <Link
+              to="/profile/privacy"
+              className={styles.sidebarOption}
             >
               <Shield className={styles.icon} />
               Privacidad
-            </button>
+            </Link>
           </div>
 
           <div className={styles.sectionGroup}>

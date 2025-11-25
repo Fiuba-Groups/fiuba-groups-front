@@ -4,6 +4,7 @@ import LoginScreen from './screens/LoginScreen/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen/RegisterScreen';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import ProfileScreen from './screens/ProfileScreen/ProfileScreen';
+import PrivacyScreen from './screens/PrivacyScreen/PrivacyScreen';
 import CreateGroupOffer from './screens/CreateGroupOffer/CreateGroupOffer';
 import UserGroup from './screens/UserGroups/UserGroup';
 import { useAuth } from './hooks';
@@ -60,6 +61,14 @@ function App() {
         element={
           <ProtectedRoute isAuthenticated={isAuthenticated}>
             <ProfileScreen />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/profile/privacy"
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <PrivacyScreen />
           </ProtectedRoute>
         }
       />
