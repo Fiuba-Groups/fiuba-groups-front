@@ -5,54 +5,14 @@ import SearchBar from '../../components/SearchBar/index';
 import GroupOfferCard from '../../components/GroupOfferCard/GroupOfferCard';
 import SubjectAccordion from '../../components/SubjectAccordion/SubjectAccordion';
 import { GroupOffer } from '../../types/groupOffer';
-// import { useUserGroups } from '../../hooks/useUserGroups'; // TODO: Implementar este hook
-
-// --- Datos de ejemplo (reemplazar con datos reales del hook) ---
-const mockUserGroups: GroupOffer[] = [
-  {
-    id: '1',
-    title: 'Grupo de Análisis Matemático II',
-    description: 'Buscamos estudiantes para formar un grupo de estudio para Análisis Matemático II. Nos juntamos los lunes y miércoles por la tarde.',
-    subject: 'Análisis Matemático II',
-    cathedra: 'García',
-    semester: '1C 2025',
-    totalSlots: 5,
-    availableSlots: 2,
-    author: {
-      id: 'user1',
-      name: 'Juan Pérez',
-    },
-    createdAt: '2024-05-01T10:00:00Z',
-    updatedAt: '2024-05-02T12:00:00Z',
-  },
-  {
-   id: '2',
-    title: 'Grupo de Algebra',
-    description: 'Solo quiero un compañero.',
-    subject: 'Algebra 5',
-    cathedra: 'Turri',
-    semester: '1C 2026',
-    totalSlots: 1,
-    availableSlots: 1,
-    author: {
-      id: '4',
-      name: 'Franco Foden',
-    },
-    createdAt: '2024-05-01T10:00:00Z',
-    updatedAt: '2024-05-02T12:00:00Z',},
-  
-];
-// --- Fin de datos de ejemplo ---
-
+import { useUserGroups } from '../../hooks/useUserGroups';
 
 /**
  * Componente para mostrar los grupos a los que pertenece el usuario.
  */
 export default function UserGroup() {
-  // const { groups, loading, error } = useUserGroups(); // TODO: Usar el hook real
-  const [groups, setGroups] = useState(mockUserGroups);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { groups, loading, error, refetch, leaveGroup } = useUserGroups();
+  const [leavingGroupId, setLeavingGroupId] = useState<string | null>(null);
 
   /**
    * Agrupa las ofertas por materia
@@ -75,10 +35,17 @@ export default function UserGroup() {
     // TODO: Lógica para filtrar grupos del usuario
   };
 
-  const handleLeaveGroup = (groupId: string) => {
-    console.log('Saliendo del grupo:', groupId);
-    // TODO: Lógica para salir de un grupo
-    setGroups(prevGroups => prevGroups.filter(g => g.id !== groupId));
+  const handleLeaveGroup = async (groupId: string) => {
+    try {
+      setLeavingGroupId(groupId);
+      await leaveGroup(groupId);
+      console.log('Saliste del grupo exitosamente');
+    } catch (error) {
+      console.error('Error al salir del grupo:', error);
+      // TODO: Mostrar notificación de error
+    } finally {
+      setLeavingGroupId(null);
+    }
   };
 
   return (
@@ -121,6 +88,7 @@ export default function UserGroup() {
                     onViewDetails={() => console.log("Viendo detalles de", group.id)} // TODO: Implementar vista de detalle/chat del grupo
                     onRequestJoin={handleLeaveGroup} // Reutilizamos el prop para la acción principal
                     isJoined={true}
+                    isLoading={leavingGroupId === group.id}
                   />
                 ))}
               </SubjectAccordion>

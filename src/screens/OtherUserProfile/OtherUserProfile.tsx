@@ -1,17 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Calendar, MapPin, Users, BookOpen, Trophy, MessageCircle, UserPlus } from 'lucide-react';
+import { ArrowLeft, Calendar, MapPin, Users, BookOpen, Trophy, MessageCircle, UserPlus, UserCheck } from 'lucide-react';
 import styles from './OtherUserProfile.module.scss';
 import AppShell from '../../components/Shell';
 import { useUserFriends } from '../../hooks/useUserFriends';
+import { useUserProfile, UseUserProfileResult } from '../../hooks/useUserProfile';
+import { isUserFriend } from '../../services/userService';
 
 export default function OtherUserProfile() {
   const { userId } = useParams<{ userId: string }>();
   const navigate = useNavigate();
   const { friends } = useUserFriends();
+  const { user: userProfile, loading, error, sendRequest, cancelRequest, isRequesting }: UseUserProfileResult = useUserProfile(userId);
+  const [friendRequestSent, setFriendRequestSent] = useState(false);
 
-  // Encontrar el amigo por ID
-  const userProfile = friends.find(friend => friend.id === userId);
+  // Verificar si el usuario es amigo
+  const isFriend = userId ? isUserFriend(userId, friends) : false;
 
   // Datos mock para el perfil (en producción vendrían del backend)
   const mockProfileData = {
@@ -36,7 +40,21 @@ export default function OtherUserProfile() {
     ]
   };
 
-  if (!userProfile) {
+  // Manejo de estados de carga y error
+  if (loading) {
+    return (
+      <AppShell>
+        <div className={styles.loadingContainer}>
+          <div className={styles.loadingState}>
+            <i className="pi pi-spin pi-spinner" style={{ fontSize: '2rem' }} />
+            <p>Cargando perfil...</p>
+          </div>
+        </div>
+      </AppShell>
+    );
+  }
+
+  if (error || !userProfile) {
     return (
       <AppShell>
         <div className={styles.errorContainer}>
@@ -103,14 +121,48 @@ export default function OtherUserProfile() {
             </div>
 
             <div className={styles.actionButtons}>
-              <button className={styles.messageButton}>
+              <button className={styles.messageButton} disabled>
                 <MessageCircle size={16} />
                 Enviar mensaje
               </button>
-              <button className={styles.friendButton}>
-                <UserPlus size={16} />
-                Agregar amigo
-              </button>
+              {isFriend ? (
+                <button className={`${styles.friendButton} ${styles.isFriend}`}>
+                  <UserCheck size={16} />
+                  Ya es amigo
+                </button>
+              ) : friendRequestSent ? (
+                <button
+                  className={`${styles.friendButton} ${styles.requestSent}`}
+                  onClick={async () => {
+                    try {
+                      await cancelRequest();
+                      setFriendRequestSent(false);
+                    } catch (error) {
+                      console.error('Error cancelando solicitud:', error);
+                    }
+                  }}
+                  disabled={isRequesting}
+                >
+                  <UserCheck size={16} />
+                  {isRequesting ? 'Cancelando...' : 'Solicitud enviada'}
+                </button>
+              ) : (
+                <button
+                  className={styles.friendButton}
+                  onClick={async () => {
+                    try {
+                      await sendRequest();
+                      setFriendRequestSent(true);
+                    } catch (error) {
+                      console.error('Error enviando solicitud:', error);
+                    }
+                  }}
+                  disabled={isRequesting}
+                >
+                  <UserPlus size={16} />
+                  {isRequesting ? 'Enviando...' : 'Agregar amigo'}
+                </button>
+              )}
             </div>
           </div>
         </div>

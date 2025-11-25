@@ -7,6 +7,7 @@ interface GroupOfferCardProps {
   onViewDetails: (offerId: string) => void;
   onRequestJoin: (offerId: string) => void;
   isJoined?: boolean; // Nueva prop
+  isLoading?: boolean; // Nueva prop para estado de carga
 }
 
 export default function GroupOfferCard({
@@ -14,6 +15,7 @@ export default function GroupOfferCard({
   onViewDetails,
   onRequestJoin,
   isJoined = false, // Valor por defecto
+  isLoading = false, // Valor por defecto
 }: GroupOfferCardProps) {
   const { id, description, availableSlots, totalSlots } = offer;
   const occupiedSlots = totalSlots - availableSlots;
@@ -43,12 +45,19 @@ export default function GroupOfferCard({
         >
           {isJoined ? 'Ver Grupo' : 'Ver Detalles'}
         </button>
-        <button 
+        <button
           className={`${styles.joinButton} ${isJoined ? styles.leaveButton : ''}`}
           onClick={() => onRequestJoin(id)}
-          disabled={availableSlots === 0 && !isJoined}
+          disabled={(availableSlots === 0 && !isJoined) || isLoading}
         >
-          {isJoined ? 'Salir del Grupo' : (availableSlots > 0 ? 'Unirse' : 'Cupos Llenos')}
+          {isLoading ? (
+            <>
+              <i className="pi pi-spin pi-spinner" style={{ fontSize: '0.8rem', marginRight: '6px' }} />
+              {isJoined ? 'Saliendo...' : 'Uniéndose...'}
+            </>
+          ) : (
+            isJoined ? 'Salir del Grupo' : (availableSlots > 0 ? 'Unirse' : 'Cupos Llenos')
+          )}
         </button>
       </div>
     </div>

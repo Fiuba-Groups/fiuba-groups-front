@@ -10,6 +10,7 @@ import { useAuth } from './hooks';
 import UserRequests from './screens/UserRequests/UserRequests';
 import UserFriends from './screens/UserFriends/UserFriends';
 import OtherUserProfile from './screens/OtherUserProfile/OtherUserProfile';
+import UserSearches from './screens/UserSearches/UserSearches';
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -82,10 +83,7 @@ function App() {
         path="/my-searches"
         element={
           <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <div style={{ padding: '2rem' }}>
-              <h2>Mis búsquedas</h2>
-              <p>Esta funcionalidad estará disponible próximamente.</p>
-            </div>
+            <UserSearches />
           </ProtectedRoute>
         }
       />

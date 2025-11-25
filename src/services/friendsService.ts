@@ -28,6 +28,7 @@ export const clearFriendsStorage = (): void => {
   }
 };
 
+
 const saveFriendsToStorage = (friends: Friend[]): void => {
   try {
     localStorage.setItem(FRIENDS_STORAGE_KEY, JSON.stringify(friends));
