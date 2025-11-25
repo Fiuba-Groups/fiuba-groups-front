@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Profile.module.scss';
 import AppShell from '../../components/Shell';
-import { User, Lock, Shield, HelpCircle, BookOpen, GraduationCap } from 'lucide-react';
+import { User, Shield, HelpCircle, BookOpen, GraduationCap } from 'lucide-react';
 
 type Section = 'edit-profile';
 
@@ -72,14 +72,20 @@ export default function ProfileScreen() {
 
           <div className={styles.sectionGroup}>
             <h3 className={styles.sectionGroupTitle}>Soporte</h3>
-            <button className={styles.sidebarOption}>
+            <Link
+              to="/profile/help"
+              className={styles.sidebarOption}
+            >
               <HelpCircle className={styles.icon} />
               Centro de Ayuda
-            </button>
-            <button className={styles.sidebarOption}>
-              <Lock className={styles.icon} />
+            </Link>
+            <Link
+              to="/profile/security"
+              className={styles.sidebarOption}
+            >
+              <Shield className={styles.icon} />
               Contraseña y Seguridad
-            </button>
+            </Link>
           </div>
         </aside>
 
