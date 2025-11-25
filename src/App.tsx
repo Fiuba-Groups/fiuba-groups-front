@@ -7,6 +7,7 @@ import ProfileScreen from './screens/ProfileScreen/ProfileScreen';
 import PrivacyScreen from './screens/PrivacyScreen/PrivacyScreen';
 import SecurityScreen from './screens/SecurityScreen/SecurityScreen';
 import HelpScreen from './screens/HelpScreen/HelpScreen';
+import CareerScreen from './screens/CareerScreen/CareerScreen';
 import CreateGroupOffer from './screens/CreateGroupOffer/CreateGroupOffer';
 import UserGroup from './screens/UserGroups/UserGroup';
 import { useAuth } from './hooks';
@@ -87,6 +88,14 @@ function App() {
         element={
           <ProtectedRoute isAuthenticated={isAuthenticated}>
             <HelpScreen />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/profile/career"
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <CareerScreen />
           </ProtectedRoute>
         }
       />
