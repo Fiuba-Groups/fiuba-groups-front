@@ -15,6 +15,7 @@ import UserRequests from './screens/UserRequests/UserRequests';
 import UserFriends from './screens/UserFriends/UserFriends';
 import OtherUserProfile from './screens/OtherUserProfile/OtherUserProfile';
 import UserSearches from './screens/UserSearches/UserSearches';
+import AcademicScreen from './screens/AcademicHistoryScreen/AcademicScreen';
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -136,6 +137,14 @@ function App() {
         element={
           <ProtectedRoute isAuthenticated={isAuthenticated}>
             <UserFriends />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/academic-history"
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <AcademicScreen />
           </ProtectedRoute>
         }
       />

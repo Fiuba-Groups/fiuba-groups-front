@@ -67,10 +67,10 @@ export default function ProfileScreen() {
               <GraduationCap className={styles.icon} />
               Mi Carrera
             </Link>
-            <button className={styles.sidebarOption}>
+            <Link to="/academic-history" className={styles.sidebarOption}>
               <BookOpen className={styles.icon} />
               Historial Académico
-            </button>
+            </Link>
           </div>
 
           <div className={styles.sectionGroup}>
