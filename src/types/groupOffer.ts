@@ -27,6 +27,7 @@ export interface GroupOffer {
   author: GroupOfferAuthor;
   createdAt: string;
   updatedAt: string;
+  status?: 'ACTIVE' | 'FINISHED'; // Estado del grupo
 }
 
 /**

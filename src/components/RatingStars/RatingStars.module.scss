@@ -1,0 +1,54 @@
+.ratingContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stars {
+  display: flex;
+  gap: 2px;
+}
+
+.star {
+  color: #ddd;
+  transition: color 0.2s ease;
+
+  &.filled {
+    color: #ffc107;
+  }
+
+  &.half {
+    color: #ffc107;
+  }
+
+  &.interactive {
+    cursor: pointer;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+
+  &.small {
+    font-size: 14px;
+  }
+
+  &.medium {
+    font-size: 18px;
+  }
+
+  &.large {
+    font-size: 24px;
+  }
+}
+
+.count {
+  font-size: 12px;
+  color: #666;
+}
+
+.noRatings {
+  font-size: 12px;
+  color: #999;
+  font-style: italic;
+}

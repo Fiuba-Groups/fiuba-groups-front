@@ -2,8 +2,11 @@ import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Profile.module.scss';
 import AppShell from '../../components/Shell';
+import RatingStars from '../../components/RatingStars';
 import { User, Shield, HelpCircle, BookOpen, GraduationCap } from 'lucide-react';
 import { uploadAvatar } from '../../services/userService';
+import { fetchCurrentUser } from '../../services/currentUserService';
+import { fetchStudentRatings, StudentRatingSummary } from '../../services/ratingsService';
 
 type Section = 'edit-profile';
 
@@ -11,6 +14,7 @@ export default function ProfileScreen() {
   const [activeSection, setActiveSection] = useState<Section>('edit-profile');
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [currentAvatarUrl, setCurrentAvatarUrl] = useState<string>('/user.png');
+  const [ratingSummary, setRatingSummary] = useState<StudentRatingSummary | null>(null);
   const [formData, setFormData] = useState({
     username: 'UserFiuba',
     nombre: 'Alumno de Turri',
@@ -26,6 +30,23 @@ export default function ProfileScreen() {
     if (savedAvatar) {
       setCurrentAvatarUrl(savedAvatar);
     }
+  }, []);
+
+  // Cargar calificaciones del usuario actual
+  useEffect(() => {
+    const loadRatings = async () => {
+      try {
+        const user = await fetchCurrentUser();
+        if (user.student?.id) {
+          const ratings = await fetchStudentRatings(user.student.id);
+          setRatingSummary(ratings);
+        }
+      } catch (error) {
+        console.error('Error al cargar calificaciones:', error);
+      }
+    };
+
+    loadRatings();
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -163,6 +184,22 @@ export default function ProfileScreen() {
           <div className={styles.photoInfo}>
             <h2>{formData.nombre}</h2>
             <p>@{formData.username}</p>
+            {ratingSummary && ratingSummary.totalRatings > 0 && (
+              <div className={styles.ratingSection}>
+                <RatingStars 
+                  rating={ratingSummary.averageRating} 
+                  totalRatings={ratingSummary.totalRatings}
+                  showCount={true}
+                  size="medium"
+                />
+              </div>
+            )}
+            {ratingSummary && ratingSummary.totalRatings === 0 && (
+              <div className={styles.noRatings}>
+                <i className="pi pi-star" />
+                Sin calificaciones aún
+              </div>
+            )}
             <button
               type="button"
               className={styles.changePhotoBtn}

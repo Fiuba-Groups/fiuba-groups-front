@@ -1,16 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Clock, CheckCircle, XCircle, X } from 'lucide-react';
 import styles from './UserRequests.module.scss';
 import AppShell from '../../components/Shell';
 import ConfirmModal from '../../components/ConfirmModal/ConfirmModal';
+import RatingStars from '../../components/RatingStars';
 import { useUserRequests } from '../../hooks/useUserRequests';
 import { GroupRequest } from '../../types/requests';
+import { fetchStudentRatingsByRegister, StudentRatingSummary } from '../../services/ratingsService';
 
 type TabType = 'sent' | 'received';
 
 export default function UserRequests() {
   const { sentRequests, receivedRequests, loading, error, refetch, acceptRequest, rejectRequest, cancelRequest } = useUserRequests();
   const [activeTab, setActiveTab] = useState<TabType>('sent');
+  const [requesterRatings, setRequesterRatings] = useState<Record<string, StudentRatingSummary | null>>({});
   const [confirmModal, setConfirmModal] = useState<{
     isOpen: boolean;
     action: 'cancel' | 'accept' | 'reject';
@@ -21,6 +24,31 @@ export default function UserRequests() {
     request: null,
   });
   const [isProcessing, setIsProcessing] = useState(false);
+
+  // Cargar calificaciones de los solicitantes cuando hay solicitudes recibidas
+  useEffect(() => {
+    const loadRequesterRatings = async () => {
+      const ratingsMap: Record<string, StudentRatingSummary | null> = {};
+      
+      for (const request of receivedRequests) {
+        const requesterId = request.requesterId;
+        if (!ratingsMap[requesterId]) {
+          try {
+            const ratings = await fetchStudentRatingsByRegister(requesterId);
+            ratingsMap[requesterId] = ratings;
+          } catch {
+            ratingsMap[requesterId] = null;
+          }
+        }
+      }
+      
+      setRequesterRatings(ratingsMap);
+    };
+
+    if (receivedRequests.length > 0) {
+      loadRequesterRatings();
+    }
+  }, [receivedRequests]);
 
   const currentRequests = (activeTab === 'sent' ? sentRequests : receivedRequests)
     .sort((a, b) => new Date(b.requestedAt).getTime() - new Date(a.requestedAt).getTime());
@@ -220,9 +248,29 @@ export default function UserRequests() {
                   <div className={styles.requestSubject}>
                     <strong>Cuatrimestre:</strong> {request.groupOffer.semester}
                   </div>
-                  <div className={styles.requestSubject}>
-                    <strong>Creador:</strong> {request.groupOffer.author.name}
-                  </div>
+                  {activeTab === 'sent' && (
+                    <div className={styles.requestSubject}>
+                      <strong>Creador:</strong> {request.groupOffer.author.name}
+                    </div>
+                  )}
+                  {activeTab === 'received' && (
+                    <div className={styles.requesterInfo}>
+                      <strong>Solicitante:</strong> {request.requester.name} {request.requester.surname}
+                      {requesterRatings[request.requesterId] && (
+                        <div className={styles.requesterRating}>
+                          <RatingStars 
+                            rating={requesterRatings[request.requesterId]!.averageRating} 
+                            totalRatings={requesterRatings[request.requesterId]!.totalRatings}
+                            showCount={true}
+                            size="small"
+                          />
+                        </div>
+                      )}
+                      {!requesterRatings[request.requesterId] && (
+                        <span className={styles.noRating}>Sin calificaciones previas</span>
+                      )}
+                    </div>
+                  )}
                   <div className={styles.requestDate}>
                     Solicitado el {formatDate(request.requestedAt)}
                     {request.respondedAt && (

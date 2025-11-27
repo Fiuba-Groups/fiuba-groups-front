@@ -9,6 +9,7 @@ import { useGroupOffers } from '../../hooks/useGroupOffers';
 import { createGroupRequest, fetchUserSentRequests } from '../../services/requestsService';
 import { fetchCurrentUser } from '../../services/currentUserService';
 import { fetchUserGroups } from '../../services/userGroupsService';
+import { fetchStudentRatingsByRegister } from '../../services/ratingsService';
 import { GroupOffer } from '../../types/groupOffer';
 import { useNavigate } from 'react-router-dom';
 import GroupOfferDetailModal from '../../components/GroupOfferDetailModal/GroupOfferDetailModal';
@@ -31,6 +32,7 @@ export default function GroupOffers() {
   const [userGroupIds, setUserGroupIds] = useState<Set<string>>(new Set());
   const [requestingOfferId, setRequestingOfferId] = useState<string | null>(null);
   const [currentUserRegister, setCurrentUserRegister] = useState<number | null>(null);
+  const [authorRatings, setAuthorRatings] = useState<Record<string, { average: number; count: number } | null>>({});
 
   // Cargar usuario actual, grupos a los que pertenece y solicitudes enviadas
   useEffect(() => {
@@ -66,6 +68,34 @@ export default function GroupOffers() {
 
     loadUserAndRequests();
   }, []);
+
+  // Cargar ratings de los autores de las ofertas
+  useEffect(() => {
+    const loadAuthorRatings = async () => {
+      const ratingsMap: Record<string, { average: number; count: number } | null> = {};
+      const uniqueAuthorIds = Array.from(new Set(offers.map(o => o.author.id)));
+      
+      for (const authorId of uniqueAuthorIds) {
+        if (!ratingsMap[authorId]) {
+          try {
+            const ratings = await fetchStudentRatingsByRegister(authorId);
+            ratingsMap[authorId] = {
+              average: ratings.averageRating,
+              count: ratings.totalRatings
+            };
+          } catch {
+            ratingsMap[authorId] = null;
+          }
+        }
+      }
+      
+      setAuthorRatings(ratingsMap);
+    };
+
+    if (offers.length > 0) {
+      loadAuthorRatings();
+    }
+  }, [offers]);
 
   /**
    * Verifica si ya se envió una solicitud para una oferta específica
@@ -346,6 +376,7 @@ export default function GroupOffers() {
                     onRequestJoin={handleRequestJoin}
                     requestSent={hasSentRequest(offer.id)}
                     isLoading={requestingOfferId === offer.id}
+                    authorRating={authorRatings[offer.author.id]}
                   />
                 ))}
               </SubjectAccordion>

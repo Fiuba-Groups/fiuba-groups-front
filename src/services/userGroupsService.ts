@@ -5,6 +5,8 @@ import { apiFetch } from './authService';
  * Servicio para manejar las operaciones relacionadas con los grupos del usuario
  */
 
+const API_BASE_URL = 'http://localhost:8080';
+
 // Interfaz para la respuesta del backend
 interface BackendGroup {
   id: number;
@@ -14,6 +16,7 @@ interface BackendGroup {
   maxMembers: number;
   creatorStudentRegister: number;
   courseOfferingId: number;
+  status: 'ACTIVE' | 'FINISHED';
 }
 
 /**
@@ -36,6 +39,7 @@ const transformBackendGroup = (group: BackendGroup): GroupOffer => {
     },
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
+    status: group.status,
   };
 };
 
@@ -45,7 +49,7 @@ const transformBackendGroup = (group: BackendGroup): GroupOffer => {
  */
 export const fetchUserGroups = async (): Promise<GroupOffer[]> => {
   try {
-    const groups: BackendGroup[] = await apiFetch('/users/me/groups');
+    const groups: BackendGroup[] = await apiFetch(`${API_BASE_URL}/users/me/groups`);
     return groups.map(transformBackendGroup);
   } catch (error) {
     console.error('Error al cargar grupos del usuario:', error);

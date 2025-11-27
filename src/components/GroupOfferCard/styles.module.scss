@@ -49,6 +49,16 @@
   }
 }
 
+.finishedBadge {
+  padding: 4px 10px;
+  background-color: #10b981;
+  color: white;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
 .cardBody {
   display: flex;
   flex-direction: column;
@@ -81,6 +91,20 @@
 .semester {
   color: $color-text-light;
   font-weight: 400;
+}
+
+.authorRating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba($color-text-light, 0.2);
+}
+
+.authorLabel {
+  font-size: 0.8rem;
+  color: $color-text-light;
+  font-weight: 500;
 }
 
 .cardFooter {

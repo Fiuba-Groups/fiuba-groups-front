@@ -254,6 +254,29 @@
   }
 }
 
+.requesterInfo {
+  font-size: 0.9rem;
+  color: $color-text-light;
+  font-family: $font-family-base;
+
+  strong {
+    color: $color-text;
+  }
+}
+
+.requesterRating {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 12px;
+}
+
+.noRating {
+  margin-left: 8px;
+  font-size: 0.8rem;
+  color: #9ca3af;
+  font-style: italic;
+}
+
 .requestDate {
   font-size: 0.85rem;
   color: $color-text-light;
