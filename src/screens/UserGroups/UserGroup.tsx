@@ -4,6 +4,7 @@ import AppShell from '../../components/Shell';
 import SearchBar from '../../components/SearchBar/index';
 import GroupOfferCard from '../../components/GroupOfferCard/GroupOfferCard';
 import SubjectAccordion from '../../components/SubjectAccordion/SubjectAccordion';
+import GroupOfferDetailModal from '../../components/GroupOfferDetailModal/GroupOfferDetailModal';
 import { GroupOffer } from '../../types/groupOffer';
 import { useUserGroups } from '../../hooks/useUserGroups';
 
@@ -13,6 +14,8 @@ import { useUserGroups } from '../../hooks/useUserGroups';
 export default function UserGroup() {
   const { groups, loading, error, refetch, leaveGroup } = useUserGroups();
   const [leavingGroupId, setLeavingGroupId] = useState<string | null>(null);
+  const [selectedGroup, setSelectedGroup] = useState<GroupOffer | null>(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
 
   /**
    * Agrupa las ofertas por materia
@@ -33,6 +36,19 @@ export default function UserGroup() {
   const handleSearch = (value: string) => {
     console.log('Buscando en mis grupos:', value);
     // TODO: Lógica para filtrar grupos del usuario
+  };
+
+  const handleViewGroupDetails = (groupId: string) => {
+    const group = groups.find(g => g.id === groupId);
+    if (group) {
+      setSelectedGroup(group);
+      setIsDetailModalOpen(true);
+    }
+  };
+
+  const handleCloseDetailModal = () => {
+    setIsDetailModalOpen(false);
+    setSelectedGroup(null);
   };
 
   const handleLeaveGroup = async (groupId: string) => {
@@ -85,8 +101,8 @@ export default function UserGroup() {
                   <GroupOfferCard
                     key={group.id}
                     offer={group}
-                    onViewDetails={() => console.log("Viendo detalles de", group.id)} // TODO: Implementar vista de detalle/chat del grupo
-                    onRequestJoin={handleLeaveGroup} // Reutilizamos el prop para la acción principal
+                    onViewDetails={handleViewGroupDetails}
+                    onRequestJoin={handleLeaveGroup}
                     isJoined={true}
                     isLoading={leavingGroupId === group.id}
                   />
@@ -94,6 +110,14 @@ export default function UserGroup() {
               </SubjectAccordion>
             ))}
           </div>
+        )}
+
+        {selectedGroup && (
+          <GroupOfferDetailModal
+            offer={selectedGroup}
+            onClose={handleCloseDetailModal}
+            showJoinButton={false}
+          />
         )}
       </div>
     </AppShell>
