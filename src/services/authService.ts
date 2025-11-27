@@ -52,16 +52,24 @@ export async function login(email: string, password: string): Promise<void> {
    */
   export async function apiFetch<T>(url: string, options: RequestInit = {}): Promise<T> {
     const token = getToken();
+    
+    if (!token) {
+      throw new Error("No hay token de autenticación. Por favor, iniciá sesión.");
+    }
   
-  const headers = {
-    ...(options.headers || {}),
-    Authorization: token ? `Bearer ${token}` : "",
-    "accept": "*/*"
-  };
+    const headers = {
+      ...(options.headers || {}),
+      Authorization: `Bearer ${token}`,
+      "accept": "*/*"
+    };
   
     const res = await fetch(url, { ...options, headers });
   
-    if (!res.ok) throw new Error("Error en API");
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error(`API Error ${res.status}: ${errorText}`);
+      throw new Error(`Error ${res.status}: ${errorText || res.statusText}`);
+    }
 
     return res.json() as Promise<T>;
   }

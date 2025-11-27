@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { ArrowLeft, Users, Calendar, Info } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { createGroupOffer } from "../../services/groupOffersService";
+import { fetchCourseOfferings, groupOptionsBySubject, GroupedSubjectOption } from "../../services/courseOfferingsService";
 import  styles from "./CreateGroupOffer.module.scss";
 
 const CreateGroupOffer = () => {
@@ -13,7 +14,7 @@ const CreateGroupOffer = () => {
     title: "",
     description: "",
     subject: "",
-    cathedra: "",
+    courseOfferingId: "",
     groupSize: "",
     duration: "",
     terms: "",
@@ -21,6 +22,37 @@ const CreateGroupOffer = () => {
 
   const [isPublishing, setIsPublishing] = useState(false);
   const [publishError, setPublishError] = useState<string | null>(null);
+  
+  // Course offerings del backend
+  const [groupedSubjects, setGroupedSubjects] = useState<GroupedSubjectOption[]>([]);
+  const [loadingOfferings, setLoadingOfferings] = useState(true);
+
+  // Cargar course offerings del backend
+  useEffect(() => {
+    const loadCourseOfferings = async () => {
+      try {
+        setLoadingOfferings(true);
+        const offerings = await fetchCourseOfferings();
+        
+        // Agrupar por materia
+        const options = offerings
+          .filter(o => o.courseEntity?.subject)
+          .map(o => ({
+            value: o.id.toString(),
+            label: o.courseEntity!.subject!.name,
+            cathedra: o.courseEntity!.commission,
+            semester: `${o.quarter} ${o.year}`,
+          }));
+        setGroupedSubjects(groupOptionsBySubject(options));
+      } catch (error) {
+        console.error("Error cargando course offerings:", error);
+      } finally {
+        setLoadingOfferings(false);
+      }
+    };
+    
+    loadCourseOfferings();
+  }, []);
 
   // Cargar datos si estamos en modo edición
   useEffect(() => {
@@ -29,48 +61,31 @@ const CreateGroupOffer = () => {
         title: offerData.title || "",
         description: offerData.description || "",
         subject: offerData.subject || "",
-        cathedra: offerData.cathedra || "",
+        courseOfferingId: offerData.courseOfferingId?.toString() || "",
         groupSize: offerData.totalSlots?.toString() || "",
-        duration: "1", // Default duration, could be enhanced
-        terms: "", // Could be enhanced with stored terms
+        duration: "1",
+        terms: "",
       });
     }
   }, [editMode, offerData]);
 
-  // Opciones de materias disponibles
-  const subjectOptions = [
-    { value: "1", label: "Análisis Matemático II", cathedras: ["García", "Pérez"] },
-    { value: "2", label: "Álgebra Lineal", cathedras: ["Rodríguez", "Gómez"] },
-    { value: "3", label: "Física I", cathedras: ["López", "Martínez"] },
-    { value: "4", label: "Química Orgánica", cathedras: ["Fernández", "Silva"] },
-    { value: "5", label: "Programación I", cathedras: ["Silva", "López"] },
-    { value: "6", label: "Estadística y Probabilidades", cathedras: ["Mendoza", "Vega"] },
-    { value: "7", label: "Cálculo Numérico", cathedras: ["Ramírez"] },
-    { value: "8", label: "Economía Política", cathedras: ["Gutiérrez", "Moreno"] },
-  ];
-
-  // Función para mapear materia+cátedra a courseOfferingId
-  const getCourseOfferingId = (subject: string, cathedra: string): number => {
-    const subjectOption = subjectOptions.find(s => s.value === subject);
-    if (!subjectOption) return 1; // default
-
-    const cathedraIndex = subjectOption.cathedras.indexOf(cathedra);
-    if (cathedraIndex === -1) return parseInt(subject); // default to first cathedra
-
-    // Map to courseOfferingId (1-15 as defined in the service)
-    return parseInt(subject) + cathedraIndex;
+  // Obtener las cátedras disponibles para la materia seleccionada
+  const getAvailableCathedras = () => {
+    const selectedSubject = groupedSubjects.find(s => s.subjectName === formData.subject);
+    return selectedSubject?.cathedras || [];
   };
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleSaveDraft = () => {
-
+    
+    // Si cambia la materia, resetear el courseOfferingId
+    if (field === "subject") {
+      setFormData((prev) => ({ ...prev, subject: value, courseOfferingId: "" }));
+    }
   };
 
   const handlePublish = async () => {
-    if (!formData.title || !formData.description || !formData.groupSize || !formData.subject) {
+    if (!formData.title || !formData.description || !formData.groupSize || !formData.courseOfferingId) {
       setPublishError("Por favor completa todos los campos obligatorios");
       return;
     }
@@ -79,33 +94,18 @@ const CreateGroupOffer = () => {
     setPublishError(null);
 
     try {
-      const courseOfferingId = getCourseOfferingId(formData.subject, formData.cathedra);
-
       if (editMode && offerData) {
-        // Modo edición: actualizar la oferta existente
-        const GROUPS_STORAGE_KEY = 'fiuba_group_offers';
-        const allGroups = JSON.parse(localStorage.getItem(GROUPS_STORAGE_KEY) || '[]');
-        const groupIndex = allGroups.findIndex((g: any) => g.id === offerData.id);
-
-        if (groupIndex !== -1) {
-          // Actualizar la oferta existente
-          allGroups[groupIndex] = {
-            ...allGroups[groupIndex],
-            title: formData.title,
-            description: formData.description,
-            subject: subjectOptions.find(s => s.value === formData.subject)?.label || formData.subject,
-            cathedra: formData.cathedra,
-            totalSlots: parseInt(formData.groupSize),
-            updatedAt: new Date().toISOString(),
-          };
-          localStorage.setItem(GROUPS_STORAGE_KEY, JSON.stringify(allGroups));
-        }
+        // TODO: Implementar endpoint PUT /groups/{id} en el backend para edición
+        console.log("Modo edición - pendiente de implementar en backend");
+        setPublishError("La edición de grupos aún no está disponible");
+        setIsPublishing(false);
+        return;
       } else {
         // Modo creación: crear nueva oferta
         await createGroupOffer({
           title: formData.title,
           description: formData.description,
-          courseOfferingId: courseOfferingId,
+          courseOfferingId: parseInt(formData.courseOfferingId),
           maxMembers: parseInt(formData.groupSize),
           creatorStudentRegister: 12345, // TODO: Obtener del contexto de autenticación
         });
@@ -180,29 +180,28 @@ const CreateGroupOffer = () => {
                       id="subject"
                       value={formData.subject}
                       onChange={(e) => handleInputChange("subject", e.target.value)}
+                      disabled={loadingOfferings}
                     >
-                      <option value="">Seleccionar materia</option>
-                      {subjectOptions.map((subject) => (
-                        <option key={subject.value} value={subject.value}>
-                          {subject.label}
+                      <option value="">{loadingOfferings ? "Cargando materias..." : "Seleccionar materia"}</option>
+                      {groupedSubjects.map((subject) => (
+                        <option key={subject.subjectName} value={subject.subjectName}>
+                          {subject.subjectName}
                         </option>
                       ))}
                     </select>
                   </div>
                   <div className={styles.formGroup}>
-                    <label htmlFor="cathedra">Cátedra</label>
+                    <label htmlFor="cathedra">Cátedra *</label>
                     <select
-                      id="cathedra"
-                      value={formData.cathedra}
-                      onChange={(e) => handleInputChange("cathedra", e.target.value)}
+                      id="courseOfferingId"
+                      value={formData.courseOfferingId}
+                      onChange={(e) => handleInputChange("courseOfferingId", e.target.value)}
                       disabled={!formData.subject}
                     >
                       <option value="">Seleccionar cátedra</option>
-                      {formData.subject && subjectOptions
-                        .find(s => s.value === formData.subject)
-                        ?.cathedras.map((cathedra) => (
-                          <option key={cathedra} value={cathedra}>
-                            {cathedra}
+                      {getAvailableCathedras().map((cathedra) => (
+                          <option key={cathedra.value} value={cathedra.value}>
+                            {cathedra.cathedra} - {cathedra.semester}
                           </option>
                         ))}
                     </select>
