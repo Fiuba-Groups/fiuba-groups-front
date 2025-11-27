@@ -22,7 +22,8 @@ export default function UserRequests() {
   });
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const currentRequests = activeTab === 'sent' ? sentRequests : receivedRequests;
+  const currentRequests = (activeTab === 'sent' ? sentRequests : receivedRequests)
+    .sort((a, b) => new Date(b.requestedAt).getTime() - new Date(a.requestedAt).getTime());
 
   const handleActionClick = (action: 'cancel' | 'accept' | 'reject', request: GroupRequest) => {
     setConfirmModal({

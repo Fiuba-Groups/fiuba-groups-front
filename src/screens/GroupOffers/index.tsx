@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './styles.module.scss';
 import AppShell from '../../components/Shell';
 import FloatingButton from '../../components/FloatingButton/FloatingButton';
@@ -7,6 +7,7 @@ import GroupOfferCard from '../../components/GroupOfferCard/GroupOfferCard';
 import SubjectAccordion from '../../components/SubjectAccordion/SubjectAccordion';
 import { useGroupOffers } from '../../hooks/useGroupOffers';
 import { requestToJoinGroup } from '../../services/groupOffersService';
+import { createGroupRequest } from '../../services/requestsService';
 import { GroupOffer } from '../../types/groupOffer';
 import { useNavigate } from 'react-router-dom';
 import GroupOfferDetailModal from '../../components/GroupOfferDetailModal/GroupOfferDetailModal';
@@ -25,6 +26,38 @@ export default function GroupOffers() {
   const [subjectFilter, setSubjectFilter] = useState<string>('all');
   const [semesterFilter, setSemesterFilter] = useState<string>('all');
   const [cathedraFilter, setCathedraFilter] = useState<string>('all');
+  const [sentRequests, setSentRequests] = useState<Set<string>>(new Set());
+  const [requestingOfferId, setRequestingOfferId] = useState<string | null>(null);
+
+  // Cargar solicitudes enviadas al montar el componente
+  useEffect(() => {
+    const loadSentRequests = () => {
+      try {
+        const REQUESTS_STORAGE_KEY = 'fiuba_user_requests';
+        const storedRequests = localStorage.getItem(REQUESTS_STORAGE_KEY);
+        if (storedRequests) {
+          const requests = JSON.parse(storedRequests);
+          const sentRequestIds = new Set<string>(
+            requests
+              .filter((req: any) => req.requesterId === 'current-user' && req.status === 'pending')
+              .map((req: any) => String(req.groupOfferId))
+          );
+          setSentRequests(sentRequestIds);
+        }
+      } catch (error) {
+        console.error('Error cargando solicitudes enviadas:', error);
+      }
+    };
+
+    loadSentRequests();
+  }, []);
+
+  /**
+   * Verifica si ya se envió una solicitud para una oferta específica
+   */
+  const hasSentRequest = (offerId: string): boolean => {
+    return sentRequests.has(offerId);
+  };
 
   /**
    * Agrupa las ofertas por materia
@@ -184,14 +217,29 @@ export default function GroupOffers() {
    * @param offerId - ID de la oferta a la que se quiere unir
    */
   const handleRequestJoin = async (offerId: string) => {
+    if (hasSentRequest(offerId)) {
+      return; // Ya se envió solicitud para esta oferta
+    }
+
+    setRequestingOfferId(offerId);
     try {
+      // Crear la solicitud
+      await createGroupRequest(offerId, 'Estoy interesado en unirme al grupo.');
+
+      // Reducir slots disponibles (lógica existente)
       await requestToJoinGroup(offerId);
+
+      // Actualizar el estado local
+      setSentRequests(prev => new Set(Array.from(prev).concat(offerId)));
+
       console.log('Solicitud enviada exitosamente');
       // TODO: Mostrar notificación de éxito
       // TODO: Actualizar la lista de ofertas
     } catch (error) {
       console.error('Error al solicitar unirse:', error);
       // TODO: Mostrar notificación de error
+    } finally {
+      setRequestingOfferId(null);
     }
   };
 
@@ -250,6 +298,8 @@ export default function GroupOffers() {
                     offer={offer}
                     onViewDetails={handleViewDetails}
                     onRequestJoin={handleRequestJoin}
+                    requestSent={hasSentRequest(offer.id)}
+                    isLoading={requestingOfferId === offer.id}
                   />
                 ))}
               </SubjectAccordion>

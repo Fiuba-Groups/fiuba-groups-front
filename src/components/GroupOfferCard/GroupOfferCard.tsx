@@ -8,6 +8,7 @@ interface GroupOfferCardProps {
   onRequestJoin: (offerId: string) => void;
   isJoined?: boolean; // Nueva prop
   isLoading?: boolean; // Nueva prop para estado de carga
+  requestSent?: boolean; // Nueva prop para indicar si ya se envió solicitud
 }
 
 export default function GroupOfferCard({
@@ -16,16 +17,16 @@ export default function GroupOfferCard({
   onRequestJoin,
   isJoined = false, // Valor por defecto
   isLoading = false, // Valor por defecto
+  requestSent = false, // Valor por defecto
 }: GroupOfferCardProps) {
-  const { id, description, availableSlots, totalSlots } = offer;
-  const occupiedSlots = totalSlots - availableSlots;
+  const { id, description, availableSlots, totalSlots, currentMembers } = offer;
 
   return (
     <div className={styles.card}>
       <div className={styles.cardHeader}>
         <div className={styles.slotsInfo}>
           <i className="pi pi-users" />
-          <span>{occupiedSlots}/{totalSlots}</span>
+          <span>{currentMembers}/{totalSlots}</span>
         </div>
       </div>
 
@@ -46,15 +47,17 @@ export default function GroupOfferCard({
           {isJoined ? 'Ver Grupo' : 'Ver Detalles'}
         </button>
         <button
-          className={`${styles.joinButton} ${isJoined ? styles.leaveButton : ''}`}
+          className={`${styles.joinButton} ${isJoined ? styles.leaveButton : ''} ${requestSent ? styles.requestSent : ''}`}
           onClick={() => onRequestJoin(id)}
-          disabled={(availableSlots === 0 && !isJoined) || isLoading}
+          disabled={(availableSlots === 0 && !isJoined && !requestSent) || isLoading || requestSent}
         >
           {isLoading ? (
             <>
               <i className="pi pi-spin pi-spinner" style={{ fontSize: '0.8rem', marginRight: '6px' }} />
-              {isJoined ? 'Saliendo...' : 'Uniéndose...'}
+              {requestSent ? 'Enviando...' : (isJoined ? 'Saliendo...' : 'Uniéndose...')}
             </>
+          ) : requestSent ? (
+            'Solicitud enviada'
           ) : (
             isJoined ? 'Salir del Grupo' : (availableSlots > 0 ? 'Unirse' : 'Cupos Llenos')
           )}

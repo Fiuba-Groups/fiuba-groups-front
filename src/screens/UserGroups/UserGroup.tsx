@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import styles from './UserGroup.module.scss';
 import AppShell from '../../components/Shell';
-import SearchBar from '../../components/SearchBar/index';
 import GroupOfferCard from '../../components/GroupOfferCard/GroupOfferCard';
 import SubjectAccordion from '../../components/SubjectAccordion/SubjectAccordion';
 import GroupOfferDetailModal from '../../components/GroupOfferDetailModal/GroupOfferDetailModal';
@@ -12,10 +11,9 @@ import { useUserGroups } from '../../hooks/useUserGroups';
  * Componente para mostrar los grupos a los que pertenece el usuario.
  */
 export default function UserGroup() {
-  const { groups, loading, error, refetch, leaveGroup } = useUserGroups();
+  const { groups, loading, error, leaveGroup } = useUserGroups();
   const [leavingGroupId, setLeavingGroupId] = useState<string | null>(null);
   const [selectedGroup, setSelectedGroup] = useState<GroupOffer | null>(null);
-  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
 
   /**
    * Agrupa las ofertas por materia
@@ -33,21 +31,14 @@ export default function UserGroup() {
 
   const groupedGroups = groupOffersBySubject(groups);
 
-  const handleSearch = (value: string) => {
-    console.log('Buscando en mis grupos:', value);
-    // TODO: Lógica para filtrar grupos del usuario
-  };
-
   const handleViewGroupDetails = (groupId: string) => {
     const group = groups.find(g => g.id === groupId);
     if (group) {
       setSelectedGroup(group);
-      setIsDetailModalOpen(true);
     }
   };
 
   const handleCloseDetailModal = () => {
-    setIsDetailModalOpen(false);
     setSelectedGroup(null);
   };
 

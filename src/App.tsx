@@ -13,7 +13,6 @@ import UserGroup from './screens/UserGroups/UserGroup';
 import { useAuth } from './hooks';
 import UserRequests from './screens/UserRequests/UserRequests';
 import UserFriends from './screens/UserFriends/UserFriends';
-import OtherUserProfile from './screens/OtherUserProfile/OtherUserProfile';
 import UserSearches from './screens/UserSearches/UserSearches';
 import AcademicScreen from './screens/AcademicHistoryScreen/AcademicScreen';
 import RankTeam from './screens/RankTeam/RankTeam';

@@ -54,6 +54,7 @@ const initializeMockSearches = (): GroupOffer[] => {
       semester: '1C 2025',
       totalSlots: 5,
       availableSlots: 3,
+      currentMembers: 1, // Solo el creador inicialmente
       author: {
         id: 'current-user',
         name: 'Tú',
@@ -70,6 +71,7 @@ const initializeMockSearches = (): GroupOffer[] => {
       semester: '1C 2025',
       totalSlots: 3,
       availableSlots: 2,
+      currentMembers: 1, // Solo el creador inicialmente
       author: {
         id: 'current-user',
         name: 'Tú',
@@ -86,6 +88,7 @@ const initializeMockSearches = (): GroupOffer[] => {
       semester: '2C 2025',
       totalSlots: 4,
       availableSlots: 1,
+      currentMembers: 1, // Solo el creador inicialmente
       author: {
         id: 'current-user',
         name: 'Tú',

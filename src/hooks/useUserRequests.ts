@@ -49,6 +49,21 @@ export const useUserRequests = (): UseUserRequestsResult => {
   const acceptRequest = async (requestId: string) => {
     try {
       await acceptGroupRequest(requestId);
+
+      // Encontrar la solicitud para obtener el ID del grupo
+      const request = receivedRequests.find(r => r.id === requestId);
+      if (request) {
+        // Actualizar el contador de miembros del grupo
+        const GROUPS_STORAGE_KEY = 'fiuba_group_offers';
+        const groups = JSON.parse(localStorage.getItem(GROUPS_STORAGE_KEY) || '[]');
+        const groupIndex = groups.findIndex((g: any) => g.id === request.groupOfferId);
+
+        if (groupIndex !== -1) {
+          groups[groupIndex].currentMembers += 1;
+          localStorage.setItem(GROUPS_STORAGE_KEY, JSON.stringify(groups));
+        }
+      }
+
       // Actualizar el estado local
       setReceivedRequests(prev =>
         prev.map(request =>

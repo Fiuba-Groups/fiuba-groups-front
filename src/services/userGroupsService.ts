@@ -54,6 +54,7 @@ const initializeMockUserGroups = (): GroupOffer[] => {
       semester: '1C 2025',
       totalSlots: 5,
       availableSlots: 2,
+      currentMembers: 4, // 5 - 2 + 1 = 4 miembros (incluyendo creador)
       author: {
         id: 'current-user',
         name: 'Tú',
@@ -70,6 +71,7 @@ const initializeMockUserGroups = (): GroupOffer[] => {
       semester: '1C 2025',
       totalSlots: 4,
       availableSlots: 1,
+      currentMembers: 4, // 4 - 1 + 1 = 4 miembros (incluyendo creador)
       author: {
         id: 'current-user',
         name: 'Tú',
@@ -86,6 +88,7 @@ const initializeMockUserGroups = (): GroupOffer[] => {
       semester: '2C 2025',
       totalSlots: 6,
       availableSlots: 3,
+      currentMembers: 4, // 6 - 3 + 1 = 4 miembros (incluyendo creador)
       author: {
         id: 'current-user',
         name: 'Tú',

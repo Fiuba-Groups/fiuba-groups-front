@@ -23,6 +23,7 @@ export interface GroupOffer {
   semester: string; // Cuatrimestre (ej: 1C 2025)
   totalSlots: number;
   availableSlots: number;
+  currentMembers: number; // Número actual de miembros en el grupo
   author: GroupOfferAuthor;
   createdAt: string;
   updatedAt: string;

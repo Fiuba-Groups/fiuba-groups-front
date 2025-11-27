@@ -251,3 +251,63 @@ export const cancelGroupRequest = async (requestId: string): Promise<void> => {
   // Simular delay de red para testing
   await new Promise(resolve => setTimeout(resolve, 300));
 };
+
+/**
+ * Crea una nueva solicitud para unirse a un grupo
+ * @param groupOfferId - ID del grupo al que se quiere unir
+ * @param message - Mensaje opcional con la solicitud
+ * @returns Promise con la solicitud creada
+ */
+export const createGroupRequest = async (groupOfferId: string, message?: string): Promise<GroupRequest> => {
+  // TODO: Descomentar cuando esté disponible el backend
+  // const response = await apiFetch<GroupRequestResponse>('/api/requests', {
+  //   method: 'POST',
+  //   headers: { 'Content-Type': 'application/json' },
+  //   body: JSON.stringify({ groupOfferId, message }),
+  // });
+  // return mapResponseToGroupRequest(response);
+
+  // Simulación de crear solicitud
+  const requests = loadRequestsFromStorage();
+
+  // Obtener información del grupo (simulado)
+  const GROUPS_STORAGE_KEY = 'fiuba_group_offers';
+  const groups = JSON.parse(localStorage.getItem(GROUPS_STORAGE_KEY) || '[]');
+  const group = groups.find((g: any) => g.id === groupOfferId);
+
+  if (!group) {
+    throw new Error(`Grupo con ID ${groupOfferId} no encontrado`);
+  }
+
+  // Crear nueva solicitud
+  const newRequest: GroupRequest = {
+    id: Date.now().toString(), // ID único basado en timestamp
+    groupOfferId,
+    groupOffer: {
+      id: group.id,
+      title: group.title,
+      subject: group.subject,
+      cathedra: group.cathedra,
+      semester: group.semester,
+      author: group.author,
+    },
+    requesterId: 'current-user',
+    requester: {
+      id: 'current-user',
+      name: 'Tú',
+      surname: '',
+      email: 'user@fi.uba.ar',
+    },
+    status: 'pending',
+    requestedAt: new Date().toISOString(),
+    message: message || 'Estoy interesado en unirme al grupo.',
+  };
+
+  requests.push(newRequest);
+  saveRequestsToStorage(requests);
+
+  // Simular delay de red para testing
+  await new Promise(resolve => setTimeout(resolve, 300));
+
+  return newRequest;
+};

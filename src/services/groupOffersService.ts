@@ -4,6 +4,31 @@ import { GroupOffer } from '../types/groupOffer';
  * Servicio para manejar las operaciones relacionadas con ofertas de grupos
  */
 
+// Función para migrar datos existentes agregando currentMembers
+const migrateGroupsData = () => {
+  const groups = loadGroupsFromStorage();
+  let needsMigration = false;
+
+  const migratedGroups = groups.map(group => {
+    if (!group.hasOwnProperty('currentMembers')) {
+      needsMigration = true;
+      // Calcular miembros actuales basados en slots ocupados
+      const occupiedSlots = group.totalSlots - (group.availableSlots || group.totalSlots);
+      return {
+        ...group,
+        currentMembers: Math.max(1, occupiedSlots + 1) // Al menos 1 (creador) + miembros que se unieron
+      };
+    }
+    return group;
+  });
+
+  if (needsMigration) {
+    saveGroupsToStorage(migratedGroups);
+  }
+
+  return migratedGroups;
+};
+
 // Interfaz para el request de crear grupo
 interface CreateGroupRequest {
   title: string;
@@ -78,8 +103,8 @@ export const fetchGroupOffers = async (): Promise<GroupOffer[]> => {
   // Simular delay de red para testing
   await new Promise(resolve => setTimeout(resolve, 500));
 
-  // Cargar grupos desde localStorage
-  return loadGroupsFromStorage();
+  // Cargar grupos desde localStorage con migración
+  return migrateGroupsData();
 };
 
 /**
@@ -109,6 +134,7 @@ export const createGroupOffer = async (request: CreateGroupRequest): Promise<Gro
     semester: courseData.semester,
     totalSlots: request.maxMembers,
     availableSlots: request.maxMembers, // Inicialmente todos los slots disponibles
+    currentMembers: 1, // El creador cuenta como primer miembro
     author: {
       id: request.creatorStudentRegister.toString(),
       name: `Estudiante ${request.creatorStudentRegister}`, // Nombre mock
@@ -147,8 +173,9 @@ export const requestToJoinGroup = async (offerId: string): Promise<void> => {
     throw new Error('No hay slots disponibles en este grupo');
   }
 
-  // Reducir slots disponibles
+  // Reducir slots disponibles e incrementar miembros actuales
   group.availableSlots -= 1;
+  group.currentMembers += 1;
   group.updatedAt = new Date().toISOString();
 
   // Actualizar localStorage
