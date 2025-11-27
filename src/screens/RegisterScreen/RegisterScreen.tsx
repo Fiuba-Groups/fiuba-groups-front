@@ -14,22 +14,37 @@ export default function RegisterScreen({ onRegister }: RegisterScreenProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [showPasswordRequirements, setShowPasswordRequirements] = useState(false);
 
   const backgroundStyle = {
     backgroundImage: `url(${process.env.PUBLIC_URL}/fondo_login_2.jpg)`,
+  };
+
+  const getPasswordRequirements = (password: string) => {
+    return {
+      length: password.length >= 8,
+      uppercase: /[A-Z]/.test(password),
+      number: /\d/.test(password),
+      symbol: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+    };
+  };
+
+  const isPasswordValid = (password: string) => {
+    const requirements = getPasswordRequirements(password);
+    return Object.values(requirements).every(req => req);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
-    if (password !== confirmPassword) {
-      setError('Las contraseñas no coinciden');
+    if (!isPasswordValid(password)) {
+      setError('La contraseña no cumple con los requisitos mínimos');
       return;
     }
 
-    if (password.length < 4) {
-      setError('La contraseña debe tener al menos 4 caracteres');
+    if (password !== confirmPassword) {
+      setError('Las contraseñas no coinciden');
       return;
     }
 
@@ -72,15 +87,38 @@ export default function RegisterScreen({ onRegister }: RegisterScreenProps) {
             <label htmlFor="password" className={styles.label}>
               Contraseña
             </label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className={styles.input}
-              placeholder="Tu contraseña"
-              required
-            />
+            <div className={styles.passwordContainer}>
+              <input
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onFocus={() => setShowPasswordRequirements(true)}
+                onBlur={() => setShowPasswordRequirements(false)}
+                className={styles.input}
+                placeholder="Tu contraseña"
+                required
+              />
+              {showPasswordRequirements && (
+                <div className={styles.passwordRequirements}>
+                  <div className={styles.requirementsTitle}>La contraseña debe tener:</div>
+                  {Object.entries({
+                    length: 'Al menos 8 caracteres',
+                    uppercase: 'Una letra mayúscula',
+                    number: 'Un número',
+                    symbol: 'Un símbolo (!@#$%^&*...)'
+                  }).map(([key, text]) => {
+                    const isValid = getPasswordRequirements(password)[key as keyof ReturnType<typeof getPasswordRequirements>];
+                    return (
+                      <div key={key} className={`${styles.requirement} ${isValid ? styles.valid : styles.invalid}`}>
+                        <span className={styles.checkmark}>{isValid ? '✓' : '✗'}</span>
+                        {text}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           </div>
 
           <div className={styles.inputGroup}>
