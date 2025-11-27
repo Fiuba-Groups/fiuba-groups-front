@@ -1,24 +1,32 @@
 import { GroupOffer } from '../types/groupOffer';
 import { fetchGroupOffers } from './groupOffersService';
+import { fetchCurrentUser } from './currentUserService';
 
 /**
  * Servicio para manejar las operaciones relacionadas con las búsquedas del usuario
  * Conecta con el backend usando el mismo endpoint /groups y filtra por creador
  */
 
-// ID del usuario actual (TODO: obtener del contexto de autenticación)
-const CURRENT_USER_ID = '12345';
-
 /**
  * Obtiene todas las búsquedas (grupos) creadas por el usuario actual
  * @returns Promise con el listado de búsquedas del usuario
  */
 export const fetchUserSearches = async (): Promise<GroupOffer[]> => {
+  // Obtener el usuario actual
+  const currentUser = await fetchCurrentUser();
+  const userRegister = currentUser.student?.register;
+  
+  if (!userRegister) {
+    console.warn('Usuario no tiene estudiante asociado');
+    return [];
+  }
+
   // Obtener todos los grupos del backend
   const allGroups = await fetchGroupOffers();
   
   // Filtrar solo los grupos creados por el usuario actual
-  return allGroups.filter(group => group.author.id === CURRENT_USER_ID);
+  // El author.id contiene el creatorStudentRegister
+  return allGroups.filter(group => group.author.id === userRegister.toString());
 };
 
 /**

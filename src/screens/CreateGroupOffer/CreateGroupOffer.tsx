@@ -3,6 +3,7 @@ import { ArrowLeft, Users, Calendar, Info } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { createGroupOffer } from "../../services/groupOffersService";
 import { fetchCourseOfferings, groupOptionsBySubject, GroupedSubjectOption } from "../../services/courseOfferingsService";
+import { fetchCurrentUser } from "../../services/currentUserService";
 import  styles from "./CreateGroupOffer.module.scss";
 
 const CreateGroupOffer = () => {
@@ -26,6 +27,24 @@ const CreateGroupOffer = () => {
   // Course offerings del backend
   const [groupedSubjects, setGroupedSubjects] = useState<GroupedSubjectOption[]>([]);
   const [loadingOfferings, setLoadingOfferings] = useState(true);
+  
+  // Usuario actual
+  const [currentUserRegister, setCurrentUserRegister] = useState<number | null>(null);
+
+  // Cargar usuario actual
+  useEffect(() => {
+    const loadCurrentUser = async () => {
+      try {
+        const user = await fetchCurrentUser();
+        if (user.student?.register) {
+          setCurrentUserRegister(user.student.register);
+        }
+      } catch (error) {
+        console.error("Error cargando usuario actual:", error);
+      }
+    };
+    loadCurrentUser();
+  }, []);
 
   // Cargar course offerings del backend
   useEffect(() => {
@@ -90,6 +109,11 @@ const CreateGroupOffer = () => {
       return;
     }
 
+    if (!currentUserRegister) {
+      setPublishError("Error: No se pudo obtener tu información de estudiante. Intentá recargar la página.");
+      return;
+    }
+
     setIsPublishing(true);
     setPublishError(null);
 
@@ -107,7 +131,7 @@ const CreateGroupOffer = () => {
           description: formData.description,
           courseOfferingId: parseInt(formData.courseOfferingId),
           maxMembers: parseInt(formData.groupSize),
-          creatorStudentRegister: 12345, // TODO: Obtener del contexto de autenticación
+          creatorStudentRegister: currentUserRegister,
         });
       }
 

@@ -6,8 +6,9 @@ import SearchBar from '../../components/SearchBar/index';
 import GroupOfferCard from '../../components/GroupOfferCard/GroupOfferCard';
 import SubjectAccordion from '../../components/SubjectAccordion/SubjectAccordion';
 import { useGroupOffers } from '../../hooks/useGroupOffers';
-import { requestToJoinGroup } from '../../services/groupOffersService';
-import { createGroupRequest } from '../../services/requestsService';
+import { createGroupRequest, fetchUserSentRequests } from '../../services/requestsService';
+import { fetchCurrentUser } from '../../services/currentUserService';
+import { fetchUserGroups } from '../../services/userGroupsService';
 import { GroupOffer } from '../../types/groupOffer';
 import { useNavigate } from 'react-router-dom';
 import GroupOfferDetailModal from '../../components/GroupOfferDetailModal/GroupOfferDetailModal';
@@ -18,7 +19,7 @@ import FilterModal from '../../components/FilterModal/FilterModal';
  * Maneja la lógica de la pantalla y renderiza los componentes
  */
 export default function GroupOffers() {
-  const { offers, loading, error } = useGroupOffers();
+  const { offers, loading, error, refetch } = useGroupOffers();
   const navigate = useNavigate();
   const [selectedOffer, setSelectedOffer] = useState<GroupOffer | null>(null);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
@@ -27,29 +28,43 @@ export default function GroupOffers() {
   const [semesterFilter, setSemesterFilter] = useState<string>('all');
   const [cathedraFilter, setCathedraFilter] = useState<string>('all');
   const [sentRequests, setSentRequests] = useState<Set<string>>(new Set());
+  const [userGroupIds, setUserGroupIds] = useState<Set<string>>(new Set());
   const [requestingOfferId, setRequestingOfferId] = useState<string | null>(null);
+  const [currentUserRegister, setCurrentUserRegister] = useState<number | null>(null);
 
-  // Cargar solicitudes enviadas al montar el componente
+  // Cargar usuario actual, grupos a los que pertenece y solicitudes enviadas
   useEffect(() => {
-    const loadSentRequests = () => {
+    const loadUserAndRequests = async () => {
       try {
-        const REQUESTS_STORAGE_KEY = 'fiuba_user_requests';
-        const storedRequests = localStorage.getItem(REQUESTS_STORAGE_KEY);
-        if (storedRequests) {
-          const requests = JSON.parse(storedRequests);
-          const sentRequestIds = new Set<string>(
-            requests
-              .filter((req: any) => req.requesterId === 'current-user' && req.status === 'pending')
-              .map((req: any) => String(req.groupOfferId))
-          );
-          setSentRequests(sentRequestIds);
+        // Obtener usuario actual
+        const user = await fetchCurrentUser();
+        if (user.student?.register) {
+          setCurrentUserRegister(user.student.register);
         }
+
+        // Obtener grupos a los que el usuario ya pertenece
+        try {
+          const userGroups = await fetchUserGroups();
+          const groupIds = new Set<string>(userGroups.map(g => g.id));
+          setUserGroupIds(groupIds);
+        } catch (err) {
+          console.error('Error cargando grupos del usuario:', err);
+        }
+
+        // Obtener solicitudes enviadas desde el backend
+        const requests = await fetchUserSentRequests();
+        const sentRequestIds = new Set<string>(
+          requests
+            .filter(req => req.status === 'pending')
+            .map(req => req.groupOfferId)
+        );
+        setSentRequests(sentRequestIds);
       } catch (error) {
-        console.error('Error cargando solicitudes enviadas:', error);
+        console.error('Error cargando datos del usuario:', error);
       }
     };
 
-    loadSentRequests();
+    loadUserAndRequests();
   }, []);
 
   /**
@@ -57,6 +72,21 @@ export default function GroupOffers() {
    */
   const hasSentRequest = (offerId: string): boolean => {
     return sentRequests.has(offerId);
+  };
+
+  /**
+   * Verifica si el usuario ya es miembro del grupo
+   */
+  const isMemberOfGroup = (offerId: string): boolean => {
+    return userGroupIds.has(offerId);
+  };
+
+  /**
+   * Verifica si el usuario actual es el autor de una oferta
+   */
+  const isOwnOffer = (offer: GroupOffer): boolean => {
+    if (!currentUserRegister) return false;
+    return offer.author.id === currentUserRegister.toString();
   };
 
   /**
@@ -81,6 +111,12 @@ export default function GroupOffers() {
    */
   const filterOffers = (offers: GroupOffer[]): GroupOffer[] => {
     let filtered = offers;
+
+    // Excluir grupos propios - el usuario no debería ver sus propios grupos en la búsqueda
+    filtered = filtered.filter(offer => !isOwnOffer(offer));
+
+    // Excluir grupos donde el usuario ya es miembro
+    filtered = filtered.filter(offer => !isMemberOfGroup(offer.id));
 
     // Filtro por cupo disponible
     switch (slotFilter) {
@@ -218,26 +254,36 @@ export default function GroupOffers() {
    */
   const handleRequestJoin = async (offerId: string) => {
     if (hasSentRequest(offerId)) {
+      console.warn('Ya has enviado una solicitud a este grupo');
       return; // Ya se envió solicitud para esta oferta
+    }
+
+    if (isMemberOfGroup(offerId)) {
+      console.warn('Ya eres miembro de este grupo');
+      return; // Ya es miembro del grupo
+    }
+
+    // Verificar que no sea un grupo propio
+    const offer = offers.find(o => o.id === offerId);
+    if (offer && isOwnOffer(offer)) {
+      console.warn('No puedes solicitar unirte a tu propio grupo');
+      return;
     }
 
     setRequestingOfferId(offerId);
     try {
-      // Crear la solicitud
+      // Crear la solicitud en el backend
       await createGroupRequest(offerId, 'Estoy interesado en unirme al grupo.');
 
-      // Reducir slots disponibles (lógica existente)
-      await requestToJoinGroup(offerId);
-
-      // Actualizar el estado local
+      // Actualizar el estado local de solicitudes enviadas
       setSentRequests(prev => new Set(Array.from(prev).concat(offerId)));
 
+      // Refrescar la lista de ofertas para actualizar los slots
+      refetch();
+
       console.log('Solicitud enviada exitosamente');
-      // TODO: Mostrar notificación de éxito
-      // TODO: Actualizar la lista de ofertas
     } catch (error) {
       console.error('Error al solicitar unirse:', error);
-      // TODO: Mostrar notificación de error
     } finally {
       setRequestingOfferId(null);
     }
