@@ -1,11 +1,14 @@
-import { useState } from "react";
-import { ArrowLeft, Users, DollarSign, Calendar, Info } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { ArrowLeft, Users, Calendar, Info } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { createGroupOffer } from "../../services/groupOffersService";
 import  styles from "./CreateGroupOffer.module.scss";
 
 const CreateGroupOffer = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { editMode, offerData } = location.state || {};
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -18,6 +21,21 @@ const CreateGroupOffer = () => {
 
   const [isPublishing, setIsPublishing] = useState(false);
   const [publishError, setPublishError] = useState<string | null>(null);
+
+  // Cargar datos si estamos en modo edición
+  useEffect(() => {
+    if (editMode && offerData) {
+      setFormData({
+        title: offerData.title || "",
+        description: offerData.description || "",
+        subject: offerData.subject || "",
+        cathedra: offerData.cathedra || "",
+        groupSize: offerData.totalSlots?.toString() || "",
+        duration: "1", // Default duration, could be enhanced
+        terms: "", // Could be enhanced with stored terms
+      });
+    }
+  }, [editMode, offerData]);
 
   // Opciones de materias disponibles
   const subjectOptions = [
@@ -63,16 +81,38 @@ const CreateGroupOffer = () => {
     try {
       const courseOfferingId = getCourseOfferingId(formData.subject, formData.cathedra);
 
-      await createGroupOffer({
-        title: formData.title,
-        description: formData.description,
-        courseOfferingId: courseOfferingId,
-        maxMembers: parseInt(formData.groupSize),
-        creatorStudentRegister: 12345, // TODO: Obtener del contexto de autenticación
-      });
+      if (editMode && offerData) {
+        // Modo edición: actualizar la oferta existente
+        const GROUPS_STORAGE_KEY = 'fiuba_group_offers';
+        const allGroups = JSON.parse(localStorage.getItem(GROUPS_STORAGE_KEY) || '[]');
+        const groupIndex = allGroups.findIndex((g: any) => g.id === offerData.id);
+
+        if (groupIndex !== -1) {
+          // Actualizar la oferta existente
+          allGroups[groupIndex] = {
+            ...allGroups[groupIndex],
+            title: formData.title,
+            description: formData.description,
+            subject: subjectOptions.find(s => s.value === formData.subject)?.label || formData.subject,
+            cathedra: formData.cathedra,
+            totalSlots: parseInt(formData.groupSize),
+            updatedAt: new Date().toISOString(),
+          };
+          localStorage.setItem(GROUPS_STORAGE_KEY, JSON.stringify(allGroups));
+        }
+      } else {
+        // Modo creación: crear nueva oferta
+        await createGroupOffer({
+          title: formData.title,
+          description: formData.description,
+          courseOfferingId: courseOfferingId,
+          maxMembers: parseInt(formData.groupSize),
+          creatorStudentRegister: 12345, // TODO: Obtener del contexto de autenticación
+        });
+      }
 
       // Navegar de vuelta a la lista de búsquedas
-      navigate("/home");
+      navigate("/my-searches");
     } catch (error) {
       console.error("Error al publicar grupo:", error);
       setPublishError("Error al publicar el grupo. Inténtalo de nuevo.");
@@ -90,28 +130,22 @@ const CreateGroupOffer = () => {
             <div className={styles.leftSection}>
               <button
                 className={styles.backButton}
-                onClick={() => navigate("/home")}
+                onClick={() => navigate(editMode ? "/my-searches" : "/home")}
               >
                 <ArrowLeft />
               </button>
               <div className={styles.headerText}>
-                <h1>Crear Grupo de Estudio</h1>
-                <p>Publicá un nuevo grupo para encontrar compañeros</p>
+                <h1>{editMode ? 'Editar Grupo de Estudio' : 'Crear Grupo de Estudio'}</h1>
+                <p>{editMode ? 'Modificá los detalles de tu grupo' : 'Publicá un nuevo grupo para encontrar compañeros'}</p>
               </div>
             </div>
             <div className={styles.actions}>
-              <button
-                className={`${styles.button} ${styles.outline} ${styles.draftButton}`}
-                onClick={handleSaveDraft}
-              >
-                Guardar Borrador
-              </button>
               <button
                 className={`${styles.button} ${styles.primary}`}
                 onClick={handlePublish}
                 disabled={isPublishing}
               >
-                {isPublishing ? "Publicando..." : "Publicar Grupo"}
+                {isPublishing ? (editMode ? "Actualizando..." : "Publicando...") : (editMode ? "Actualizar Grupo" : "Publicar Grupo")}
               </button>
             </div>
           </div>
@@ -255,17 +289,11 @@ const CreateGroupOffer = () => {
             {/* Mobile Actions */}
             <div className={styles.mobileActions}>
               <button
-                className={`${styles.button} ${styles.outline}`}
-                onClick={handleSaveDraft}
-              >
-                Guardar Borrador
-              </button>
-              <button
                 className={`${styles.button} ${styles.primary}`}
                 onClick={handlePublish}
                 disabled={isPublishing}
               >
-                {isPublishing ? "Publicando..." : "Publicar"}
+                {isPublishing ? (editMode ? "Actualizando..." : "Publicando...") : (editMode ? "Actualizar" : "Publicar")}
               </button>
             </div>
           </div>

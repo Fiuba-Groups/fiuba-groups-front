@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Edit, Trash2, Users, Calendar, BookOpen } from 'lucide-react';
 import styles from './UserSearches.module.scss';
 import AppShell from '../../components/Shell';
@@ -12,6 +13,7 @@ import { GroupOffer } from '../../types/groupOffer';
  * Componente para mostrar las búsquedas creadas por el usuario
  */
 export default function UserSearches() {
+  const navigate = useNavigate();
   const { searches, loading, error, refetch, deleteSearch } = useUserSearches();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSearch, setSelectedSearch] = useState<GroupOffer | null>(null);
@@ -57,7 +59,13 @@ export default function UserSearches() {
    */
   const handleEditSearch = (search: GroupOffer) => {
     console.log('Editar búsqueda:', search.id);
-    // TODO: Navegar a pantalla de edición o abrir modal de edición
+    // Navegar a la pantalla de crear oferta con los datos de esta oferta
+    navigate('/new-group-search', {
+      state: {
+        editMode: true,
+        offerData: search
+      }
+    });
   };
 
   /**
@@ -243,6 +251,7 @@ export default function UserSearches() {
             offer={selectedSearch}
             onClose={handleCloseDetailModal}
             onRequestJoin={handleRequestJoin}
+            showJoinButton={false}
           />
         )}
 
