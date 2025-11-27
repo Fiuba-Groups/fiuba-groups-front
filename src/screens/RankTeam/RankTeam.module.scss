@@ -1,0 +1,265 @@
+@import '../../constants/styles-constants.scss';
+
+.container {
+  padding: $screen-padding;
+  min-height: calc(100vh - $header-height);
+  background-color: $color-background;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.backButton {
+  background: $color-header;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  margin-top: 4px;
+
+  &:hover {
+    background-color: #f5f5f5;
+    border-color: $color-accent;
+  }
+}
+
+.backIcon {
+  width: 20px;
+  height: 20px;
+  color: $color-text;
+}
+
+.headerInfo {
+  flex: 1;
+}
+
+.title {
+  font-size: $font-size-title;
+  font-weight: 700;
+  color: $color-text;
+  margin: 0 0 8px 0;
+  font-family: $font-family-base;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: $color-text-light;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.teammatesList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.teammateCard {
+  background: $color-header;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+
+  &:hover {
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.12);
+    border-color: $color-accent;
+    transform: translateY(-1px);
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+}
+
+.teammateInfo {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid rgba(0, 123, 255, 0.15);
+  flex-shrink: 0;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.avatarPlaceholder {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 123, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  
+  .avatarIcon {
+    width: 18px;
+    height: 18px;
+    color: $color-accent;
+    opacity: 0.4;
+  }
+  
+  .initials {
+    position: absolute;
+    font-weight: 600;
+    font-size: 12px;
+    color: $color-accent;
+  }
+}
+
+.teammateDetails {
+  flex: 1;
+  min-width: 0;
+}
+
+.teammateName {
+  font-size: 16px;
+  font-weight: 600;
+  color: $color-text;
+  margin: 0 0 2px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.teammateCareer {
+  font-size: 13px;
+  color: $color-text-light;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ratingSection {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-end;
+  
+  @media (max-width: 768px) {
+    align-items: center;
+    margin-top: 12px;
+  }
+  
+  .ratingLabel {
+    font-size: 12px;
+    font-weight: 500;
+    color: $color-text;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+.starsContainer {
+  display: flex;
+  gap: 2px;
+}
+
+.starButton {
+  background: none;
+  border: none;
+  padding: 2px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: transform 0.15s ease;
+  
+  &:hover {
+    transform: scale(1.15);
+  }
+  
+  &:focus {
+    outline: 1px solid $color-accent;
+    outline-offset: 1px;
+  }
+}
+
+.star {
+  width: 24px;
+  height: 24px;
+  transition: all 0.15s ease;
+  
+  &.starFilled {
+    fill: $color-accent;
+    color: $color-accent;
+    filter: drop-shadow(0 1px 2px rgba(0, 123, 255, 0.3));
+  }
+  
+  &.starEmpty {
+    fill: none;
+    color: #d0d0d0;
+  }
+}
+
+.submitSection {
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.submitButton {
+  background: linear-gradient(135deg, $color-accent 0%, #0056b3 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.25);
+  transition: all 0.2s ease;
+  
+  &:hover:not(:disabled) {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.35);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+.submitIcon {
+  width: 16px;
+  height: 16px;
+}

@@ -16,6 +16,7 @@ import UserFriends from './screens/UserFriends/UserFriends';
 import OtherUserProfile from './screens/OtherUserProfile/OtherUserProfile';
 import UserSearches from './screens/UserSearches/UserSearches';
 import AcademicScreen from './screens/AcademicHistoryScreen/AcademicScreen';
+import RankTeam from './screens/RankTeam/RankTeam';
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -145,6 +146,14 @@ function App() {
         element={
           <ProtectedRoute isAuthenticated={isAuthenticated}>
             <AcademicScreen />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/rank-team"
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <RankTeam />
           </ProtectedRoute>
         }
       />
