@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './styles.module.scss';
 import 'primeicons/primeicons.css';
 import useSidebarPosition from './hooks/useSidebarPosition';
@@ -14,6 +15,7 @@ import { SidebarProps } from './types/types';
  * Maneja el estado colapsado/expandido y renderiza los subcomponentes
  */
 export default function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
+  const navigate = useNavigate();
   const { asideRef, buttonPos, logoPos, titlePos } = useSidebarPosition(collapsed);
 
   return (
@@ -38,11 +40,9 @@ export default function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
         collapsed={collapsed} 
       />
       <div className={`${styles.helpDivider} ${collapsed ? styles.collapsed : ''}`} />
-      <button 
+      <button
         className={`${styles.helpButton} ${collapsed ? styles.collapsed : ''}`}
-        onClick={() => {
-          console.log('Ayuda clickeada');
-        }}
+        onClick={() => navigate('/profile/help')}
         aria-label="Obtener ayuda"
       >
         <i className="pi pi-megaphone" aria-hidden="true" />

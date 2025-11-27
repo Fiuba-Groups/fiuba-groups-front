@@ -1,13 +1,16 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Profile.module.scss';
 import AppShell from '../../components/Shell';
 import { User, Shield, HelpCircle, BookOpen, GraduationCap } from 'lucide-react';
+import { uploadAvatar } from '../../services/userService';
 
 type Section = 'edit-profile';
 
 export default function ProfileScreen() {
   const [activeSection, setActiveSection] = useState<Section>('edit-profile');
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const [currentAvatarUrl, setCurrentAvatarUrl] = useState<string>('/user.png');
   const [formData, setFormData] = useState({
     username: 'UserFiuba',
     nombre: 'Alumno de Turri',
@@ -15,6 +18,15 @@ export default function ProfileScreen() {
     bio: '',
     genero: 'Masculino'
   });
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Cargar avatar desde localStorage al montar el componente
+  useEffect(() => {
+    const savedAvatar = localStorage.getItem('userAvatar');
+    if (savedAvatar) {
+      setCurrentAvatarUrl(savedAvatar);
+    }
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -30,7 +42,55 @@ export default function ProfileScreen() {
   };
 
   const handlePhotoChange = () => {
-    console.log('Cambiar foto');
+    fileInputRef.current?.click();
+  };
+
+  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validar que sea una imagen (incluyendo GIF)
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      alert('Por favor selecciona un archivo de imagen válido (JPEG, PNG, GIF, WebP)');
+      return;
+    }
+
+    // Validar tamaño del archivo (máximo 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('La imagen no puede superar los 5MB');
+      return;
+    }
+
+    setIsUploadingAvatar(true);
+
+    try {
+      const avatarUrl = await uploadAvatar(file);
+
+      // Actualizar el estado local con la nueva URL del avatar
+      setCurrentAvatarUrl(avatarUrl);
+
+      // Guardar en localStorage para persistencia
+      localStorage.setItem('userAvatar', avatarUrl);
+
+      // Emitir evento personalizado para actualizar otros componentes
+      window.dispatchEvent(new CustomEvent('avatarChanged', { detail: avatarUrl }));
+
+      console.log('Avatar subido exitosamente:', avatarUrl);
+
+      // Mostrar mensaje de éxito
+      alert('Avatar actualizado exitosamente');
+
+    } catch (error) {
+      console.error('Error al subir avatar:', error);
+      alert('Error al subir la imagen. Por favor intenta de nuevo.');
+    } finally {
+      setIsUploadingAvatar(false);
+      // Limpiar el input para permitir seleccionar la misma imagen nuevamente
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
   };
 
   return (
@@ -95,21 +155,29 @@ export default function ProfileScreen() {
         {/* Contenido Principal */}
         <div className={styles.profileContainer}>
         <div className={styles.photoSection}>
-          <img 
-            src="https://via.placeholder.com/150" 
-            alt="Profile" 
+          <img
+            src={currentAvatarUrl}
+            alt="Profile"
             className={styles.profilePhoto}
           />
           <div className={styles.photoInfo}>
             <h2>{formData.nombre}</h2>
             <p>@{formData.username}</p>
-            <button 
-              type="button" 
+            <button
+              type="button"
               className={styles.changePhotoBtn}
               onClick={handlePhotoChange}
+              disabled={isUploadingAvatar}
             >
-              Cambiar Avatar
+              {isUploadingAvatar ? 'Subiendo...' : 'Cambiar Avatar'}
             </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+              onChange={handleFileSelect}
+              style={{ display: 'none' }}
+            />
           </div>
         </div>
         

@@ -6,21 +6,45 @@ import { useAuth } from '../../hooks';
 
 export default function Header() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string>('/user.png');
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { logout } = useAuth();
 
-  // Cerrar dropdown al hacer clic fuera
+  // Cargar avatar y cerrar dropdown al hacer clic fuera
   useEffect(() => {
+    // Cargar avatar desde localStorage
+    const savedAvatar = localStorage.getItem('userAvatar');
+    if (savedAvatar) {
+      setAvatarUrl(savedAvatar);
+    }
+
     function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsDropdownOpen(false);
       }
     }
 
+    // Escuchar cambios en localStorage para actualizar avatar
+    function handleStorageChange(event: StorageEvent) {
+      if (event.key === 'userAvatar' && event.newValue) {
+        setAvatarUrl(event.newValue);
+      }
+    }
+
+    // Escuchar evento personalizado de cambio de avatar
+    function handleAvatarChange(event: CustomEvent<string>) {
+      setAvatarUrl(event.detail);
+    }
+
     document.addEventListener('mousedown', handleClickOutside);
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('avatarChanged', handleAvatarChange as EventListener);
+
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('avatarChanged', handleAvatarChange as EventListener);
     };
   }, []);
 
@@ -30,7 +54,7 @@ export default function Header() {
   };
 
   const handleEditProfileClick = () => {
-    console.log('Editar perfil clickeado');
+    navigate('/profile');
     setIsDropdownOpen(false);
   };
 
@@ -54,9 +78,9 @@ export default function Header() {
               className={styles.userAvatar}
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             >
-              <img 
-                src="/user.png" 
-                alt="Avatar del usuario" 
+              <img
+                src={avatarUrl}
+                alt="Avatar del usuario"
                 className={styles.avatarImage}
               />
               <i 

@@ -1,23 +1,16 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Mail, Lock, Trash2, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Lock, Trash2, AlertTriangle } from 'lucide-react';
 import styles from './SecurityScreen.module.scss';
 import AppShell from '../../components/Shell';
 import ConfirmModal from '../../components/ConfirmModal/ConfirmModal';
 
 export default function SecurityScreen() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'email' | 'password' | 'delete'>('email');
+  const [activeTab, setActiveTab] = useState<'password' | 'delete'>('password');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  // Estados para cambiar email
-  const [emailForm, setEmailForm] = useState({
-    currentEmail: 'usuario@fi.uba.ar',
-    newEmail: '',
-    confirmNewEmail: '',
-    password: ''
-  });
 
   // Estados para cambiar contraseña
   const [passwordForm, setPasswordForm] = useState({
@@ -26,13 +19,6 @@ export default function SecurityScreen() {
     confirmNewPassword: ''
   });
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setEmailForm(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -42,16 +28,6 @@ export default function SecurityScreen() {
     }));
   };
 
-  const handleEmailSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (emailForm.newEmail !== emailForm.confirmNewEmail) {
-      alert('Los correos electrónicos no coinciden');
-      return;
-    }
-    console.log('Cambiando email:', emailForm);
-    // TODO: Implementar cambio de email
-    alert('Correo electrónico actualizado exitosamente');
-  };
 
   const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -90,7 +66,6 @@ export default function SecurityScreen() {
   };
 
   const tabs = [
-    { id: 'email' as const, label: 'Cambiar Email', icon: Mail },
     { id: 'password' as const, label: 'Cambiar Contraseña', icon: Lock },
     { id: 'delete' as const, label: 'Eliminar Cuenta', icon: Trash2 }
   ];
@@ -129,73 +104,6 @@ export default function SecurityScreen() {
 
         {/* Contenido de cada tab */}
         <div className={styles.content}>
-          {activeTab === 'email' && (
-            <div className={styles.section}>
-              <h2 className={styles.sectionTitle}>
-                <Mail className={styles.sectionIcon} />
-                Cambiar Correo Electrónico
-              </h2>
-
-              <form onSubmit={handleEmailSubmit} className={styles.form}>
-                <div className={styles.formGroup}>
-                  <label>Correo electrónico actual</label>
-                  <input
-                    type="email"
-                    value={emailForm.currentEmail}
-                    disabled
-                    className={styles.disabledInput}
-                  />
-                  <p className={styles.helpText}>
-                    Este es tu correo actual registrado
-                  </p>
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label>Nuevo correo electrónico</label>
-                  <input
-                    type="email"
-                    name="newEmail"
-                    value={emailForm.newEmail}
-                    onChange={handleEmailChange}
-                    placeholder="nuevo@email.com"
-                    required
-                  />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label>Confirmar nuevo correo electrónico</label>
-                  <input
-                    type="email"
-                    name="confirmNewEmail"
-                    value={emailForm.confirmNewEmail}
-                    onChange={handleEmailChange}
-                    placeholder="nuevo@email.com"
-                    required
-                  />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label>Contraseña actual</label>
-                  <input
-                    type="password"
-                    name="password"
-                    value={emailForm.password}
-                    onChange={handleEmailChange}
-                    placeholder="Tu contraseña actual"
-                    required
-                  />
-                  <p className={styles.helpText}>
-                    Necesitamos verificar tu identidad
-                  </p>
-                </div>
-
-                <button type="submit" className={styles.submitButton}>
-                  Actualizar Correo Electrónico
-                </button>
-              </form>
-            </div>
-          )}
-
           {activeTab === 'password' && (
             <div className={styles.section}>
               <h2 className={styles.sectionTitle}>
