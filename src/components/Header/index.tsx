@@ -48,11 +48,6 @@ export default function Header() {
     };
   }, []);
 
-  const handleProfileClick = () => {
-    navigate('/profile');
-    setIsDropdownOpen(false);
-  };
-
   const handleEditProfileClick = () => {
     navigate('/profile');
     setIsDropdownOpen(false);
@@ -90,14 +85,7 @@ export default function Header() {
             
             {isDropdownOpen && (
               <div className={styles.dropdownMenu}>
-                <button 
-                  className={styles.dropdownItem}
-                  onClick={handleProfileClick}
-                >
-                  <i className="pi pi-user" />
-                  <span>Perfil</span>
-                </button>
-                <button 
+                <button
                   className={styles.dropdownItem}
                   onClick={handleEditProfileClick}
                 >

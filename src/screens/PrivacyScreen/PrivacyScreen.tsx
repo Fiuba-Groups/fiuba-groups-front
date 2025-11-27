@@ -13,7 +13,6 @@ export default function PrivacyScreen() {
     nombre: 'Alumno de Turri',
     apellido: '',
     perfilVisibilidad: 'Todos' as VisibilityOption,
-    nombreVisibilidad: 'Todos' as VisibilityOption,
     academiaVisibilidad: 'Todos' as VisibilityOption,
   });
 
@@ -153,47 +152,6 @@ export default function PrivacyScreen() {
             </div>
           </div>
 
-          {/* Quién puede ver nombre y apellido */}
-          <div className={styles.section}>
-            <h2 className={styles.sectionTitle}>
-              <User className={styles.sectionIcon} />
-              Visibilidad de Nombre y Apellido
-            </h2>
-
-            <div className={styles.formRow}>
-              <label>Quién puede ver tu nombre y apellido</label>
-              <div className={styles.inputWrapper}>
-                <div className={styles.optionsGrid}>
-                  {visibilityOptions.map(option => (
-                    <label
-                      key={option}
-                      className={`${styles.optionCard} ${
-                        formData.nombreVisibilidad === option ? styles.selected : ''
-                      }`}
-                    >
-                      <input
-                        type="radio"
-                        name="nombreVisibilidad"
-                        value={option}
-                        checked={formData.nombreVisibilidad === option}
-                        onChange={handleChange}
-                        className={styles.radioInput}
-                      />
-                      <div className={styles.optionContent}>
-                        {getVisibilityIcon(option)}
-                        <div>
-                          <strong>{option}</strong>
-                          <p className={styles.optionDescription}>
-                            {getVisibilityDescription(option)}
-                          </p>
-                        </div>
-                      </div>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
 
           {/* Quién puede ver información académica */}
           <div className={styles.section}>
