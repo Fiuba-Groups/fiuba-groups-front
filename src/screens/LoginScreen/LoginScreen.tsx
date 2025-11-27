@@ -14,10 +14,6 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  const backgroundStyle = {
-    backgroundImage: `url(${process.env.PUBLIC_URL}/fondo_login_2.jpg)`,
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -38,7 +34,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
   }
 
   return (
-      <div className={styles.loginContent} style={backgroundStyle}>
+      <div className={styles.loginContent}>
         <div className={styles.loginForm}>
           <h1 className={styles.loginTitle}>Iniciar Sesión</h1>
           <form onSubmit={handleSubmit} className={styles.form}>
