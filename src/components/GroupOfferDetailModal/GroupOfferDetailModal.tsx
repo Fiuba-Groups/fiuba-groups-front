@@ -6,13 +6,15 @@ import styles from './styles.module.scss';
 interface GroupOfferDetailModalProps {
   offer: GroupOffer;
   onClose: () => void;
-  onRequestJoin: (offerId: string) => void;
+  onRequestJoin?: (offerId: string) => void;
+  showJoinButton?: boolean;
 }
 
 const GroupOfferDetailModal: React.FC<GroupOfferDetailModalProps> = ({
   offer,
   onClose,
   onRequestJoin,
+  showJoinButton = true,
 }) => {
   const portalTarget = document.getElementById('modal-root') || document.body;
 
@@ -72,13 +74,15 @@ const GroupOfferDetailModal: React.FC<GroupOfferDetailModalProps> = ({
               Actualizado: {new Date(offer.updatedAt).toLocaleDateString()}
             </span>
           </div>
-          <button
-            className={styles.joinButton}
-            onClick={() => onRequestJoin(offer.id)}
-            disabled={offer.availableSlots === 0}
-          >
-            {offer.availableSlots === 0 ? 'Completo' : 'Solicitar unirme'}
-          </button>
+          {showJoinButton && onRequestJoin && (
+            <button
+              className={styles.joinButton}
+              onClick={() => onRequestJoin(offer.id)}
+              disabled={offer.availableSlots === 0}
+            >
+              {offer.availableSlots === 0 ? 'Completo' : 'Solicitar unirme'}
+            </button>
+          )}
         </div>
       </div>
     </div>

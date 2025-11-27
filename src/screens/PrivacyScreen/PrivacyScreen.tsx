@@ -70,45 +70,6 @@ export default function PrivacyScreen() {
         </div>
 
         <form onSubmit={handleSubmit} className={styles.privacyForm}>
-          {/* Cambiar nombre y apellido */}
-          <div className={styles.section}>
-            <h2 className={styles.sectionTitle}>
-              <User className={styles.sectionIcon} />
-              Información Personal
-            </h2>
-
-            <div className={styles.formRow}>
-              <label>Nombre</label>
-              <div className={styles.inputWrapper}>
-                <input
-                  type="text"
-                  name="nombre"
-                  value={formData.nombre}
-                  onChange={handleChange}
-                  placeholder="Tu nombre"
-                />
-                <p className={styles.helpText}>
-                  Este será tu nombre público en la plataforma.
-                </p>
-              </div>
-            </div>
-
-            <div className={styles.formRow}>
-              <label>Apellido</label>
-              <div className={styles.inputWrapper}>
-                <input
-                  type="text"
-                  name="apellido"
-                  value={formData.apellido}
-                  onChange={handleChange}
-                  placeholder="Tu apellido"
-                />
-                <p className={styles.helpText}>
-                  Tu apellido será visible según la configuración de privacidad.
-                </p>
-              </div>
-            </div>
-          </div>
 
           {/* Quién puede ver tu perfil */}
           <div className={styles.section}>
