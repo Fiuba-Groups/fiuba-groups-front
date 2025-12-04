@@ -170,3 +170,16 @@ export const uploadAvatar = async (file: File): Promise<string> => {
 
   return response.avatarUrl;
 };
+
+/**
+ * Obtiene el email de un compañero de grupo
+ * Solo funciona si el usuario actual comparte un grupo con el estudiante solicitado
+ * @param studentId - ID del estudiante
+ * @returns Promise con el email del estudiante
+ */
+export const getTeammateEmail = async (studentId: string): Promise<string> => {
+  const response = await apiFetch<{ email: string }>(
+    `http://localhost:8080/users/students/${studentId}/email`
+  );
+  return response.email;
+};

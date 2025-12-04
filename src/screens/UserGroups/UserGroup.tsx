@@ -218,6 +218,7 @@ export default function UserGroup() {
             offer={selectedGroup}
             onClose={handleCloseDetailModal}
             showJoinButton={false}
+            showEmailButtons={true}
           />
         )}
 

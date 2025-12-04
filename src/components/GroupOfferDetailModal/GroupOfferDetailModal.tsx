@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { GroupOffer } from '../../types/groupOffer';
+import { getTeammateEmail } from '../../services/userService';
 import styles from './styles.module.scss';
 
 interface GroupOfferDetailModalProps {
@@ -8,6 +9,7 @@ interface GroupOfferDetailModalProps {
   onClose: () => void;
   onRequestJoin?: (offerId: string) => void;
   showJoinButton?: boolean;
+  showEmailButtons?: boolean; // Muestra botones de email para compañeros de grupo
 }
 
 /**
@@ -26,7 +28,32 @@ const GroupOfferDetailModal: React.FC<GroupOfferDetailModalProps> = ({
   onClose,
   onRequestJoin,
   showJoinButton = true,
+  showEmailButtons = false,
 }) => {
+  const [sendingEmailTo, setSendingEmailTo] = useState<string | null>(null);
+
+  const handleSendEmail = async (memberId: string) => {
+    try {
+      setSendingEmailTo(memberId);
+      const email = await getTeammateEmail(memberId);
+      const subject = encodeURIComponent(`[FIUBA GROUPS] ${offer.title}`);
+      
+      // Crear un link temporal y hacer click para abrir Gmail
+      const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}&su=${subject}`;
+      const link = document.createElement('a');
+      link.href = gmailUrl;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('Error al abrir email:', error);
+    } finally {
+      setSendingEmailTo(null);
+    }
+  };
+
   const portalTarget = document.getElementById('modal-root') || document.body;
 
   const content = (
@@ -109,6 +136,17 @@ const GroupOfferDetailModal: React.FC<GroupOfferDetailModalProps> = ({
                   </div>
                   {member.id === offer.author.id && (
                     <span className={styles.creatorBadge}>Creador</span>
+                  )}
+                  {showEmailButtons && (
+                    <button
+                      className={styles.emailButton}
+                      onClick={() => handleSendEmail(member.id)}
+                      disabled={sendingEmailTo === member.id}
+                      title="Enviar email"
+                      aria-label={`Enviar email a ${member.name}`}
+                    >
+                      <i className="pi pi-envelope" />
+                    </button>
                   )}
                 </div>
               ))}
