@@ -65,22 +65,25 @@ export default function GroupOfferCard({
         >
           {isJoined ? 'Ver Grupo' : 'Ver Detalles'}
         </button>
-        <button
-          className={`${styles.joinButton} ${isJoined ? styles.leaveButton : ''} ${requestSent ? styles.requestSent : ''}`}
-          onClick={() => onRequestJoin(id)}
-          disabled={(availableSlots === 0 && !isJoined && !requestSent) || isLoading || requestSent}
-        >
-          {isLoading ? (
-            <>
-              <i className="pi pi-spin pi-spinner" style={{ fontSize: '0.8rem', marginRight: '6px' }} />
-              {requestSent ? 'Enviando...' : (isJoined ? 'Saliendo...' : 'Uniéndose...')}
-            </>
-          ) : requestSent ? (
-            'Solicitud enviada'
-          ) : (
-            isJoined ? 'Salir del Grupo' : (availableSlots > 0 ? 'Unirse' : 'Cupos Llenos')
-          )}
-        </button>
+        {/* No mostrar botón de salir si el grupo está finalizado */}
+        {!(isJoined && offer.status === 'FINISHED') && (
+          <button
+            className={`${styles.joinButton} ${isJoined ? styles.leaveButton : ''} ${requestSent ? styles.requestSent : ''}`}
+            onClick={() => onRequestJoin(id)}
+            disabled={(availableSlots === 0 && !isJoined && !requestSent) || isLoading || requestSent}
+          >
+            {isLoading ? (
+              <>
+                <i className="pi pi-spin pi-spinner" style={{ fontSize: '0.8rem', marginRight: '6px' }} />
+                {requestSent ? 'Enviando...' : (isJoined ? 'Saliendo...' : 'Uniéndose...')}
+              </>
+            ) : requestSent ? (
+              'Solicitud enviada'
+            ) : (
+              isJoined ? 'Salir del Grupo' : (availableSlots > 0 ? 'Unirse' : 'Cupos Llenos')
+            )}
+          </button>
+        )}
       </div>
     </div>
   );

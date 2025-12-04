@@ -5,6 +5,7 @@ import GroupOfferCard from '../../components/GroupOfferCard/GroupOfferCard';
 import SubjectAccordion from '../../components/SubjectAccordion/SubjectAccordion';
 import GroupOfferDetailModal from '../../components/GroupOfferDetailModal/GroupOfferDetailModal';
 import RateGroupModal from '../../components/RateGroupModal';
+import ConfirmModal from '../../components/ConfirmModal/ConfirmModal';
 import { GroupOffer } from '../../types/groupOffer';
 import { useUserGroups } from '../../hooks/useUserGroups';
 import { finishGroup, fetchPendingRatings } from '../../services/ratingsService';
@@ -21,6 +22,7 @@ export default function UserGroup() {
   const [selectedGroup, setSelectedGroup] = useState<GroupOffer | null>(null);
   const [ratingGroup, setRatingGroup] = useState<GroupOffer | null>(null);
   const [pendingRatingsMap, setPendingRatingsMap] = useState<Record<string, boolean>>({});
+  const [leaveConfirmGroup, setLeaveConfirmGroup] = useState<GroupOffer | null>(null);
 
   // Cargar usuario actual
   useEffect(() => {
@@ -76,15 +78,27 @@ export default function UserGroup() {
     setSelectedGroup(null);
   };
 
-  const handleLeaveGroup = async (groupId: string) => {
+  // Mostrar modal de confirmación para salir del grupo
+  const handleRequestLeaveGroup = (groupId: string) => {
+    const group = groups.find(g => g.id === groupId);
+    if (group) {
+      setLeaveConfirmGroup(group);
+    }
+  };
+
+  // Ejecutar salida del grupo después de confirmar
+  const handleConfirmLeaveGroup = async () => {
+    if (!leaveConfirmGroup) return;
+    
     try {
-      setLeavingGroupId(groupId);
-      await leaveGroup(groupId);
+      setLeavingGroupId(leaveConfirmGroup.id);
+      await leaveGroup(leaveConfirmGroup.id);
       console.log('Saliste del grupo exitosamente');
     } catch (error) {
       console.error('Error al salir del grupo:', error);
     } finally {
       setLeavingGroupId(null);
+      setLeaveConfirmGroup(null);
     }
   };
 
@@ -165,7 +179,7 @@ export default function UserGroup() {
                     <GroupOfferCard
                       offer={group}
                       onViewDetails={handleViewGroupDetails}
-                      onRequestJoin={handleLeaveGroup}
+                      onRequestJoin={handleRequestLeaveGroup}
                       isJoined={true}
                       isLoading={leavingGroupId === group.id}
                     />
@@ -231,6 +245,17 @@ export default function UserGroup() {
             onComplete={handleCloseRatingModal}
           />
         )}
+
+        <ConfirmModal
+          isOpen={leaveConfirmGroup !== null}
+          onClose={() => setLeaveConfirmGroup(null)}
+          onConfirm={handleConfirmLeaveGroup}
+          title="Salir del grupo"
+          message={`¿Estás seguro de que querés salir del grupo "${leaveConfirmGroup?.title}"? Podrás volver a unirte enviando una nueva solicitud.`}
+          confirmText="Salir"
+          cancelText="Cancelar"
+          isLoading={leavingGroupId !== null}
+        />
       </div>
     </AppShell>
   );

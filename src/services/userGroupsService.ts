@@ -158,10 +158,7 @@ export const fetchUserGroups = async (): Promise<GroupOffer[]> => {
  * @returns Promise con el resultado de la operación
  */
 export const leaveUserGroup = async (groupId: string): Promise<void> => {
-  // TODO: Implementar cuando exista el endpoint en el backend
-  // await apiFetch(`/groups/${groupId}/leave`, {
-  //   method: 'POST',
-  // });
-  console.log('leaveUserGroup llamado para grupo:', groupId);
-  throw new Error('Funcionalidad "Salir del grupo" aún no implementada en el backend');
+  await apiFetch(`${API_BASE_URL}/groups/${groupId}/leave`, {
+    method: 'DELETE',
+  });
 };
