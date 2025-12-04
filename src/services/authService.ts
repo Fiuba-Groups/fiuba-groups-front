@@ -15,22 +15,31 @@ export async function login(email: string, password: string): Promise<void> {
     localStorage.setItem("token", data.token);
   }
 
-  export async function register(email: string, password: string): Promise<number> {
-    const res = await fetch("http://localhost:8080/auth/register", {
-      method: "POST",
-      mode: 'cors',
+export const register = async (email: string, password: string, firstName: string, lastName: string) => {
+  try {
+    const response = await fetch(`http://localhost:8080/auth/register`, {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
-        "accept": "*/*"
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email, password })
+      body: JSON.stringify({ 
+        email, 
+        password, 
+        firstName, 
+        lastName 
+      }),
     });
 
-    if (!res.ok) throw new Error("Error al registrar usuario");
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Error en el registro');
+    }
 
-    const userId = await res.json();
-    return userId;
+    return await response.json();
+  } catch (error) {
+    throw error;
   }
+};
   
   export function logout() {
     localStorage.removeItem("token");
