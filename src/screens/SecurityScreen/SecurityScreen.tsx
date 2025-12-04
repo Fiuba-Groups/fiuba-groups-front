@@ -28,8 +28,7 @@ export default function SecurityScreen() {
     }));
   };
 
-
-  const handlePasswordSubmit = (e: React.FormEvent) => {
+  const handlePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (passwordForm.newPassword !== passwordForm.confirmNewPassword) {
       alert('Las contraseñas no coinciden');
@@ -40,25 +39,75 @@ export default function SecurityScreen() {
       return;
     }
     console.log('Cambiando contraseña:', passwordForm);
-    // TODO: Implementar cambio de contraseña
-    alert('Contraseña actualizada exitosamente');
-    setPasswordForm({
-      currentPassword: '',
-      newPassword: '',
-      confirmNewPassword: ''
-    });
+
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('No estás autenticado');
+        return;
+      }
+
+      const res = await fetch(`http://localhost:8080/api/users/me`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          currentPassword: passwordForm.currentPassword,
+          newPassword: passwordForm.newPassword
+        })
+      });
+
+      if (!res.ok) {
+        const msg = await res.text();
+        alert(`Error: ${msg}`);
+        return;
+      }
+
+      alert('Contraseña actualizada exitosamente');
+      setPasswordForm({
+        currentPassword: '',
+        newPassword: '',
+        confirmNewPassword: ''
+      });
+
+    } catch (err) {
+      alert(`Error al cambiar la contraseña: ${err}`);
+      console.log(err);
+    }
   };
 
   const handleDeleteAccount = async () => {
     setIsDeleting(true);
+
     try {
-      // TODO: Implementar eliminación de cuenta
       console.log('Eliminando cuenta...');
+
+      const token = localStorage.getItem('token');
+
+      const res = await fetch(`http://localhost:8080/api/users/me`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      if (!res.ok) {
+        const msg = await res.text();
+        alert(`Error: ${msg}`);
+        return;
+      }
+
+      // Borrar token local
+      localStorage.removeItem('token');
+
       await new Promise(resolve => setTimeout(resolve, 2000)); // Simular delay
       alert('Cuenta eliminada exitosamente');
       navigate('/login');
     } catch (error) {
-      alert('Error al eliminar la cuenta');
+      alert(`Error al eliminar la cuenta: ${error}`);
+      console.log(error);
     } finally {
       setIsDeleting(false);
       setShowDeleteModal(false);
