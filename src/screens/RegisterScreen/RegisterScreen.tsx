@@ -8,6 +8,8 @@ interface RegisterScreenProps {
 }
 
 export default function RegisterScreen({ onRegister }: RegisterScreenProps) {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -15,8 +17,6 @@ export default function RegisterScreen({ onRegister }: RegisterScreenProps) {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [showPasswordRequirements, setShowPasswordRequirements] = useState(false);
-
-  
 
   const getPasswordRequirements = (password: string) => {
     return {
@@ -36,6 +36,11 @@ export default function RegisterScreen({ onRegister }: RegisterScreenProps) {
     e.preventDefault();
     setError('');
 
+    if (!firstName.trim() || !lastName.trim()) {
+      setError('El nombre y apellido son obligatorios');
+      return;
+    }
+
     if (!isPasswordValid(password)) {
       setError('La contraseña no cumple con los requisitos mínimos');
       return;
@@ -49,11 +54,11 @@ export default function RegisterScreen({ onRegister }: RegisterScreenProps) {
     setIsLoading(true);
 
     try {
-      await register(email, password);
+      await register(email, password, firstName, lastName);
       setSuccess('¡Registro exitoso! Redirigiendo al login...');
       setTimeout(() => {
         onRegister();
-      }, 1500); // Esperar 1.5 segundos para mostrar el mensaje
+      }, 1500);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al registrar usuario');
     } finally {
@@ -62,10 +67,42 @@ export default function RegisterScreen({ onRegister }: RegisterScreenProps) {
   }
 
   return (
-    <div className={styles.registerContent} >
+    <div className={styles.registerContent}>
       <div className={styles.registerForm}>
         <h1 className={styles.registerTitle}>Crear Cuenta</h1>
         <form onSubmit={handleSubmit} className={styles.form}>
+          <div className={styles.nameRow}>
+            <div className={styles.inputGroup}>
+              <label htmlFor="firstName" className={styles.label}>
+                Nombre
+              </label>
+              <input
+                type="text"
+                id="firstName"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                className={styles.input}
+                placeholder="Tu nombre"
+                required
+              />
+            </div>
+            
+            <div className={styles.inputGroup}>
+              <label htmlFor="lastName" className={styles.label}>
+                Apellido
+              </label>
+              <input
+                type="text"
+                id="lastName"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                className={styles.input}
+                placeholder="Tu apellido"
+                required
+              />
+            </div>
+          </div>
+
           <div className={styles.inputGroup}>
             <label htmlFor="email" className={styles.label}>
               Email
