@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { GroupOffer } from '../../types/groupOffer';
 import { getTeammateEmail } from '../../services/userService';
+import { getCurrentStudentId } from '../../services/currentUserService';
 import styles from './styles.module.scss';
 
 interface GroupOfferDetailModalProps {
@@ -31,6 +32,14 @@ const GroupOfferDetailModal: React.FC<GroupOfferDetailModalProps> = ({
   showEmailButtons = false,
 }) => {
   const [sendingEmailTo, setSendingEmailTo] = useState<string | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
+
+  // Obtener el ID del usuario actual para no mostrar el botón de email para uno mismo
+  useEffect(() => {
+    if (showEmailButtons) {
+      getCurrentStudentId().then(setCurrentUserId);
+    }
+  }, [showEmailButtons]);
 
   const handleSendEmail = async (memberId: string) => {
     try {
@@ -137,7 +146,7 @@ const GroupOfferDetailModal: React.FC<GroupOfferDetailModalProps> = ({
                   {member.id === offer.author.id && (
                     <span className={styles.creatorBadge}>Creador</span>
                   )}
-                  {showEmailButtons && (
+                  {showEmailButtons && String(currentUserId) !== member.id && (
                     <button
                       className={styles.emailButton}
                       onClick={() => handleSendEmail(member.id)}
