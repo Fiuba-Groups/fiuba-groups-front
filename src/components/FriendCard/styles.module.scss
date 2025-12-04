@@ -35,6 +35,19 @@
   border: 2px solid $color-background;
 }
 
+.avatarPlaceholder {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, $color-accent, lighten($color-accent, 15%));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 1.5rem;
+  border: 2px solid $color-background;
+}
 
 .userInfo {
   flex: 1;
@@ -51,24 +64,36 @@
   font-family: $font-family-base;
 }
 
-.email {
+.register {
   margin: 0;
   font-size: 0.875rem;
   color: $color-text-light;
   font-family: $font-family-base;
 }
 
-
-.cardBody {
-  flex: 1;
-}
-
-.bio {
-  margin: 0;
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.875rem;
   color: $color-text;
   font-family: $font-family-base;
-  font-size: 0.9rem;
-  line-height: 1.5;
+
+  i {
+    color: #fbbf24;
+    font-size: 0.85rem;
+  }
+
+  .ratingCount {
+    color: $color-text-light;
+    font-size: 0.8rem;
+  }
+}
+
+.noRating {
+  font-size: 0.8rem;
+  color: $color-text-light;
+  font-style: italic;
 }
 
 .cardFooter {
@@ -100,6 +125,34 @@
 
   &:active {
     transform: scale(0.98);
+  }
+
+  i {
+    font-size: 14px;
+  }
+}
+
+.emailButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background-color: #e0f2fe;
+  color: #0284c7;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background-color: #0284c7;
+    color: white;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 
   i {

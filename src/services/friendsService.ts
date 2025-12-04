@@ -1,131 +1,159 @@
-import { Friend, FriendResponse } from '../types/friends';
+import { Friend, FriendResponse, FriendRequest, FriendshipStatus } from '../types/friends';
 import { apiFetch } from './authService';
 
 /**
- * Servicio para manejar las operaciones relacionadas con amigos
+ * Servicio para manejar las operaciones relacionadas con amigos y solicitudes de amistad
  */
 
-// Clave para localStorage
-const FRIENDS_STORAGE_KEY = 'fiuba_user_friends';
+const API_BASE_URL = 'http://localhost:8080';
 
-// Funciones de utilidad para localStorage
-const loadFriendsFromStorage = (): Friend[] => {
-  try {
-    const stored = localStorage.getItem(FRIENDS_STORAGE_KEY);
-    return stored ? JSON.parse(stored) : [];
-  } catch (error) {
-    console.error('Error cargando amigos desde localStorage:', error);
-    return [];
-  }
-};
-
-// Función para limpiar localStorage (útil para testing)
-export const clearFriendsStorage = (): void => {
-  try {
-    localStorage.removeItem(FRIENDS_STORAGE_KEY);
-  } catch (error) {
-    console.error('Error limpiando localStorage:', error);
-  }
-};
-
-
-const saveFriendsToStorage = (friends: Friend[]): void => {
-  try {
-    localStorage.setItem(FRIENDS_STORAGE_KEY, JSON.stringify(friends));
-  } catch (error) {
-    console.error('Error guardando amigos en localStorage:', error);
-  }
-};
-
+/**
+ * Convierte la respuesta del backend (Student) al formato Friend del frontend
+ */
+const mapStudentToFriend = (student: FriendResponse): Friend => ({
+  id: student.id.toString(),
+  register: student.register,
+  name: student.name,
+  avatarUrl: student.avatarUrl,
+});
 
 /**
  * Obtiene la lista de amigos del usuario actual
- * @returns Promise con el listado de amigos
  */
 export const fetchUserFriends = async (): Promise<Friend[]> => {
-  // TODO: Descomentar cuando esté disponible el endpoint /api/friends en el backend
-  // try {
-  //   const friends: FriendResponse[] = await apiFetch('/api/friends');
-  //
-  //   // Mapear la respuesta del backend al formato esperado por el frontend
-  //   return friends.map(friend => ({
-  //     id: friend.id.toString(),
-  //     register: friend.register,
-  //     name: friend.name,
-  //     surname: friend.surname,
-  //     email: friend.email,
-  //     avatarUrl: friend.avatarUrl,
-  //     isOnline: friend.isOnline,
-  //     lastSeen: friend.lastSeen,
-  //     bio: friend.bio,
-  //   }));
-  // } catch (error) {
-  //   console.error('Error al cargar amigos:', error);
-  //   throw error;
-  // }
-
-  // Simular delay de red para testing
-  await new Promise(resolve => setTimeout(resolve, 500));
-
-  // Cargar amigos desde localStorage
-  return loadFriendsFromStorage();
-};
-
-/**
- * Obtiene los detalles de un amigo específico
- * @param friendId - ID del amigo
- * @returns Promise con los detalles del amigo
- */
-export const fetchFriendDetails = async (friendId: string): Promise<Friend> => {
-  // TODO: Descomentar cuando esté disponible el backend
-  // const friend: FriendResponse = await apiFetch(`http://localhost:8080/friends/${friendId}`);
-  // return {
-  //   id: friend.id.toString(),
-  //   register: friend.register,
-  //   name: friend.name,
-  //   surname: friend.surname,
-  //   email: friend.email,
-  //   avatarUrl: friend.avatarUrl,
-  //   isOnline: friend.isOnline,
-  //   lastSeen: friend.lastSeen,
-  //   bio: friend.bio,
-  // };
-
-  // Simulación de obtener detalles de amigo
-  const friends = loadFriendsFromStorage();
-  const friend = friends.find(f => f.id === friendId);
-
-  if (!friend) {
-    throw new Error(`Amigo con ID ${friendId} no encontrado`);
+  try {
+    const students: FriendResponse[] = await apiFetch(`${API_BASE_URL}/friend-requests/friends`);
+    return students.map(mapStudentToFriend);
+  } catch (error) {
+    console.error('Error al cargar amigos:', error);
+    throw error;
   }
-
-  // Simular delay de red para testing
-  await new Promise(resolve => setTimeout(resolve, 300));
-
-  return friend;
 };
 
 /**
  * Elimina a un amigo de la lista
  * @param friendId - ID del amigo a eliminar
- * @returns Promise con el resultado de la operación
  */
 export const removeFriend = async (friendId: string): Promise<void> => {
-  // TODO: Descomentar cuando esté disponible el backend
-  // await apiFetch(`http://localhost:8080/friends/${friendId}`, {
-  //   method: 'DELETE',
-  // });
+  await apiFetch(`${API_BASE_URL}/friend-requests/friends/${friendId}`, {
+    method: 'DELETE',
+  });
+};
 
-  // Simulación de eliminar amigo
-  const friends = loadFriendsFromStorage();
-  const filteredFriends = friends.filter(f => f.id !== friendId);
+/**
+ * Envía una solicitud de amistad
+ * @param receiverId - ID del estudiante que recibirá la solicitud
+ */
+export const sendFriendRequest = async (receiverId: string): Promise<FriendRequest> => {
+  const response = await apiFetch<any>(`${API_BASE_URL}/friend-requests`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ receiverId: parseInt(receiverId) }),
+  });
 
-  if (filteredFriends.length === friends.length) {
-    throw new Error(`Amigo con ID ${friendId} no encontrado`);
+  return {
+    id: response.id.toString(),
+    senderId: response.senderId.toString(),
+    receiverId: response.receiverId.toString(),
+    sender: response.sender,
+    receiver: response.receiver,
+    status: response.status,
+    createdAt: response.createdAt,
+    respondedAt: response.respondedAt,
+  };
+};
+
+/**
+ * Obtiene las solicitudes de amistad enviadas por el usuario actual
+ */
+export const fetchSentFriendRequests = async (): Promise<FriendRequest[]> => {
+  try {
+    const requests = await apiFetch<any[]>(`${API_BASE_URL}/friend-requests/sent`);
+    return requests.map(req => ({
+      id: req.id.toString(),
+      senderId: req.senderId.toString(),
+      receiverId: req.receiverId.toString(),
+      sender: req.sender,
+      receiver: req.receiver,
+      status: req.status,
+      createdAt: req.createdAt,
+      respondedAt: req.respondedAt,
+    }));
+  } catch (error) {
+    console.error('Error al cargar solicitudes enviadas:', error);
+    return [];
   }
+};
 
-  saveFriendsToStorage(filteredFriends);
+/**
+ * Obtiene las solicitudes de amistad recibidas por el usuario actual
+ */
+export const fetchReceivedFriendRequests = async (): Promise<FriendRequest[]> => {
+  try {
+    const requests = await apiFetch<any[]>(`${API_BASE_URL}/friend-requests/received`);
+    return requests.map(req => ({
+      id: req.id.toString(),
+      senderId: req.senderId.toString(),
+      receiverId: req.receiverId.toString(),
+      sender: req.sender,
+      receiver: req.receiver,
+      status: req.status,
+      createdAt: req.createdAt,
+      respondedAt: req.respondedAt,
+    }));
+  } catch (error) {
+    console.error('Error al cargar solicitudes recibidas:', error);
+    return [];
+  }
+};
 
-  // Simular delay de red para testing
-  await new Promise(resolve => setTimeout(resolve, 300));
+/**
+ * Acepta una solicitud de amistad
+ * @param requestId - ID de la solicitud a aceptar
+ */
+export const acceptFriendRequest = async (requestId: string): Promise<void> => {
+  await apiFetch(`${API_BASE_URL}/friend-requests/${requestId}/accept`, {
+    method: 'PUT',
+  });
+};
+
+/**
+ * Rechaza una solicitud de amistad
+ * @param requestId - ID de la solicitud a rechazar
+ */
+export const rejectFriendRequest = async (requestId: string): Promise<void> => {
+  await apiFetch(`${API_BASE_URL}/friend-requests/${requestId}/reject`, {
+    method: 'PUT',
+  });
+};
+
+/**
+ * Cancela una solicitud de amistad enviada
+ * @param requestId - ID de la solicitud a cancelar
+ */
+export const cancelFriendRequest = async (requestId: string): Promise<void> => {
+  await apiFetch(`${API_BASE_URL}/friend-requests/${requestId}`, {
+    method: 'DELETE',
+  });
+};
+
+/**
+ * Obtiene el estado de la relación de amistad con otro estudiante
+ * @param otherStudentId - ID del otro estudiante
+ */
+export const getFriendshipStatus = async (otherStudentId: string): Promise<FriendshipStatus> => {
+  try {
+    const response = await apiFetch<{ status: FriendshipStatus }>(
+      `${API_BASE_URL}/friend-requests/status/${otherStudentId}`
+    );
+    return response.status;
+  } catch (error) {
+    console.error('Error al obtener estado de amistad:', error);
+    return 'NONE';
+  }
+};
+
+// Función de compatibilidad (ya no usamos localStorage)
+export const clearFriendsStorage = (): void => {
+  // No-op: ya no usamos localStorage
 };

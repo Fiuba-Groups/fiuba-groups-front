@@ -249,6 +249,7 @@ export default function UserGroup() {
             onClose={handleCloseDetailModal}
             showJoinButton={false}
             showEmailButtons={true}
+            showFriendButtons={true}
           />
         )}
 

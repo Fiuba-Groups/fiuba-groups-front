@@ -363,3 +363,71 @@
     font-size: 0.9rem;
   }
 }
+
+// Pestañas de categoría (Grupos / Amistad)
+.categoryTabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.categoryTab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 999px;
+  font-family: $font-family-base;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: $color-text-light;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &.active {
+    color: $color-accent;
+    border-color: $color-accent;
+    background-color: rgba($color-accent, 0.05);
+  }
+
+  &:hover:not(.active) {
+    color: $color-text;
+    border-color: $color-text-light;
+  }
+}
+
+// Estilos para solicitudes de amistad
+.friendRequestInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.friendAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.friendAvatarPlaceholder {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, $color-accent, lighten($color-accent, 15%));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+
+.friendRegister {
+  font-size: 0.85rem;
+  color: $color-text-light;
+  display: block;
+  margin-top: 2px;
+}

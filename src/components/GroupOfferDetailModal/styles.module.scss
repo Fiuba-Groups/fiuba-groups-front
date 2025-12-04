@@ -231,7 +231,6 @@
   cursor: pointer;
   transition: all 0.2s ease;
   flex-shrink: 0;
-  margin-left: auto;
 
   i {
     font-size: 1rem;
@@ -246,5 +245,61 @@
     opacity: 0.5;
     cursor: not-allowed;
   }
+}
+
+.friendButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: #dcfce7;
+  color: #16a34a;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+
+  i {
+    font-size: 1rem;
+  }
+
+  &:hover:not(:disabled) {
+    background: #16a34a;
+    color: white;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.friendButtonPending {
+  background: #fef3c7;
+  color: #d97706;
+
+  &:hover:not(:disabled) {
+    background: #d97706;
+    color: white;
+  }
+}
+
+.friendButtonFriends {
+  background: #dbeafe;
+  color: #2563eb;
+  cursor: default;
+
+  &:hover:not(:disabled) {
+    background: #dbeafe;
+    color: #2563eb;
+  }
+}
+
+.memberActions {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: auto;
 }
 

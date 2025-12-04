@@ -3,6 +3,8 @@ import { createPortal } from 'react-dom';
 import { GroupOffer } from '../../types/groupOffer';
 import { getTeammateEmail } from '../../services/userService';
 import { getCurrentStudentId } from '../../services/currentUserService';
+import { sendFriendRequest, getFriendshipStatus } from '../../services/friendsService';
+import { FriendshipStatus } from '../../types/friends';
 import styles from './styles.module.scss';
 
 interface GroupOfferDetailModalProps {
@@ -11,6 +13,7 @@ interface GroupOfferDetailModalProps {
   onRequestJoin?: (offerId: string) => void;
   showJoinButton?: boolean;
   showEmailButtons?: boolean; // Muestra botones de email para compañeros de grupo
+  showFriendButtons?: boolean; // Muestra botones de solicitud de amistad
 }
 
 /**
@@ -30,16 +33,43 @@ const GroupOfferDetailModal: React.FC<GroupOfferDetailModalProps> = ({
   onRequestJoin,
   showJoinButton = true,
   showEmailButtons = false,
+  showFriendButtons = false,
 }) => {
   const [sendingEmailTo, setSendingEmailTo] = useState<string | null>(null);
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
+  const [friendshipStatuses, setFriendshipStatuses] = useState<Record<string, FriendshipStatus>>({});
+  const [sendingFriendRequestTo, setSendingFriendRequestTo] = useState<string | null>(null);
 
   // Obtener el ID del usuario actual para no mostrar el botón de email para uno mismo
   useEffect(() => {
-    if (showEmailButtons) {
+    if (showEmailButtons || showFriendButtons) {
       getCurrentStudentId().then(setCurrentUserId);
     }
-  }, [showEmailButtons]);
+  }, [showEmailButtons, showFriendButtons]);
+
+  // Cargar el estado de amistad de cada miembro
+  useEffect(() => {
+    const loadFriendshipStatuses = async () => {
+      if (!showFriendButtons || !currentUserId || !offer.members) return;
+
+      const statuses: Record<string, FriendshipStatus> = {};
+      for (const member of offer.members) {
+        if (String(currentUserId) !== member.id) {
+          try {
+            const status = await getFriendshipStatus(member.id);
+            statuses[member.id] = status;
+          } catch {
+            statuses[member.id] = 'NONE';
+          }
+        }
+      }
+      setFriendshipStatuses(statuses);
+    };
+
+    if (currentUserId && offer.members) {
+      loadFriendshipStatuses();
+    }
+  }, [showFriendButtons, currentUserId, offer.members]);
 
   const handleSendEmail = async (memberId: string) => {
     try {
@@ -60,6 +90,57 @@ const GroupOfferDetailModal: React.FC<GroupOfferDetailModalProps> = ({
       console.error('Error al abrir email:', error);
     } finally {
       setSendingEmailTo(null);
+    }
+  };
+
+  const handleSendFriendRequest = async (memberId: string) => {
+    try {
+      setSendingFriendRequestTo(memberId);
+      await sendFriendRequest(memberId);
+      // Actualizar el estado local
+      setFriendshipStatuses(prev => ({
+        ...prev,
+        [memberId]: 'PENDING_SENT'
+      }));
+    } catch (error) {
+      console.error('Error al enviar solicitud de amistad:', error);
+    } finally {
+      setSendingFriendRequestTo(null);
+    }
+  };
+
+  const getFriendButtonProps = (memberId: string) => {
+    const status = friendshipStatuses[memberId] || 'NONE';
+    
+    switch (status) {
+      case 'FRIENDS':
+        return {
+          icon: 'pi-check',
+          title: 'Ya son amigos',
+          className: styles.friendButtonFriends,
+          disabled: true,
+        };
+      case 'PENDING_SENT':
+        return {
+          icon: 'pi-clock',
+          title: 'Solicitud enviada',
+          className: styles.friendButtonPending,
+          disabled: true,
+        };
+      case 'PENDING_RECEIVED':
+        return {
+          icon: 'pi-inbox',
+          title: 'Tienes una solicitud pendiente',
+          className: styles.friendButtonPending,
+          disabled: true,
+        };
+      default:
+        return {
+          icon: 'pi-user-plus',
+          title: 'Enviar solicitud de amistad',
+          className: styles.friendButton,
+          disabled: false,
+        };
     }
   };
 
@@ -146,16 +227,34 @@ const GroupOfferDetailModal: React.FC<GroupOfferDetailModalProps> = ({
                   {member.id === offer.author.id && (
                     <span className={styles.creatorBadge}>Creador</span>
                   )}
-                  {showEmailButtons && String(currentUserId) !== member.id && (
-                    <button
-                      className={styles.emailButton}
-                      onClick={() => handleSendEmail(member.id)}
-                      disabled={sendingEmailTo === member.id}
-                      title="Enviar email"
-                      aria-label={`Enviar email a ${member.name}`}
-                    >
-                      <i className="pi pi-envelope" />
-                    </button>
+                  {String(currentUserId) !== member.id && (showEmailButtons || showFriendButtons) && (
+                    <div className={styles.memberActions}>
+                      {showFriendButtons && (() => {
+                        const buttonProps = getFriendButtonProps(member.id);
+                        return (
+                          <button
+                            className={`${styles.friendButton} ${buttonProps.className}`}
+                            onClick={() => handleSendFriendRequest(member.id)}
+                            disabled={buttonProps.disabled || sendingFriendRequestTo === member.id}
+                            title={buttonProps.title}
+                            aria-label={`${buttonProps.title} - ${member.name}`}
+                          >
+                            <i className={`pi ${sendingFriendRequestTo === member.id ? 'pi-spin pi-spinner' : buttonProps.icon}`} />
+                          </button>
+                        );
+                      })()}
+                      {showEmailButtons && (
+                        <button
+                          className={styles.emailButton}
+                          onClick={() => handleSendEmail(member.id)}
+                          disabled={sendingEmailTo === member.id}
+                          title="Enviar email"
+                          aria-label={`Enviar email a ${member.name}`}
+                        >
+                          <i className="pi pi-envelope" />
+                        </button>
+                      )}
+                    </div>
                   )}
                 </div>
               ))}

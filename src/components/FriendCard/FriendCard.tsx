@@ -1,42 +1,57 @@
 import React from 'react';
 import { Friend } from '../../types/friends';
+import { StudentRatingSummary } from '../../services/ratingsService';
 import styles from './styles.module.scss';
 
 interface FriendCardProps {
   friend: Friend;
   onViewProfile: (friendId: string) => void;
   onRemoveFriend?: (friendId: string) => void;
+  onSendEmail?: (friendId: string) => void;
+  rating?: StudentRatingSummary | null;
+  sendingEmail?: boolean;
 }
 
 export default function FriendCard({
   friend,
   onViewProfile,
   onRemoveFriend,
+  onSendEmail,
+  rating,
+  sendingEmail = false,
 }: FriendCardProps) {
-  const { id, name, surname, email, avatarUrl, bio } = friend;
+  const { id, name, surname, avatarUrl, register } = friend;
 
   return (
     <div className={styles.card}>
       <div className={styles.cardHeader}>
         <div className={styles.avatarSection}>
-          <img
-            src={avatarUrl || '/user.png'}
-            alt={`${name} ${surname}`}
-            className={styles.avatar}
-          />
+          {avatarUrl ? (
+            <img
+              src={avatarUrl}
+              alt={`${name}${surname ? ` ${surname}` : ''}`}
+              className={styles.avatar}
+            />
+          ) : (
+            <div className={styles.avatarPlaceholder}>
+              {name.charAt(0).toUpperCase()}
+            </div>
+          )}
         </div>
         <div className={styles.userInfo}>
-          <h3 className={styles.name}>{name} {surname}</h3>
-          <p className={styles.email}>{email}</p>
+          <h3 className={styles.name}>{name}{surname ? ` ${surname}` : ''}</h3>
+          {register && <p className={styles.register}>Padrón: {register}</p>}
+          {rating && rating.totalRatings > 0 && (
+            <div className={styles.rating}>
+              <i className="pi pi-star-fill" />
+              <span>{rating.averageRating.toFixed(1)}</span>
+              <span className={styles.ratingCount}>({rating.totalRatings})</span>
+            </div>
+          )}
+          {(!rating || rating.totalRatings === 0) && (
+            <span className={styles.noRating}>Sin calificaciones</span>
+          )}
         </div>
-      </div>
-
-      <div className={styles.cardBody}>
-        {bio && (
-          <p className={styles.bio}>
-            {bio.length > 100 ? `${bio.substring(0, 100)}...` : bio}
-          </p>
-        )}
       </div>
 
       <div className={styles.cardFooter}>
@@ -47,6 +62,16 @@ export default function FriendCard({
           <i className="pi pi-user" />
           <span>Ver Perfil</span>
         </button>
+        {onSendEmail && (
+          <button
+            className={styles.emailButton}
+            onClick={() => onSendEmail(id)}
+            disabled={sendingEmail}
+            title="Enviar email"
+          >
+            <i className={`pi ${sendingEmail ? 'pi-spin pi-spinner' : 'pi-envelope'}`} />
+          </button>
+        )}
         {onRemoveFriend && (
           <button
             className={styles.removeButton}
