@@ -1,5 +1,6 @@
-import { GroupOffer } from '../types/groupOffer';
+import { GroupOffer, GroupMember } from '../types/groupOffer';
 import { apiFetch } from './authService';
+import { fetchStudentRatings } from './ratingsService';
 
 /**
  * Servicio para manejar las operaciones relacionadas con ofertas de grupos
@@ -17,6 +18,13 @@ interface CreateGroupRequest {
   creatorStudentRegister: number;
 }
 
+// Interfaz para un miembro del backend
+interface BackendMember {
+  id: number;
+  register: number;
+  name: string;
+}
+
 // Interfaz que representa la respuesta del backend (modelo Group)
 interface BackendGroup {
   id: number;
@@ -26,6 +34,9 @@ interface BackendGroup {
   maxMembers: number;
   creatorStudentRegister: number;
   courseOfferingId: number;
+  status?: 'ACTIVE' | 'FINISHED';
+  // Lista de miembros del grupo
+  members?: BackendMember[];
   // Nuevo campo: estudiante creador con su nombre
   creatorStudent?: {
     id: number;
@@ -50,6 +61,46 @@ interface BackendGroup {
     };
   };
 }
+
+/**
+ * Convierte los miembros del backend al formato del frontend (sin rating)
+ */
+const mapBackendMembers = (members?: BackendMember[]): GroupMember[] => {
+  if (!members) return [];
+  return members.map(member => ({
+    id: member.id.toString(),
+    register: member.register,
+    name: member.name || `Estudiante ${member.register}`,
+    profileUrl: `/profile/${member.register}`,
+  }));
+};
+
+/**
+ * Enriquece los miembros con información de rating
+ */
+const enrichMembersWithRatings = async (members: GroupMember[]): Promise<GroupMember[]> => {
+  if (!members || members.length === 0) return [];
+  
+  const enrichedMembers = await Promise.all(
+    members.map(async (member) => {
+      try {
+        const ratingSummary = await fetchStudentRatings(parseInt(member.id));
+        return {
+          ...member,
+          rating: {
+            average: ratingSummary.averageRating,
+            count: ratingSummary.totalRatings,
+          },
+        };
+      } catch (error) {
+        console.warn(`No se pudo obtener rating para estudiante ${member.id}`);
+        return member;
+      }
+    })
+  );
+  
+  return enrichedMembers;
+};
 
 /**
  * Convierte un grupo del backend al formato GroupOffer del frontend
@@ -78,6 +129,8 @@ const mapBackendGroupToGroupOffer = (group: BackendGroup): GroupOffer => {
       name: creatorName,
       profileUrl: `/profile/${group.creatorStudentRegister}`
     },
+    members: mapBackendMembers(group.members),
+    status: group.status,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   };
@@ -89,7 +142,17 @@ const mapBackendGroupToGroupOffer = (group: BackendGroup): GroupOffer => {
  */
 export const fetchGroupOffers = async (): Promise<GroupOffer[]> => {
   const backendGroups = await apiFetch<BackendGroup[]>(`${API_BASE_URL}/groups`);
-  return backendGroups.map(mapBackendGroupToGroupOffer);
+  const groupOffers = backendGroups.map(mapBackendGroupToGroupOffer);
+  
+  // Enriquecer cada grupo con los ratings de sus miembros
+  const enrichedOffers = await Promise.all(
+    groupOffers.map(async (offer) => ({
+      ...offer,
+      members: await enrichMembersWithRatings(offer.members || []),
+    }))
+  );
+  
+  return enrichedOffers;
 };
 
 /**

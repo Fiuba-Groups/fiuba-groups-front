@@ -12,6 +12,20 @@ export interface GroupOfferAuthor {
 }
 
 /**
+ * Miembro de un grupo
+ */
+export interface GroupMember {
+  id: string;
+  register: number;
+  name: string;
+  rating?: {
+    average: number;
+    count: number;
+  };
+  profileUrl?: string;
+}
+
+/**
  * Oferta de grupo
  */
 export interface GroupOffer {
@@ -25,6 +39,7 @@ export interface GroupOffer {
   availableSlots: number;
   currentMembers: number; // Número actual de miembros en el grupo
   author: GroupOfferAuthor;
+  members?: GroupMember[]; // Lista de miembros del grupo
   createdAt: string;
   updatedAt: string;
   status?: 'ACTIVE' | 'FINISHED'; // Estado del grupo

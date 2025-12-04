@@ -10,6 +10,17 @@ interface GroupOfferDetailModalProps {
   showJoinButton?: boolean;
 }
 
+/**
+ * Obtiene las iniciales de un nombre para mostrar como avatar
+ */
+const getInitials = (name: string): string => {
+  const parts = name.split(' ').filter(p => p.length > 0);
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  }
+  return name.substring(0, 2).toUpperCase();
+};
+
 const GroupOfferDetailModal: React.FC<GroupOfferDetailModalProps> = ({
   offer,
   onClose,
@@ -67,6 +78,36 @@ const GroupOfferDetailModal: React.FC<GroupOfferDetailModalProps> = ({
             <p>{offer.availableSlots}</p>
           </div>
         </div>
+
+        {/* Sección de miembros del grupo */}
+        {offer.members && offer.members.length > 0 && (
+          <div className={styles.membersSection}>
+            <h3>Integrantes del grupo</h3>
+            <div className={styles.membersList}>
+              {offer.members.map((member) => (
+                <div key={member.id} className={styles.memberItem}>
+                  <div className={styles.memberAvatar}>
+                    {getInitials(member.name)}
+                  </div>
+                  <div className={styles.memberInfo}>
+                    <div className={styles.memberName}>{member.name}</div>
+                    {member.rating && member.rating.count > 0 && (
+                      <div className={styles.memberRating}>
+                        <i className="pi pi-star-fill" />
+                        <span>{member.rating.average.toFixed(1)}</span>
+                        <span>({member.rating.count})</span>
+                      </div>
+                    )}
+                  </div>
+                  {member.id === offer.author.id && (
+                    <span className={styles.creatorBadge}>Creador</span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className={styles.footer}>
           <div className={styles.timestamps}>
             <span>Creado: {new Date(offer.createdAt).toLocaleDateString()}</span>
