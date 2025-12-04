@@ -6,21 +6,34 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-color: $color-background;
   min-height: calc(100vh - #{$header-height});
   position: relative;
+  
+  // Fondo animado con gradientes azul y celeste
+  background: linear-gradient(-45deg, #007bff, #87ceeb, #4a90e2, #00bfff);
+  background-size: 400% 400%;
+  animation: gradientShift 8s ease infinite;
 
   &::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.35);
+    background: rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(1px);
     z-index: 0;
+  }
+}
+
+// Animación para el movimiento del gradiente
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
   }
 }
 

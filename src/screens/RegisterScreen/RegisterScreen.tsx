@@ -16,9 +16,7 @@ export default function RegisterScreen({ onRegister }: RegisterScreenProps) {
   const [success, setSuccess] = useState('');
   const [showPasswordRequirements, setShowPasswordRequirements] = useState(false);
 
-  const backgroundStyle = {
-    backgroundImage: `url(${process.env.PUBLIC_URL}/fondo_login_2.jpg)`,
-  };
+  
 
   const getPasswordRequirements = (password: string) => {
     return {
@@ -64,7 +62,7 @@ export default function RegisterScreen({ onRegister }: RegisterScreenProps) {
   }
 
   return (
-    <div className={styles.registerContent} style={backgroundStyle}>
+    <div className={styles.registerContent} >
       <div className={styles.registerForm}>
         <h1 className={styles.registerTitle}>Crear Cuenta</h1>
         <form onSubmit={handleSubmit} className={styles.form}>
