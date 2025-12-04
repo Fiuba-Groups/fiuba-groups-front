@@ -6,21 +6,34 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-color: $color-background;
   min-height: calc(100vh - #{$header-height});
   position: relative;
+  
+  // Fondo animado con gradientes azul y celeste
+  background: linear-gradient(-45deg, #007bff, #87ceeb, #4a90e2, #00bfff);
+  background-size: 400% 400%;
+  animation: gradientShift 8s ease infinite;
 
   &::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.35);
+    background: rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(1px);
     z-index: 0;
+  }
+}
+
+// Animación para el movimiento del gradiente
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
   }
 }
 
@@ -30,7 +43,7 @@
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 400px;
+  max-width: 450px; // Aumentamos un poco el ancho máximo
   position: relative;
   z-index: 1;
 }
@@ -47,6 +60,32 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+}
+
+.nameRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem; // Reducimos el gap entre los campos
+  
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .inputGroup {
+    min-width: 0; // Permite que los inputs se contraigan
+    
+    .input {
+      padding: 0.6rem 0.5rem; // Reducimos el padding interno
+      font-size: 0.9rem; // Reducimos ligeramente el tamaño de fuente
+      min-width: 0; // Permite que el input se contraiga
+      width: 100%;
+    }
+    
+    .label {
+      font-size: 0.85rem; // Etiquetas más pequeñas para los campos de nombre
+    }
+  }
 }
 
 .inputGroup {
@@ -154,6 +193,8 @@
   font-size: 1rem;
   font-family: $font-family-base;
   transition: border-color 0.2s ease;
+  width: 100%;
+  box-sizing: border-box; // Incluye padding y border en el ancho
 
   &:focus {
     outline: none;
