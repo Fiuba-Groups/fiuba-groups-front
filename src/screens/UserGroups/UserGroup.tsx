@@ -141,6 +141,22 @@ export default function UserGroup() {
     return isOwner;
   };
 
+  // Generar mensaje de confirmación para salir del grupo
+  const getLeaveConfirmMessage = (group: GroupOffer | null): string => {
+    if (!group) return '';
+    
+    const isOwner = isGroupOwner(group);
+    const isOnlyMember = group.currentMembers === 1;
+    
+    if (isOwner && isOnlyMember) {
+      return `¿Estás seguro de que querés salir del grupo "${group.title}"? Como sos el único miembro, el grupo será eliminado.`;
+    } else if (isOwner) {
+      return `¿Estás seguro de que querés salir del grupo "${group.title}"? Como sos el creador, el ownership se transferirá a otro miembro. Podrás volver a unirte enviando una nueva solicitud.`;
+    } else {
+      return `¿Estás seguro de que querés salir del grupo "${group.title}"? Podrás volver a unirte enviando una nueva solicitud.`;
+    }
+  };
+
   return (
     <AppShell>
       <div className={styles['groups-container']}>
@@ -251,7 +267,7 @@ export default function UserGroup() {
           onClose={() => setLeaveConfirmGroup(null)}
           onConfirm={handleConfirmLeaveGroup}
           title="Salir del grupo"
-          message={`¿Estás seguro de que querés salir del grupo "${leaveConfirmGroup?.title}"? Podrás volver a unirte enviando una nueva solicitud.`}
+          message={getLeaveConfirmMessage(leaveConfirmGroup)}
           confirmText="Salir"
           cancelText="Cancelar"
           isLoading={leavingGroupId !== null}
