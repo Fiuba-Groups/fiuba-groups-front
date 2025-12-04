@@ -23,7 +23,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "setup-data": "node setupData.js",
+    "setup-groups": "node setupGroups.js"
   },
   "eslintConfig": {
     "extends": [
@@ -44,8 +46,10 @@
     ]
   },
   "devDependencies": {
+    "@types/node-fetch": "^2.6.13",
     "@types/react": "^19.2.2",
     "http-proxy-middleware": "^3.0.5",
+    "node-fetch": "^3.3.2",
     "sass": "^1.93.2"
   }
 }

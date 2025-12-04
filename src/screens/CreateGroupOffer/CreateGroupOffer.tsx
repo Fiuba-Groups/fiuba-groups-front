@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { ArrowLeft, Users, Calendar, Info } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { createGroupOffer } from "../../services/groupOffersService";
+import { useSubjects } from "../../hooks/useSubjects";
+import { useCourses } from "../../hooks/useCourses";
 import  styles from "./CreateGroupOffer.module.scss";
 
 const CreateGroupOffer = () => {
@@ -37,28 +39,35 @@ const CreateGroupOffer = () => {
     }
   }, [editMode, offerData]);
 
-  // Opciones de materias disponibles
-  const subjectOptions = [
-    { value: "1", label: "Análisis Matemático II", cathedras: ["García", "Pérez"] },
-    { value: "2", label: "Álgebra Lineal", cathedras: ["Rodríguez", "Gómez"] },
-    { value: "3", label: "Física I", cathedras: ["López", "Martínez"] },
-    { value: "4", label: "Química Orgánica", cathedras: ["Fernández", "Silva"] },
-    { value: "5", label: "Programación I", cathedras: ["Silva", "López"] },
-    { value: "6", label: "Estadística y Probabilidades", cathedras: ["Mendoza", "Vega"] },
-    { value: "7", label: "Cálculo Numérico", cathedras: ["Ramírez"] },
-    { value: "8", label: "Economía Política", cathedras: ["Gutiérrez", "Moreno"] },
-  ];
+  // Hook para obtener las materias del backend
+  const { subjects, loading: subjectsLoading, error: subjectsError } = useSubjects();
 
-  // Función para mapear materia+cátedra a courseOfferingId
-  const getCourseOfferingId = (subject: string, cathedra: string): number => {
-    const subjectOption = subjectOptions.find(s => s.value === subject);
-    if (!subjectOption) return 1; // default
+  // Hook para obtener las cátedras del backend
+  const { courses: allCourses, loading: coursesLoading, error: coursesError, getCoursesBySubject } = useCourses();
 
-    const cathedraIndex = subjectOption.cathedras.indexOf(cathedra);
-    if (cathedraIndex === -1) return parseInt(subject); // default to first cathedra
+  // Función para obtener el courseOfferingId basado en el id de la cátedra
+  const getCourseOfferingId = (courseId: string): number => {
+    // Si tenemos un courseId válido, lo usamos directamente
+    const numId = parseInt(courseId);
+    if (!isNaN(numId) && numId > 0) {
+      return numId;
+    }
 
-    // Map to courseOfferingId (1-15 as defined in the service)
-    return parseInt(subject) + cathedraIndex;
+    // Fallback: si no hay courseId, usamos el subjectCode como antes
+    const subjectCode = formData.subject;
+    const numCode = parseInt(subjectCode);
+    if (!isNaN(numCode)) {
+      return numCode;
+    }
+
+    // Para códigos no numéricos, generar un ID basado en el código
+    let hash = 0;
+    for (let i = 0; i < subjectCode.length; i++) {
+      const char = subjectCode.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convertir a 32 bits
+    }
+    return Math.abs(hash) % 10000 + 1; // Asegurar que sea positivo y razonable
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -79,7 +88,7 @@ const CreateGroupOffer = () => {
     setPublishError(null);
 
     try {
-      const courseOfferingId = getCourseOfferingId(formData.subject, formData.cathedra);
+      const courseOfferingId = getCourseOfferingId(formData.cathedra);
 
       if (editMode && offerData) {
         // Modo edición: actualizar la oferta existente
@@ -93,8 +102,8 @@ const CreateGroupOffer = () => {
             ...allGroups[groupIndex],
             title: formData.title,
             description: formData.description,
-            subject: subjectOptions.find(s => s.value === formData.subject)?.label || formData.subject,
-            cathedra: formData.cathedra,
+            subject: subjects.find(s => s.code === formData.subject)?.name || formData.subject,
+            cathedra: allCourses.find(c => c.id.toString() === formData.cathedra)?.commission || formData.cathedra,
             totalSlots: parseInt(formData.groupSize),
             updatedAt: new Date().toISOString(),
           };
@@ -180,11 +189,19 @@ const CreateGroupOffer = () => {
                       id="subject"
                       value={formData.subject}
                       onChange={(e) => handleInputChange("subject", e.target.value)}
+                      disabled={subjectsLoading}
                     >
-                      <option value="">Seleccionar materia</option>
-                      {subjectOptions.map((subject) => (
-                        <option key={subject.value} value={subject.value}>
-                          {subject.label}
+                      <option value="">
+                        {subjectsLoading ? "Cargando materias..." : "Seleccionar materia"}
+                      </option>
+                      {subjectsError && (
+                        <option value="" disabled>
+                          Error al cargar materias
+                        </option>
+                      )}
+                      {subjects.map((subject) => (
+                        <option key={subject.code} value={subject.code}>
+                          {subject.name} ({subject.department})
                         </option>
                       ))}
                     </select>
@@ -195,16 +212,22 @@ const CreateGroupOffer = () => {
                       id="cathedra"
                       value={formData.cathedra}
                       onChange={(e) => handleInputChange("cathedra", e.target.value)}
-                      disabled={!formData.subject}
+                      disabled={!formData.subject || coursesLoading}
                     >
-                      <option value="">Seleccionar cátedra</option>
-                      {formData.subject && subjectOptions
-                        .find(s => s.value === formData.subject)
-                        ?.cathedras.map((cathedra) => (
-                          <option key={cathedra} value={cathedra}>
-                            {cathedra}
-                          </option>
-                        ))}
+                      <option value="">
+                        {!formData.subject ? "Primero selecciona una materia" :
+                         coursesLoading ? "Cargando cátedras..." : "Seleccionar cátedra"}
+                      </option>
+                      {coursesError && formData.subject && (
+                        <option value="" disabled>
+                          Error al cargar cátedras
+                        </option>
+                      )}
+                      {formData.subject && getCoursesBySubject(formData.subject).map((course) => (
+                        <option key={course.id} value={course.id.toString()}>
+                          {course.commission}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 </div>
