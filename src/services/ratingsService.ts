@@ -31,6 +31,7 @@ export interface PendingRatingMember {
   id: number;
   register: number;
   name: string;
+  avatarUrl?: string;
 }
 
 /**

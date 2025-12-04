@@ -130,9 +130,17 @@ const RateGroupModal: React.FC<RateGroupModalProps> = ({
               <div className={styles.progress}>{progress}</div>
               
               <div className={styles.memberInfo}>
-                <div className={styles.avatar}>
-                  <i className="pi pi-user" />
-                </div>
+                {currentMember.avatarUrl ? (
+                  <img 
+                    className={styles.avatar} 
+                    src={currentMember.avatarUrl} 
+                    alt={currentMember.name} 
+                  />
+                ) : (
+                  <div className={styles.avatar}>
+                    <i className="pi pi-user" />
+                  </div>
+                )}
                 <h3>{currentMember.name}</h3>
                 <span className={styles.register}>Padrón: {currentMember.register}</span>
               </div>
