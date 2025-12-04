@@ -26,6 +26,12 @@ interface BackendGroup {
   maxMembers: number;
   creatorStudentRegister: number;
   courseOfferingId: number;
+  // Nuevo campo: estudiante creador con su nombre
+  creatorStudent?: {
+    id: number;
+    register: number;
+    name: string;
+  };
   courseOffering?: {
     id: number;
     quarter: string;
@@ -54,6 +60,9 @@ const mapBackendGroupToGroupOffer = (group: BackendGroup): GroupOffer => {
   const courseEntity = courseOffering?.courseEntity;
   const subject = courseEntity?.subject;
 
+  // Obtener nombre del creador desde creatorStudent si está disponible
+  const creatorName = group.creatorStudent?.name || `Estudiante ${group.creatorStudentRegister}`;
+
   return {
     id: group.id.toString(),
     title: group.title,
@@ -66,7 +75,7 @@ const mapBackendGroupToGroupOffer = (group: BackendGroup): GroupOffer => {
     currentMembers: group.memberCount,
     author: {
       id: group.creatorStudentRegister.toString(),
-      name: `Estudiante ${group.creatorStudentRegister}`,
+      name: creatorName,
       profileUrl: `/profile/${group.creatorStudentRegister}`
     },
     createdAt: new Date().toISOString(),

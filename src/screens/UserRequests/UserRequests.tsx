@@ -6,7 +6,7 @@ import ConfirmModal from '../../components/ConfirmModal/ConfirmModal';
 import RatingStars from '../../components/RatingStars';
 import { useUserRequests } from '../../hooks/useUserRequests';
 import { GroupRequest } from '../../types/requests';
-import { fetchStudentRatingsByRegister, StudentRatingSummary } from '../../services/ratingsService';
+import { fetchStudentRatings, StudentRatingSummary } from '../../services/ratingsService';
 
 type TabType = 'sent' | 'received';
 
@@ -34,7 +34,7 @@ export default function UserRequests() {
         const requesterId = request.requesterId;
         if (!ratingsMap[requesterId]) {
           try {
-            const ratings = await fetchStudentRatingsByRegister(requesterId);
+            const ratings = await fetchStudentRatings(Number(requesterId));
             ratingsMap[requesterId] = ratings;
           } catch {
             ratingsMap[requesterId] = null;

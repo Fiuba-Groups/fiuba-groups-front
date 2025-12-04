@@ -9,7 +9,7 @@ import { useGroupOffers } from '../../hooks/useGroupOffers';
 import { createGroupRequest, fetchUserSentRequests } from '../../services/requestsService';
 import { fetchCurrentUser } from '../../services/currentUserService';
 import { fetchUserGroups } from '../../services/userGroupsService';
-import { fetchStudentRatingsByRegister } from '../../services/ratingsService';
+import { fetchStudentRatings } from '../../services/ratingsService';
 import { GroupOffer } from '../../types/groupOffer';
 import { useNavigate } from 'react-router-dom';
 import GroupOfferDetailModal from '../../components/GroupOfferDetailModal/GroupOfferDetailModal';
@@ -78,7 +78,7 @@ export default function GroupOffers() {
       for (const authorId of uniqueAuthorIds) {
         if (!ratingsMap[authorId]) {
           try {
-            const ratings = await fetchStudentRatingsByRegister(authorId);
+            const ratings = await fetchStudentRatings(Number(authorId));
             ratingsMap[authorId] = {
               average: ratings.averageRating,
               count: ratings.totalRatings

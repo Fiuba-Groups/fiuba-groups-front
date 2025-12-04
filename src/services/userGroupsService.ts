@@ -7,7 +7,7 @@ import { apiFetch } from './authService';
 
 const API_BASE_URL = 'http://localhost:8080';
 
-// Interfaz para la respuesta del backend
+// Interfaz para la respuesta del backend (actualizada con los nuevos campos)
 interface BackendGroup {
   id: number;
   title: string;
@@ -17,25 +17,56 @@ interface BackendGroup {
   creatorStudentRegister: number;
   courseOfferingId: number;
   status: 'ACTIVE' | 'FINISHED';
+  // Nuevo campo: estudiante creador con su nombre
+  creatorStudent?: {
+    id: number;
+    register: number;
+    name: string;
+  };
+  courseOffering?: {
+    id: number;
+    quarter: string;
+    year: string;
+    courseId: number;
+    courseEntity?: {
+      id: number;
+      commission: string;
+      active: boolean;
+      subjectCode: string;
+      subject?: {
+        code: string;
+        name: string;
+        department: string;
+      };
+    };
+  };
 }
 
 /**
  * Transforma un grupo del backend al formato GroupOffer del frontend
  */
 const transformBackendGroup = (group: BackendGroup): GroupOffer => {
+  // Usar datos del courseOffering si están disponibles
+  const courseOffering = group.courseOffering;
+  const courseEntity = courseOffering?.courseEntity;
+  const subject = courseEntity?.subject;
+
+  // Obtener nombre del creador desde creatorStudent si está disponible
+  const creatorName = group.creatorStudent?.name || `Estudiante ${group.creatorStudentRegister}`;
+
   return {
     id: String(group.id),
     title: group.title || 'Sin título',
     description: group.description || '',
-    subject: `Materia #${group.courseOfferingId}`, // Se podría mejorar con lookup de courseOffering
-    cathedra: '',
-    semester: '',
+    subject: subject?.name || `Materia #${group.courseOfferingId}`,
+    cathedra: courseEntity?.commission || 'Sin cátedra',
+    semester: courseOffering ? `${courseOffering.quarter} ${courseOffering.year}` : '',
     totalSlots: group.maxMembers,
     availableSlots: group.maxMembers - group.memberCount,
     currentMembers: group.memberCount,
     author: {
       id: String(group.creatorStudentRegister),
-      name: `Estudiante ${group.creatorStudentRegister}`,
+      name: creatorName,
     },
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),

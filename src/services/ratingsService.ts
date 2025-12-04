@@ -50,22 +50,6 @@ export const fetchStudentRatings = async (studentId: number): Promise<StudentRat
 };
 
 /**
- * Obtiene el resumen de calificaciones de un estudiante por su padrón (register)
- * @param register - Padrón del estudiante
- */
-export const fetchStudentRatingsByRegister = async (register: number | string): Promise<StudentRatingSummary> => {
-  try {
-    const response = await apiFetch<StudentRatingSummary>(
-      `${API_BASE_URL}/students/register/${register}/ratings`
-    );
-    return response;
-  } catch (error) {
-    console.error('Error al obtener calificaciones del estudiante por padrón:', error);
-    throw error;
-  }
-};
-
-/**
  * Obtiene los miembros pendientes de calificar en un grupo
  * @param groupId - ID del grupo
  */

@@ -22,7 +22,7 @@ export default function GroupOfferCard({
   requestSent = false, // Valor por defecto
   authorRating = null, // Valor por defecto
 }: GroupOfferCardProps) {
-  const { id, description, availableSlots, totalSlots, currentMembers } = offer;
+  const { id, title, description, availableSlots, totalSlots, currentMembers } = offer;
 
   return (
     <div className={styles.card}>
@@ -37,6 +37,7 @@ export default function GroupOfferCard({
       </div>
 
       <div className={styles.cardBody}>
+        <h3 className={styles.cardTitle}>{title}</h3>
         <p className={styles.description}>{description}</p>
         
         <div className={styles.cathedraInfo}>
