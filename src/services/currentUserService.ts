@@ -11,9 +11,7 @@ export interface CurrentUser {
   student?: {
     id: number;
     register: number;
-    name: string;
-    lastName: string;
-    career: string;
+    name: string; // Nombre completo del estudiante
   };
 }
 

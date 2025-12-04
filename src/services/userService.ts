@@ -183,3 +183,22 @@ export const getTeammateEmail = async (studentId: string): Promise<string> => {
   );
   return response.email;
 };
+
+/**
+ * Actualiza el perfil del estudiante actual
+ * @param name - Nombre completo del estudiante
+ * @param register - Padrón del estudiante
+ * @returns Promise con los datos actualizados del estudiante
+ */
+export const updateStudentProfile = async (name: string, register: number): Promise<{ id: number; register: number; name: string }> => {
+  return apiFetch<{ id: number; register: number; name: string }>(
+    'http://localhost:8080/users/me/student',
+    {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ name, register }),
+    }
+  );
+};

@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import styles from './Profile.module.scss';
 import AppShell from '../../components/Shell';
 import RatingStars from '../../components/RatingStars';
-import { User, Shield, HelpCircle, BookOpen, GraduationCap } from 'lucide-react';
-import { uploadAvatar } from '../../services/userService';
-import { fetchCurrentUser } from '../../services/currentUserService';
+import { User, Shield, HelpCircle, BookOpen, GraduationCap, Pencil, Check, X } from 'lucide-react';
+import { uploadAvatar, updateStudentProfile } from '../../services/userService';
+import { fetchCurrentUser, CurrentUser, clearUserCache } from '../../services/currentUserService';
 import { fetchStudentRatings, StudentRatingSummary } from '../../services/ratingsService';
 
 type Section = 'edit-profile';
@@ -15,14 +15,21 @@ export default function ProfileScreen() {
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [currentAvatarUrl, setCurrentAvatarUrl] = useState<string>('/user.png');
   const [ratingSummary, setRatingSummary] = useState<StudentRatingSummary | null>(null);
-  const [formData, setFormData] = useState({
-    username: 'UserFiuba',
-    nombre: 'Alumno de Turri',
-    Apodo: '',
-    bio: '',
-    genero: 'Masculino'
-  });
+  const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [editedName, setEditedName] = useState('');
+  const [isSavingName, setIsSavingName] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Derivar datos del usuario
+  const fullName = currentUser?.student?.name || 'Cargando...';
+  
+  const username = currentUser?.email 
+    ? currentUser.email.split('@')[0] 
+    : 'usuario';
+
+  const studentRegister = currentUser?.student?.register;
 
   // Cargar avatar desde localStorage al montar el componente
   useEffect(() => {
@@ -32,34 +39,55 @@ export default function ProfileScreen() {
     }
   }, []);
 
-  // Cargar calificaciones del usuario actual
+  // Cargar datos del usuario actual y calificaciones
   useEffect(() => {
-    const loadRatings = async () => {
+    const loadUserData = async () => {
       try {
+        setIsLoading(true);
         const user = await fetchCurrentUser();
+        setCurrentUser(user);
+        
         if (user.student?.id) {
           const ratings = await fetchStudentRatings(user.student.id);
           setRatingSummary(ratings);
         }
       } catch (error) {
-        console.error('Error al cargar calificaciones:', error);
+        console.error('Error al cargar datos del usuario:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    loadRatings();
+    loadUserData();
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+  const handleStartEditName = () => {
+    setEditedName(fullName);
+    setIsEditingName(true);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Datos del perfil:', formData);
+  const handleCancelEditName = () => {
+    setIsEditingName(false);
+    setEditedName('');
+  };
+
+  const handleSaveName = async () => {
+    if (!editedName.trim() || !studentRegister) return;
+    
+    try {
+      setIsSavingName(true);
+      await updateStudentProfile(editedName.trim(), studentRegister);
+      // Limpiar cache y recargar usuario
+      clearUserCache();
+      const updatedUser = await fetchCurrentUser(true);
+      setCurrentUser(updatedUser);
+      setIsEditingName(false);
+    } catch (error) {
+      console.error('Error al guardar nombre:', error);
+      alert('Error al guardar el nombre. Por favor intenta de nuevo.');
+    } finally {
+      setIsSavingName(false);
+    }
   };
 
   const handlePhotoChange = () => {
@@ -182,8 +210,8 @@ export default function ProfileScreen() {
             className={styles.profilePhoto}
           />
           <div className={styles.photoInfo}>
-            <h2>{formData.nombre}</h2>
-            <p>@{formData.username}</p>
+            <h2>{fullName}</h2>
+            <p>@{username}</p>
             {ratingSummary && ratingSummary.totalRatings > 0 && (
               <div className={styles.ratingSection}>
                 <RatingStars 
@@ -218,76 +246,88 @@ export default function ProfileScreen() {
           </div>
         </div>
         
-        <h2 className={styles.profileTitle}>Editar Perfil</h2>
+        <h2 className={styles.profileTitle}>Mi Perfil</h2>
         
-        <form onSubmit={handleSubmit} className={styles.profileForm}>
-          <div className={styles.formRow}>
-            <label>Apodo</label>
-            <div className={styles.inputWrapper}>
-              <input
-                type="text"
-                name="Apodo"
-                value={formData.Apodo}
-                onChange={handleChange}
-                placeholder="Tu apodo público"
-              />
-              <p className={styles.helpText}>
-                Este nombre será visible para otros usuarios en la aplicación.
-              </p>
+        {isLoading ? (
+          <div className={styles.loadingState}>
+            <i className="pi pi-spin pi-spinner" style={{ fontSize: '2rem' }} />
+            <p>Cargando información...</p>
+          </div>
+        ) : (
+          <div className={styles.profileInfo}>
+            <div className={styles.infoRow}>
+              <label>Nombre completo</label>
+              <div className={styles.infoValueEditable}>
+                {isEditingName ? (
+                  <div className={styles.editNameContainer}>
+                    <input
+                      type="text"
+                      value={editedName}
+                      onChange={(e) => setEditedName(e.target.value)}
+                      className={styles.editNameInput}
+                      placeholder="Tu nombre completo"
+                      autoFocus
+                    />
+                    <button
+                      onClick={handleSaveName}
+                      disabled={isSavingName || !editedName.trim()}
+                      className={styles.saveButton}
+                      title="Guardar"
+                    >
+                      {isSavingName ? <i className="pi pi-spin pi-spinner" /> : <Check size={18} />}
+                    </button>
+                    <button
+                      onClick={handleCancelEditName}
+                      disabled={isSavingName}
+                      className={styles.cancelButton}
+                      title="Cancelar"
+                    >
+                      <X size={18} />
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <span>{fullName}</span>
+                    <button
+                      onClick={handleStartEditName}
+                      className={styles.editButton}
+                      title="Editar nombre"
+                    >
+                      <Pencil size={16} />
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
-          </div>
 
-          <div className={styles.formRow}>
-            <label>Biografía</label>
-            <div className={styles.inputWrapper}>
-              <textarea
-                name="bio"
-                value={formData.bio}
-                onChange={handleChange}
-                placeholder="Contanos un poco sobre vos..."
-                rows={4}
-                maxLength={150}
-              />
-              <p className={styles.charCount}>{formData.bio.length} / 150</p>
+            <div className={styles.infoRow}>
+              <label>Usuario</label>
+              <div className={styles.infoValue}>
+                <span>@{username}</span>
+              </div>
             </div>
-          </div>
 
-          <div className={styles.formRow}>
-            <label>Género</label>
-            <div className={styles.inputWrapper}>
-              <select
-                name="genero"
-                value={formData.genero}
-                onChange={handleChange}
-                className={styles.selectInput}
-              >
-                <option value="Male">Hombre</option>
-                <option value="Female">Mujer</option>
-                <option value="Other">Otro</option>
-                <option value="PreferNotToSay">Prefiero no decirlo</option>
-              </select>
-              <p className={styles.helpText}>
-                Esta información no será visible para otros usuarios.
-              </p>
+            <div className={styles.infoRow}>
+              <label>Email</label>
+              <div className={styles.infoValue}>
+                <span>{currentUser?.email || 'No disponible'}</span>
+              </div>
             </div>
-          </div>
 
-          <div className={styles.formRow}>
-            <label>Visibilidad</label>
-            <div className={styles.inputWrapper}>
-              <label className={styles.checkboxLabel}>
-                <input type="checkbox" />
-                <span>Permitir que otros usuarios te encuentren y te agreguen como amigo.</span>
-              </label>
-            </div>
-          </div>
+            {studentRegister && (
+              <div className={styles.infoRow}>
+                <label>Padrón</label>
+                <div className={styles.infoValue}>
+                  <span>{studentRegister}</span>
+                </div>
+              </div>
+            )}
 
-          <div className={styles.submitSection}>
-            <button type="submit" className={styles.submitButton}>
-              Guardar Cambios
-            </button>
+            <p className={styles.helpText}>
+              Para modificar tu información personal, contacta a la administración de FIUBA.
+            </p>
           </div>
-        </form>
+        )}
       </div>
       </div>
     </AppShell>
