@@ -160,23 +160,13 @@ export const isUserFriend = (userId: string, friends: Friend[]): boolean => {
  * @returns Promise con la URL de la imagen subida
  */
 export const uploadAvatar = async (file: File): Promise<string> => {
-  // TODO: Descomentar cuando esté disponible el backend
-  // const formData = new FormData();
-  // formData.append('avatar', file);
-  //
-  // const response = await apiFetch<{ avatarUrl: string }>('/api/user/avatar', {
-  //   method: 'POST',
-  //   body: formData,
-  // });
-  //
-  // return response.avatarUrl;
+  const formData = new FormData();
+  formData.append('avatar', file);
 
-  // Simulación de subida de avatar
-  console.log('Subiendo avatar:', file.name);
+  const response = await apiFetch<{ avatarUrl: string }>('http://localhost:8080/users/me/avatar', {
+    method: 'POST',
+    body: formData,
+  });
 
-  // Simular delay de red para testing
-  await new Promise(resolve => setTimeout(resolve, 1000));
-
-  // Retornar una URL mock (en producción vendría del backend)
-  return URL.createObjectURL(file);
+  return response.avatarUrl;
 };

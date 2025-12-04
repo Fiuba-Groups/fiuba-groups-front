@@ -22,6 +22,7 @@ export interface GroupMember {
     average: number;
     count: number;
   };
+  avatarUrl?: string;
   profileUrl?: string;
 }
 

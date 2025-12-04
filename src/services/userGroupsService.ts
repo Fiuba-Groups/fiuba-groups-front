@@ -13,6 +13,7 @@ interface BackendMember {
   id: number;
   register: number;
   name: string;
+  avatarUrl?: string;
 }
 
 // Interfaz para la respuesta del backend (actualizada con los nuevos campos)
@@ -32,6 +33,7 @@ interface BackendGroup {
     id: number;
     register: number;
     name: string;
+    avatarUrl?: string;
   };
   courseOffering?: {
     id: number;
@@ -61,6 +63,7 @@ const mapBackendMembers = (members?: BackendMember[]): GroupMember[] => {
     id: member.id.toString(),
     register: member.register,
     name: member.name || `Estudiante ${member.register}`,
+    avatarUrl: member.avatarUrl,
     profileUrl: `/profile/${member.register}`,
   }));
 };

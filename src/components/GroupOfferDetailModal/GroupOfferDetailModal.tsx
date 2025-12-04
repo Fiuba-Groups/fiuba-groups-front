@@ -86,9 +86,17 @@ const GroupOfferDetailModal: React.FC<GroupOfferDetailModalProps> = ({
             <div className={styles.membersList}>
               {offer.members.map((member) => (
                 <div key={member.id} className={styles.memberItem}>
-                  <div className={styles.memberAvatar}>
-                    {getInitials(member.name)}
-                  </div>
+                  {member.avatarUrl ? (
+                    <img 
+                      className={styles.memberAvatar}
+                      src={member.avatarUrl}
+                      alt={member.name}
+                    />
+                  ) : (
+                    <div className={styles.memberAvatar}>
+                      {getInitials(member.name)}
+                    </div>
+                  )}
                   <div className={styles.memberInfo}>
                     <div className={styles.memberName}>{member.name}</div>
                     {member.rating && member.rating.count > 0 && (
