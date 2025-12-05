@@ -91,57 +91,63 @@ const initializeMockUsers = (): Friend[] => {
  * @returns Promise con la información del usuario
  */
 export const fetchUserProfile = async (userId: string): Promise<Friend | null> => {
-  // TODO: Descomentar cuando esté disponible el endpoint en el backend
-  // try {
-  //   const user: Friend = await apiFetch(`/api/users/${userId}`);
-  //   return user;
-  // } catch (error) {
-  //   console.error('Error al cargar perfil de usuario:', error);
-  //   return null;
-  // }
+  try {
+    const response = await apiFetch<{
+      id: number;
+      email: string;
+      student?: {
+        id: number;
+        register: number;
+        name: string;
+      };
+    }>(`http://localhost:8080/users/${userId}`);
+    
+    if (!response.student) {
+      return null;
+    }
 
-  // Simular delay de red para testing
-  await new Promise(resolve => setTimeout(resolve, 300));
+    // Transformar la respuesta del backend al formato Friend
+    const nameParts = response.student.name.split(' ');
+    const name = nameParts[0] || '';
+    const surname = nameParts.slice(1).join(' ') || '';
 
-  // Buscar usuario en datos mock
-  const users = initializeMockUsers();
-  return users.find(user => user.id === userId) || null;
+    return {
+      id: response.id.toString(),
+      register: response.student.register,
+      name,
+      surname,
+      email: response.email,
+      bio: '', // El backend no tiene bio aún
+      avatarUrl: '/user.png',
+      isOnline: false,
+      lastSeen: new Date().toISOString(),
+    };
+  } catch (error) {
+    console.error('Error al cargar perfil de usuario:', error);
+    return null;
+  }
 };
 
 /**
  * Envía una solicitud de amistad a un usuario
+ * @deprecated Usar friendsService.sendFriendRequest en su lugar
  * @param userId - ID del usuario al que enviar la solicitud
  * @returns Promise con el resultado de la operación
  */
 export const sendFriendRequest = async (userId: string): Promise<void> => {
-  // TODO: Descomentar cuando esté disponible el backend
-  // await apiFetch(`/api/friends/request/${userId}`, {
-  //   method: 'POST',
-  // });
-
-  // Simulación de enviar solicitud de amistad
-  console.log(`Solicitud de amistad enviada a usuario ${userId}`);
-
-  // Simular delay de red para testing
-  await new Promise(resolve => setTimeout(resolve, 500));
+  const { sendFriendRequest: sendRequest } = await import('./friendsService');
+  await sendRequest(userId);
 };
 
 /**
  * Cancela una solicitud de amistad enviada
- * @param userId - ID del usuario cuya solicitud cancelar
+ * @deprecated Usar friendsService.cancelFriendRequest en su lugar
+ * @param requestId - ID de la solicitud a cancelar
  * @returns Promise con el resultado de la operación
  */
-export const cancelFriendRequest = async (userId: string): Promise<void> => {
-  // TODO: Descomentar cuando esté disponible el backend
-  // await apiFetch(`/api/friends/request/${userId}`, {
-  //   method: 'DELETE',
-  // });
-
-  // Simulación de cancelar solicitud de amistad
-  console.log(`Solicitud de amistad cancelada para usuario ${userId}`);
-
-  // Simular delay de red para testing
-  await new Promise(resolve => setTimeout(resolve, 300));
+export const cancelFriendRequest = async (requestId: string): Promise<void> => {
+  const { cancelFriendRequest: cancelRequest } = await import('./friendsService');
+  await cancelRequest(requestId);
 };
 
 /**

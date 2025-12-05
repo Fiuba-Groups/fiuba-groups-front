@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Calendar, MapPin, Users, BookOpen, Trophy, MessageCircle, UserPlus, UserCheck } from 'lucide-react';
 import styles from './OtherUserProfile.module.scss';
@@ -11,8 +11,7 @@ export default function OtherUserProfile() {
   const { userId } = useParams<{ userId: string }>();
   const navigate = useNavigate();
   const { friends } = useUserFriends();
-  const { user: userProfile, loading, error, sendRequest, cancelRequest, isRequesting }: UseUserProfileResult = useUserProfile(userId);
-  const [friendRequestSent, setFriendRequestSent] = useState(false);
+  const { user: userProfile, loading, error, sendRequest, cancelRequest, isRequesting, hasPendingRequest }: UseUserProfileResult = useUserProfile(userId);
 
   // Verificar si el usuario es amigo
   const isFriend = userId ? isUserFriend(userId, friends) : false;
@@ -130,13 +129,12 @@ export default function OtherUserProfile() {
                   <UserCheck size={16} />
                   Ya es amigo
                 </button>
-              ) : friendRequestSent ? (
+              ) : hasPendingRequest ? (
                 <button
                   className={`${styles.friendButton} ${styles.requestSent}`}
                   onClick={async () => {
                     try {
                       await cancelRequest();
-                      setFriendRequestSent(false);
                     } catch (error) {
                       console.error('Error cancelando solicitud:', error);
                     }
@@ -152,7 +150,6 @@ export default function OtherUserProfile() {
                   onClick={async () => {
                     try {
                       await sendRequest();
-                      setFriendRequestSent(true);
                     } catch (error) {
                       console.error('Error enviando solicitud:', error);
                     }

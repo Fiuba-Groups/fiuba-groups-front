@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import styles from './UserFriends.module.scss';
 import AppShell from '../../components/Shell';
 import SearchBar from '../../components/SearchBar/index';
@@ -22,7 +21,6 @@ export default function UserFriends() {
   const [isRemovingFriend, setIsRemovingFriend] = useState(false);
   const [friendRatings, setFriendRatings] = useState<Record<string, StudentRatingSummary | null>>({});
   const [sendingEmailTo, setSendingEmailTo] = useState<string | null>(null);
-  const navigate = useNavigate();
 
   // Cargar ratings de cada amigo
   useEffect(() => {
@@ -60,13 +58,6 @@ export default function UserFriends() {
    */
   const handleSearch = (value: string) => {
     setSearchTerm(value);
-  };
-
-  /**
-   * Maneja la navegación al perfil de un amigo
-   */
-  const handleViewProfile = (friendId: string) => {
-    navigate(`/user/${friendId}`);
   };
 
   /**
@@ -197,7 +188,6 @@ export default function UserFriends() {
               <FriendCard
                 key={friend.id}
                 friend={friend}
-                onViewProfile={handleViewProfile}
                 onRemoveFriend={handleRemoveFriend}
                 onSendEmail={handleSendEmail}
                 rating={friendRatings[friend.id]}

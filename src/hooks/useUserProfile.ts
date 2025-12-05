@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Friend } from '../types/friends';
-import { fetchUserProfile, sendFriendRequest, cancelFriendRequest } from '../services/userService';
+import { fetchUserProfile } from '../services/userService';
+import { sendFriendRequest, fetchSentFriendRequests, cancelFriendRequest } from '../services/friendsService';
+import { FriendRequest } from '../types/friends';
 
 /**
  * Estado del hook useUserProfile
@@ -12,6 +14,7 @@ export interface UseUserProfileResult {
   sendRequest: () => Promise<void>;
   cancelRequest: () => Promise<void>;
   isRequesting: boolean;
+  hasPendingRequest: boolean;
 }
 
 /**
@@ -24,6 +27,7 @@ export const useUserProfile = (userId: string | undefined): UseUserProfileResult
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isRequesting, setIsRequesting] = useState<boolean>(false);
+  const [pendingRequestId, setPendingRequestId] = useState<string | null>(null);
 
   const loadUserProfile = async () => {
     if (!userId) {
@@ -35,8 +39,20 @@ export const useUserProfile = (userId: string | undefined): UseUserProfileResult
     try {
       setLoading(true);
       setError(null);
-      const userData = await fetchUserProfile(userId);
+      
+      // Cargar perfil y verificar solicitudes pendientes en paralelo
+      const [userData, sentRequests] = await Promise.all([
+        fetchUserProfile(userId),
+        fetchSentFriendRequests().catch(() => [])
+      ]);
+      
       setUser(userData);
+      
+      // Verificar si hay una solicitud pendiente para este usuario
+      const pendingRequest = sentRequests.find(
+        (req: FriendRequest) => req.receiver?.id.toString() === userId && req.status === 'PENDING'
+      );
+      setPendingRequestId(pendingRequest?.id || null);
     } catch (err) {
       setError('Error al cargar el perfil del usuario');
       console.error('Error fetching user profile:', err);
@@ -54,8 +70,8 @@ export const useUserProfile = (userId: string | undefined): UseUserProfileResult
 
     setIsRequesting(true);
     try {
-      await sendFriendRequest(userId);
-      // Aquí podrías actualizar el estado para mostrar que se envió la solicitud
+      const response = await sendFriendRequest(userId);
+      setPendingRequestId(response.id.toString());
       console.log('Solicitud enviada exitosamente');
     } catch (err) {
       console.error('Error sending friend request:', err);
@@ -66,12 +82,12 @@ export const useUserProfile = (userId: string | undefined): UseUserProfileResult
   };
 
   const cancelRequest = async () => {
-    if (!userId) return;
+    if (!pendingRequestId) return;
 
     setIsRequesting(true);
     try {
-      await cancelFriendRequest(userId);
-      // Aquí podrías actualizar el estado para mostrar que se canceló la solicitud
+      await cancelFriendRequest(pendingRequestId);
+      setPendingRequestId(null);
       console.log('Solicitud cancelada exitosamente');
     } catch (err) {
       console.error('Error canceling friend request:', err);
@@ -88,5 +104,6 @@ export const useUserProfile = (userId: string | undefined): UseUserProfileResult
     sendRequest,
     cancelRequest,
     isRequesting,
+    hasPendingRequest: !!pendingRequestId,
   };
 };

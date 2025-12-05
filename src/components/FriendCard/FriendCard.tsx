@@ -5,7 +5,6 @@ import styles from './styles.module.scss';
 
 interface FriendCardProps {
   friend: Friend;
-  onViewProfile: (friendId: string) => void;
   onRemoveFriend?: (friendId: string) => void;
   onSendEmail?: (friendId: string) => void;
   rating?: StudentRatingSummary | null;
@@ -14,7 +13,6 @@ interface FriendCardProps {
 
 export default function FriendCard({
   friend,
-  onViewProfile,
   onRemoveFriend,
   onSendEmail,
   rating,
@@ -55,13 +53,6 @@ export default function FriendCard({
       </div>
 
       <div className={styles.cardFooter}>
-        <button
-          className={styles.profileButton}
-          onClick={() => onViewProfile(id)}
-        >
-          <i className="pi pi-user" />
-          <span>Ver Perfil</span>
-        </button>
         {onSendEmail && (
           <button
             className={styles.emailButton}
