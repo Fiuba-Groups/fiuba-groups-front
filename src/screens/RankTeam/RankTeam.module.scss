@@ -72,19 +72,13 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   transition: all 0.2s ease;
   display: flex;
+  flex-direction: column;
   gap: 16px;
-  align-items: flex-start;
 
   &:hover {
     box-shadow: 0 2px 8px rgba(0, 123, 255, 0.12);
     border-color: $color-accent;
     transform: translateY(-1px);
-  }
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
   }
 }
 
@@ -92,7 +86,7 @@
   display: flex;
   gap: 12px;
   align-items: center;
-  flex: 1;
+  width: 100%;
   min-width: 0;
 }
 
@@ -163,12 +157,8 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  align-items: flex-end;
-  
-  @media (max-width: 768px) {
-    align-items: center;
-    margin-top: 12px;
-  }
+  align-items: flex-start;
+  width: 100%;
   
   .ratingLabel {
     font-size: 12px;
@@ -262,4 +252,101 @@
 .submitIcon {
   width: 16px;
   height: 16px;
+}
+
+.traitsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.traitsLabel {
+  font-size: 12px;
+  font-weight: 500;
+  color: $color-text;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.traitsGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.traitsSubgroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.traitsGroupLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: $color-text-light;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.traitsGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.traitButton {
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1.5px solid;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.traitButtonPositive {
+  background: white;
+  border-color: #28a745;
+  color: #28a745;
+  
+  &:hover {
+    background: rgba(40, 167, 69, 0.05);
+  }
+}
+
+.traitButtonSelectedPositive {
+  background: #28a745;
+  border-color: #28a745;
+  color: white;
+  box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+}
+
+.traitButtonNegative {
+  background: white;
+  border-color: #dc3545;
+  color: #dc3545;
+  
+  &:hover {
+    background: rgba(220, 53, 69, 0.05);
+  }
+}
+
+.traitButtonSelectedNegative {
+  background: #dc3545;
+  border-color: #dc3545;
+  color: white;
+  box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
 }

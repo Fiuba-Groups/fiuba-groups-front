@@ -22,11 +22,36 @@ export default function RankTeam() {
 
   const [ratings, setRatings] = useState<{ [key: number]: number }>({});
   const [hoveredStars, setHoveredStars] = useState<{ [key: number]: number }>({});
+  const [selectedTraits, setSelectedTraits] = useState<{ [key: number]: string[] }>({});
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const positiveTraits = [
+    { id: 'sociable', label: 'Sociable' },
+    { id: 'cumplidor', label: 'Cumplidor' },
+    { id: 'puntual', label: 'Puntual' },
+  ];
+
+  const negativeTraits = [
+    { id: 'impuntual', label: 'Impuntual' },
+    { id: 'desorganizado', label: 'Desorganizado' },
+    { id: 'poco-participativo', label: 'Poco Participativo' },
+  ];
+
   const handleRating = (teammateId: number, rating: number) => {
     setRatings({ ...ratings, [teammateId]: rating });
+  };
+
+  const toggleTrait = (teammateId: number, traitId: string) => {
+    const currentTraits = selectedTraits[teammateId] || [];
+    const newTraits = currentTraits.includes(traitId)
+      ? currentTraits.filter(t => t !== traitId)
+      : [...currentTraits, traitId];
+    setSelectedTraits({ ...selectedTraits, [teammateId]: newTraits });
+  };
+
+  const isTraitSelected = (teammateId: number, traitId: string) => {
+    return (selectedTraits[teammateId] || []).includes(traitId);
   };
 
   const handleSubmit = async () => {
@@ -132,6 +157,52 @@ export default function RankTeam() {
                       />
                     </button>
                   ))}
+                </div>
+              </div>
+              
+              <div className={styles.traitsSection}>
+                <label className={styles.traitsLabel}>Características (opcional)</label>
+                
+                <div className={styles.traitsGroup}>
+                  <div className={styles.traitsSubgroup}>
+                    <span className={styles.traitsGroupLabel}>Positivas</span>
+                    <div className={styles.traitsGrid}>
+                      {positiveTraits.map((trait) => (
+                        <button
+                          key={trait.id}
+                          type="button"
+                          onClick={() => toggleTrait(teammate.id, trait.id)}
+                          className={`${styles.traitButton} ${
+                            isTraitSelected(teammate.id, trait.id)
+                              ? styles.traitButtonSelectedPositive
+                              : styles.traitButtonPositive
+                          }`}
+                        >
+                          {trait.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className={styles.traitsSubgroup}>
+                    <span className={styles.traitsGroupLabel}>Negativas</span>
+                    <div className={styles.traitsGrid}>
+                      {negativeTraits.map((trait) => (
+                        <button
+                          key={trait.id}
+                          type="button"
+                          onClick={() => toggleTrait(teammate.id, trait.id)}
+                          className={`${styles.traitButton} ${
+                            isTraitSelected(teammate.id, trait.id)
+                              ? styles.traitButtonSelectedNegative
+                              : styles.traitButtonNegative
+                          }`}
+                        >
+                          {trait.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
 
