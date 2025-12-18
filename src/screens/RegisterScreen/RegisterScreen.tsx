@@ -10,6 +10,7 @@ interface RegisterScreenProps {
 export default function RegisterScreen({ onRegister }: RegisterScreenProps) {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [padron, setPadron] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -41,6 +42,11 @@ export default function RegisterScreen({ onRegister }: RegisterScreenProps) {
       return;
     }
 
+    if (!padron.trim()) {
+      setError('El padrón es obligatorio');
+      return;
+    }
+
     if (!isPasswordValid(password)) {
       setError('La contraseña no cumple con los requisitos mínimos');
       return;
@@ -54,7 +60,7 @@ export default function RegisterScreen({ onRegister }: RegisterScreenProps) {
     setIsLoading(true);
 
     try {
-      await register(email, password, firstName, lastName);
+      await register(email, password, firstName, lastName, parseInt(padron));
       setSuccess('¡Registro exitoso! Redirigiendo al login...');
       setTimeout(() => {
         onRegister();
@@ -101,6 +107,21 @@ export default function RegisterScreen({ onRegister }: RegisterScreenProps) {
                 required
               />
             </div>
+          </div>
+
+          <div className={styles.inputGroup}>
+            <label htmlFor="padron" className={styles.label}>
+              Padrón
+            </label>
+            <input
+              type="number"
+              id="padron"
+              value={padron}
+              onChange={(e) => setPadron(e.target.value)}
+              className={styles.input}
+              placeholder="Tu número de padrón"
+              required
+            />
           </div>
 
           <div className={styles.inputGroup}>

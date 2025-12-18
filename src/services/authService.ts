@@ -15,7 +15,7 @@ export async function login(email: string, password: string): Promise<void> {
     localStorage.setItem("token", data.token);
   }
 
-export const register = async (email: string, password: string, firstName: string, lastName: string) => {
+export const register = async (email: string, password: string, firstName: string, lastName: string, padron: number) => {
   try {
     const response = await fetch(`http://localhost:8080/auth/register`, {
       method: 'POST',
@@ -26,7 +26,8 @@ export const register = async (email: string, password: string, firstName: strin
         email, 
         password, 
         firstName, 
-        lastName 
+        lastName,
+        padron
       }),
     });
 
