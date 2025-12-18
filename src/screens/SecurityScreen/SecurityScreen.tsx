@@ -102,14 +102,13 @@ export default function SecurityScreen() {
         return;
       }
 
-      // Borrar token local
-      localStorage.removeItem('token');
-
       await new Promise(resolve => setTimeout(resolve, 2000)); // Simular delay
       alert('Cuenta eliminada exitosamente');
 
+      // Borrar token local
       logout();
-      navigate('/login', { replace: true });
+
+      window.location.href = '/login';
     } catch (error) {
       alert(`Error al eliminar la cuenta: ${error}`);
     } finally {
