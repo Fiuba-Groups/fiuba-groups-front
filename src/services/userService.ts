@@ -139,15 +139,15 @@ export const fetchUserProfile = async (userId: string): Promise<Friend | null> =
  * @param groupIds - Lista de IDs de los grupos a destacar
  * @returns Promise con la lista actualizada de grupos destacados
  */
-export const updateShowcasedGroups = async (groupIds: number[]): Promise<{ id: number; title: string; description: string }[]> => {
-  return apiFetch<{ id: number; title: string; description: string }[]>(
+export const updateShowcasedGroups = async (groups: { groupId: number; description: string }[]): Promise<any[]> => {
+  return apiFetch<any[]>(
     'http://localhost:8080/users/me/showcased-groups',
     {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(groupIds),
+      body: JSON.stringify(groups),
     }
   );
 };

@@ -16,6 +16,15 @@ export interface CurrentUser {
       id: number;
       title: string;
       description: string;
+      subject?: string;
+      course?: string;
+      semester?: string;
+      members?: {
+        id: number;
+        name: string;
+        register: number;
+        avatarUrl?: string;
+      }[];
     }[];
   };
 }

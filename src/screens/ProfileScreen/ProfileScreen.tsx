@@ -148,9 +148,9 @@ export default function ProfileScreen() {
     }
   };
 
-  const handleSaveShowcasedGroups = async (selectedGroupIds: number[]) => {
+  const handleSaveShowcasedGroups = async (selectedGroups: { groupId: number; description: string }[]) => {
     try {
-      const updatedGroups = await updateShowcasedGroups(selectedGroupIds);
+      const updatedGroups = await updateShowcasedGroups(selectedGroups);
       // Update local state
       if (currentUser && currentUser.student) {
         setCurrentUser({
@@ -369,7 +369,10 @@ export default function ProfileScreen() {
               availableGroups={myGroups.map(g => ({
                 id: Number(g.id),
                 title: g.title,
-                description: g.description
+                description: g.description,
+                subject: g.subject,
+                semester: g.semester,
+                members: g.members
               }))}
               initialSelectedGroups={currentUser?.student?.showcasedGroups || []}
             />

@@ -1,19 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { X, Check, Search } from 'lucide-react';
 import styles from './SelectGroupsModal.module.scss';
+import ShowcasedGroupModal from '../ShowcasedGroupsList/ShowcasedGroupModal';
 
 interface GroupSummary {
   id: number;
   title: string;
+  description: string;
+  subject?: string;
+  semester?: string;
+  course?: string;
+  members?: any[];
+}
+
+interface ShowcasedGroupData {
+  id: number;
   description: string;
 }
 
 interface SelectGroupsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (selectedGroupIds: number[]) => Promise<void>;
+  onSave: (selectedGroups: { groupId: number; description: string }[]) => Promise<void>;
   availableGroups: GroupSummary[];
-  initialSelectedGroups: GroupSummary[];
+  initialSelectedGroups: ShowcasedGroupData[];
 }
 
 export default function SelectGroupsModal({
@@ -23,13 +33,19 @@ export default function SelectGroupsModal({
   availableGroups,
   initialSelectedGroups,
 }: SelectGroupsModalProps) {
-  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+  const [selectedGroups, setSelectedGroups] = useState<Map<number, string>>(new Map());
   const [searchTerm, setSearchTerm] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  const [editingGroup, setEditingGroup] = useState<GroupSummary | null>(null);
+  const [tempDescription, setTempDescription] = useState('');
 
   useEffect(() => {
     if (isOpen) {
-      setSelectedIds(new Set(initialSelectedGroups.map(g => g.id)));
+      const initialMap = new Map<number, string>();
+      initialSelectedGroups.forEach(g => {
+        initialMap.set(g.id, g.description || '');
+      });
+      setSelectedGroups(initialMap);
       setSearchTerm('');
     }
   }, [isOpen, initialSelectedGroups]);
@@ -37,19 +53,37 @@ export default function SelectGroupsModal({
   if (!isOpen) return null;
 
   const handleToggle = (id: number) => {
-    const newSelected = new Set(selectedIds);
+    const newSelected = new Map(selectedGroups);
     if (newSelected.has(id)) {
       newSelected.delete(id);
     } else {
-      newSelected.add(id);
+      newSelected.set(id, '');
     }
-    setSelectedIds(newSelected);
+    setSelectedGroups(newSelected);
+  };
+
+  const handleCardClick = (group: GroupSummary) => {
+    setEditingGroup(group);
+    setTempDescription(selectedGroups.get(group.id) || '');
+  };
+
+  const handleModalSave = () => {
+    if (editingGroup) {
+      const newSelected = new Map(selectedGroups);
+      newSelected.set(editingGroup.id, tempDescription);
+      setSelectedGroups(newSelected);
+      setEditingGroup(null);
+    }
   };
 
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await onSave(Array.from(selectedIds));
+      const result = Array.from(selectedGroups.entries()).map(([groupId, description]) => ({
+        groupId,
+        description
+      }));
+      await onSave(result);
       onClose();
     } catch (error) {
       console.error('Error saving groups:', error);
@@ -87,21 +121,32 @@ export default function SelectGroupsModal({
           {filteredGroups.length === 0 ? (
             <p className={styles.emptyState}>No se encontraron grupos.</p>
           ) : (
-            filteredGroups.map(group => (
-              <div 
-                key={group.id} 
-                className={`${styles.item} ${selectedIds.has(group.id) ? styles.selected : ''}`}
-                onClick={() => handleToggle(group.id)}
-              >
-                <div className={styles.checkbox}>
-                  {selectedIds.has(group.id) && <Check size={14} />}
+            filteredGroups.map(group => {
+              const isSelected = selectedGroups.has(group.id);
+              return (
+                <div 
+                  key={group.id} 
+                  className={`${styles.item} ${isSelected ? styles.selected : ''}`}
+                  onClick={() => handleCardClick(group)}
+                >
+                  <div className={styles.itemHeader}>
+                    <div 
+                      className={styles.checkbox} 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleToggle(group.id);
+                      }}
+                    >
+                      {isSelected && <Check size={14} />}
+                    </div>
+                    <div className={styles.info}>
+                      <h4>{group.title}</h4>
+                      <p className={styles.originalDesc}>{group.description}</p>
+                    </div>
+                  </div>
                 </div>
-                <div className={styles.info}>
-                  <h4>{group.title}</h4>
-                  <p>{group.description}</p>
-                </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
 
@@ -114,6 +159,22 @@ export default function SelectGroupsModal({
           </button>
         </div>
       </div>
+
+      {editingGroup && (
+        <ShowcasedGroupModal
+          isOpen={true}
+          onClose={() => setEditingGroup(null)}
+          group={{
+            ...editingGroup,
+            originalDescription: editingGroup.description,
+            description: tempDescription
+          }}
+          mode="edit"
+          editValue={tempDescription}
+          onEditChange={setTempDescription}
+          onSave={handleModalSave}
+        />
+      )}
     </div>
   );
 }

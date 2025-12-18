@@ -64,6 +64,7 @@
   border: 1px solid $border-color;
   border-radius: 8px;
   padding: 1rem;
+  background-color: $background-light;
   transition: transform 0.2s, box-shadow 0.2s;
 
   &:hover {
@@ -87,4 +88,70 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
+}
+
+.cardHeader {
+  margin-bottom: 0.75rem;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.tag {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  color: $text-secondary;
+  background-color: rgba($primary-color, 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  
+  svg {
+    color: $primary-color;
+  }
+}
+
+.description {
+  font-size: 0.95rem;
+  color: $text-secondary;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+  white-space: pre-wrap;
+  
+  a {
+    color: $primary-color;
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.members {
+  border-top: 1px solid rgba(0,0,0,0.05);
+  padding-top: 0.75rem;
+  font-size: 0.85rem;
+}
+
+.membersHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: $text-secondary;
+  margin-bottom: 0.25rem;
+  font-weight: 500;
+}
+
+.membersList {
+  color: $text-primary;
+  padding-left: 1.4rem; // Align with text of header
+}
+
+.memberName {
+  font-weight: 500;
 }
