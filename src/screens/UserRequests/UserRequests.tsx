@@ -132,12 +132,15 @@ export default function UserRequests() {
         switch (action) {
           case 'cancel':
             await cancelGroupRequest(request.id);
+            refetchGroups();
             break;
           case 'accept':
             await acceptGroupRequest(request.id);
+            refetchGroups();
             break;
           case 'reject':
             await rejectGroupRequest(request.id);
+            refetchGroups();
             break;
         }
       } else {
@@ -151,6 +154,7 @@ export default function UserRequests() {
             break;
           case 'reject':
             await rejectFriendRequest(request.id);
+            refetchFriends();
             break;
         }
       }
