@@ -4,12 +4,14 @@ import { ArrowLeft, Lock, Trash2, AlertTriangle } from 'lucide-react';
 import styles from './SecurityScreen.module.scss';
 import AppShell from '../../components/Shell';
 import ConfirmModal from '../../components/ConfirmModal/ConfirmModal';
+import { useAuth } from '../../hooks';
 
 export default function SecurityScreen() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'password' | 'delete'>('password');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const { logout } = useAuth();
 
 
   // Estados para cambiar contraseña
@@ -55,7 +57,8 @@ export default function SecurityScreen() {
         },
         body: JSON.stringify({
           currentPassword: passwordForm.currentPassword,
-          newPassword: passwordForm.newPassword
+          newPassword: passwordForm.newPassword,
+          confirmNewPassword: passwordForm.confirmNewPassword
         })
       });
 
@@ -104,10 +107,11 @@ export default function SecurityScreen() {
 
       await new Promise(resolve => setTimeout(resolve, 2000)); // Simular delay
       alert('Cuenta eliminada exitosamente');
-      navigate('/login');
+
+      logout();
+      navigate('/login', { replace: true });
     } catch (error) {
       alert(`Error al eliminar la cuenta: ${error}`);
-      console.log(error);
     } finally {
       setIsDeleting(false);
       setShowDeleteModal(false);
