@@ -1,0 +1,148 @@
+@import '../../constants/styles-constants.scss';
+
+.userProfileLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+
+  &:hover:not(.disabled) {
+    background-color: rgba($color-accent, 0.08);
+    transform: translateY(-1px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-accent;
+    outline-offset: 2px;
+  }
+
+  &.disabled {
+    cursor: default;
+    opacity: 0.7;
+  }
+}
+
+// Variantes
+.full {
+  padding: 8px 12px;
+}
+
+.avatar {
+  padding: 4px;
+}
+
+.text {
+  padding: 4px 8px;
+}
+
+.chip {
+  padding: 4px 10px;
+  background-color: rgba($color-accent, 0.1);
+  border-radius: 20px;
+  gap: 6px;
+
+  &:hover:not(.disabled) {
+    background-color: rgba($color-accent, 0.2);
+  }
+}
+
+// Avatar
+.avatarContainer {
+  position: relative;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid $color-background;
+}
+
+.avatarPlaceholder {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, $color-accent, lighten($color-accent, 15%));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  border: 2px solid $color-background;
+}
+
+.onlineIndicator {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid white;
+
+  &.online {
+    background-color: #22c55e;
+  }
+
+  &.offline {
+    background-color: #9ca3af;
+  }
+}
+
+// User info
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: $color-text;
+  font-family: $font-family-base;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.register {
+  font-size: 0.8rem;
+  color: $color-text-light;
+  font-family: $font-family-base;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  color: $color-text;
+  font-family: $font-family-base;
+
+  i {
+    color: #fbbf24;
+    font-size: 0.75rem;
+  }
+
+  .ratingCount {
+    color: $color-text-light;
+    font-size: 0.75rem;
+  }
+}
+
+// Chip variant specific
+.chipName {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: $color-text;
+  white-space: nowrap;
+}

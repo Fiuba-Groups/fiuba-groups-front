@@ -100,7 +100,7 @@ export const fetchUserProfile = async (userId: string): Promise<Friend | null> =
         register: number;
         name: string;
       };
-    }>(`http://localhost:8080/users/${userId}`);
+    }>(`http://localhost:8080/users/student/${userId}`);
     
     if (!response.student) {
       return null;
