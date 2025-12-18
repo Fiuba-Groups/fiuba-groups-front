@@ -5,7 +5,7 @@ import styles from './styles.module.scss';
 interface ConfirmModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: () => void;
+  onConfirm: () => void | Promise<void>;
   title?: string;
   message: string;
   confirmText?: string;
@@ -27,8 +27,8 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
 
   const portalTarget = document.getElementById('modal-root') || document.body;
 
-  const handleConfirm = () => {
-    onConfirm();
+  const handleConfirm = async () => {
+    await onConfirm();
     onClose();
   };
 
@@ -73,7 +73,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
             onClick={handleConfirm}
             disabled={isLoading}
           >
-            {isLoading ? 'Eliminando...' : confirmText}
+            {isLoading ? 'Procesando...' : confirmText}
           </button>
         </div>
       </div>
