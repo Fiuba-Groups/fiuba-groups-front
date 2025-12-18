@@ -99,6 +99,11 @@ export const fetchUserProfile = async (userId: string): Promise<Friend | null> =
         id: number;
         register: number;
         name: string;
+        showcasedGroups?: {
+          id: number;
+          title: string;
+          description: string;
+        }[];
       };
     }>(`http://localhost:8080/users/student/${userId}`);
     
@@ -121,11 +126,30 @@ export const fetchUserProfile = async (userId: string): Promise<Friend | null> =
       avatarUrl: '/user.png',
       isOnline: false,
       lastSeen: new Date().toISOString(),
+      showcasedGroups: response.student.showcasedGroups,
     };
   } catch (error) {
     console.error('Error al cargar perfil de usuario:', error);
     return null;
   }
+};
+
+/**
+ * Actualiza los grupos destacados del usuario actual
+ * @param groupIds - Lista de IDs de los grupos a destacar
+ * @returns Promise con la lista actualizada de grupos destacados
+ */
+export const updateShowcasedGroups = async (groups: { groupId: number; description: string }[]): Promise<any[]> => {
+  return apiFetch<any[]>(
+    'http://localhost:8080/users/me/showcased-groups',
+    {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(groups),
+    }
+  );
 };
 
 /**

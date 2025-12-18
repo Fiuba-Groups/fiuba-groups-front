@@ -16,6 +16,20 @@ export interface Friend {
   isOnline?: boolean;
   lastSeen?: string;
   bio?: string;
+  showcasedGroups?: {
+    id: number;
+    title: string;
+    description: string;
+    subject?: string;
+    course?: string;
+    semester?: string;
+    members?: {
+      id: number;
+      name: string;
+      register: number;
+      avatarUrl?: string;
+    }[];
+  }[];
 }
 
 /**

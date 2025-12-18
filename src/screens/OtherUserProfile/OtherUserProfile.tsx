@@ -8,6 +8,7 @@ import { useUserFriends } from '../../hooks/useUserFriends';
 import { useUserProfile, UseUserProfileResult } from '../../hooks/useUserProfile';
 import { isUserFriend, getTeammateEmail } from '../../services/userService';
 import { fetchStudentRatings, StudentRatingSummary } from '../../services/ratingsService';
+import ShowcasedGroupsList from '../../components/ShowcasedGroupsList/ShowcasedGroupsList';
 
 export default function OtherUserProfile() {
   const { userId } = useParams<{ userId: string }>();
@@ -184,6 +185,11 @@ export default function OtherUserProfile() {
               </div>
             )}
           </div>
+
+          <ShowcasedGroupsList 
+            groups={userProfile.showcasedGroups || []}
+            isEditable={false}
+          />
 
           {/* Botones de acción */}
           <div className={styles.actionButtons}>

@@ -4,9 +4,12 @@ import styles from './Profile.module.scss';
 import AppShell from '../../components/Shell';
 import RatingStars from '../../components/RatingStars';
 import { User, Shield, HelpCircle, BookOpen, GraduationCap, Pencil, Check, X } from 'lucide-react';
-import { uploadAvatar, updateStudentProfile } from '../../services/userService';
+import { uploadAvatar, updateStudentProfile, updateShowcasedGroups } from '../../services/userService';
 import { fetchCurrentUser, CurrentUser, clearUserCache } from '../../services/currentUserService';
 import { fetchStudentRatings, StudentRatingSummary } from '../../services/ratingsService';
+import ShowcasedGroupsList from '../../components/ShowcasedGroupsList/ShowcasedGroupsList';
+import SelectGroupsModal from '../../components/SelectGroupsModal/SelectGroupsModal';
+import { useUserGroups } from '../../hooks/useUserGroups';
 
 type Section = 'edit-profile';
 
@@ -21,6 +24,9 @@ export default function ProfileScreen() {
   const [editedName, setEditedName] = useState('');
   const [isSavingName, setIsSavingName] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  const { groups: myGroups } = useUserGroups();
+  const [isSelectGroupsModalOpen, setIsSelectGroupsModalOpen] = useState(false);
 
   // Derivar datos del usuario
   const fullName = currentUser?.student?.name || 'Cargando...';
@@ -139,6 +145,25 @@ export default function ProfileScreen() {
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
+    }
+  };
+
+  const handleSaveShowcasedGroups = async (selectedGroups: { groupId: number; description: string }[]) => {
+    try {
+      const updatedGroups = await updateShowcasedGroups(selectedGroups);
+      // Update local state
+      if (currentUser && currentUser.student) {
+        setCurrentUser({
+          ...currentUser,
+          student: {
+            ...currentUser.student,
+            showcasedGroups: updatedGroups
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Error updating showcased groups:', error);
+      alert('Error al actualizar los grupos destacados');
     }
   };
 
@@ -327,6 +352,31 @@ export default function ProfileScreen() {
               Para modificar tu información personal, contacta a la administración de FIUBA.
             </p>
           </div>
+        )}
+
+        {!isLoading && (
+          <>
+            <ShowcasedGroupsList 
+              groups={currentUser?.student?.showcasedGroups || []}
+              isEditable={true}
+              onEdit={() => setIsSelectGroupsModalOpen(true)}
+            />
+
+            <SelectGroupsModal
+              isOpen={isSelectGroupsModalOpen}
+              onClose={() => setIsSelectGroupsModalOpen(false)}
+              onSave={handleSaveShowcasedGroups}
+              availableGroups={myGroups.map(g => ({
+                id: Number(g.id),
+                title: g.title,
+                description: g.description,
+                subject: g.subject,
+                semester: g.semester,
+                members: g.members
+              }))}
+              initialSelectedGroups={currentUser?.student?.showcasedGroups || []}
+            />
+          </>
         )}
       </div>
       </div>

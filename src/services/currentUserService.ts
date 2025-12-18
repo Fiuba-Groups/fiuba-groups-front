@@ -12,6 +12,20 @@ export interface CurrentUser {
     id: number;
     register: number;
     name: string; // Nombre completo del estudiante
+    showcasedGroups?: {
+      id: number;
+      title: string;
+      description: string;
+      subject?: string;
+      course?: string;
+      semester?: string;
+      members?: {
+        id: number;
+        name: string;
+        register: number;
+        avatarUrl?: string;
+      }[];
+    }[];
   };
 }
 
