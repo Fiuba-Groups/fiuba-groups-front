@@ -107,9 +107,23 @@
   }
 }
 
+.titleContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.logo {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+
 .loginTitle {
   font-size: $font-size-title;
-  margin: 0 0 2rem 0;
+  margin: 0;
   color: $color-text;
   font-family: $font-family-base;
   text-align: center;

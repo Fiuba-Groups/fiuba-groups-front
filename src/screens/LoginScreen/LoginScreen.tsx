@@ -36,7 +36,10 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
   return (
       <div className={styles.loginContent}>
         <div className={styles.loginForm}>
-          <h1 className={styles.loginTitle}>Iniciar Sesión</h1>
+          <div className={styles.titleContainer}>
+            <img src="/logo7.png" alt="FIUBA Groups Logo" className={styles.logo} />
+            <h1 className={styles.loginTitle}>Iniciar Sesión</h1>
+          </div>
           <form onSubmit={handleSubmit} className={styles.form}>
             <div className={styles.inputGroup}>
               <label htmlFor="email" className={styles.label}>
