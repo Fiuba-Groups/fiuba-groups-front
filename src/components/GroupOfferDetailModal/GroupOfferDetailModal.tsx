@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { GroupOffer } from '../../types/groupOffer';
 import { getTeammateEmail } from '../../services/userService';
 import { getCurrentStudentId } from '../../services/currentUserService';
@@ -39,6 +40,26 @@ const GroupOfferDetailModal: React.FC<GroupOfferDetailModalProps> = ({
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
   const [friendshipStatuses, setFriendshipStatuses] = useState<Record<string, FriendshipStatus>>({});
   const [sendingFriendRequestTo, setSendingFriendRequestTo] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleViewProfile = async (memberId: string) => {
+    try {
+      const currentStudentId = await getCurrentStudentId();
+      
+      // Si es el usuario actual, navegar a editar perfil
+      if (currentStudentId && String(currentStudentId) === String(memberId)) {
+        navigate('/profile');
+        return;
+      }
+    } catch (error) {
+      console.error('Error checking current user:', error);
+    }
+
+    navigate(`/user/${memberId}`, {
+      state: { from: location.pathname },
+    });
+  };
 
   // Obtener el ID del usuario actual para no mostrar el botón de email para uno mismo
   useEffect(() => {
@@ -202,7 +223,20 @@ const GroupOfferDetailModal: React.FC<GroupOfferDetailModalProps> = ({
             <h3>Integrantes del grupo</h3>
             <div className={styles.membersList}>
               {offer.members.map((member) => (
-                <div key={member.id} className={styles.memberItem}>
+                <div
+                  key={member.id}
+                  className={styles.memberItem}
+                  role="link"
+                  tabIndex={0}
+                  onClick={() => handleViewProfile(member.id)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                      event.preventDefault();
+                      handleViewProfile(member.id);
+                    }
+                  }}
+                  aria-label={`Ver perfil de ${member.name}`}
+                >
                   {member.avatarUrl ? (
                     <img 
                       className={styles.memberAvatar}
@@ -234,7 +268,10 @@ const GroupOfferDetailModal: React.FC<GroupOfferDetailModalProps> = ({
                         return (
                           <button
                             className={`${styles.friendButton} ${buttonProps.className}`}
-                            onClick={() => handleSendFriendRequest(member.id)}
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              handleSendFriendRequest(member.id);
+                            }}
                             disabled={buttonProps.disabled || sendingFriendRequestTo === member.id}
                             title={buttonProps.title}
                             aria-label={`${buttonProps.title} - ${member.name}`}
@@ -246,7 +283,10 @@ const GroupOfferDetailModal: React.FC<GroupOfferDetailModalProps> = ({
                       {showEmailButtons && (
                         <button
                           className={styles.emailButton}
-                          onClick={() => handleSendEmail(member.id)}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            handleSendEmail(member.id);
+                          }}
                           disabled={sendingEmailTo === member.id}
                           title="Enviar email"
                           aria-label={`Enviar email a ${member.name}`}

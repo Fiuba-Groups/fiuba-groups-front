@@ -9,9 +9,33 @@ import { useUserFriendRequests } from '../../hooks/useUserFriendRequests';
 import { GroupRequest } from '../../types/requests';
 import { FriendRequest } from '../../types/friends';
 import { fetchStudentRatings, StudentRatingSummary } from '../../services/ratingsService';
+import { UserProfileLink } from '../../components/UserProfileLink';
+import { mapToUserSummary } from '../../types/users';
 
 type RequestCategory = 'groups' | 'friends';
 type TabType = 'sent' | 'received';
+
+const buildGroupRequesterSummary = (request: GroupRequest) => {
+  const requester = request.requester;
+  return mapToUserSummary({
+    id: requester.id,
+    name: requester.name,
+    surname: requester.surname,
+    email: requester.email,
+  });
+};
+
+const buildFriendSummary = (person?: FriendRequest['sender']) => {
+  if (!person) return null;
+  const [firstName, ...rest] = (person.name || '').split(' ');
+  return mapToUserSummary({
+    id: person.id,
+    name: firstName || person.name,
+    surname: rest.length ? rest.join(' ') : undefined,
+    register: person.register,
+    avatarUrl: person.avatarUrl,
+  });
+};
 
 export default function UserRequests() {
   const { 
@@ -364,7 +388,13 @@ export default function UserRequests() {
                   )}
                   {activeTab === 'received' && (
                     <div className={styles.requesterInfo}>
-                      <strong>Solicitante:</strong> {request.requester.name} {request.requester.surname}
+                      <strong>Solicitante:</strong>
+                      <div className={styles.profileLinkWrapper}>
+                        <UserProfileLink
+                          user={buildGroupRequesterSummary(request)}
+                          showRegister
+                        />
+                      </div>
                       {requesterRatings[request.requesterId] && (
                         <div className={styles.requesterRating}>
                           <RatingStars 
@@ -456,6 +486,7 @@ export default function UserRequests() {
             {currentFriendRequests.map((request) => {
               const person = activeTab === 'sent' ? request.receiver : request.sender;
               const isPending = request.status === 'PENDING';
+              const personSummary = buildFriendSummary(person);
               
               return (
                 <div
@@ -464,21 +495,15 @@ export default function UserRequests() {
                 >
                   <div className={styles.requestHeader}>
                     <div className={styles.friendRequestInfo}>
-                      {person?.avatarUrl ? (
-                        <img 
-                          src={person.avatarUrl} 
-                          alt={person?.name || 'Usuario'} 
-                          className={styles.friendAvatar}
-                        />
-                      ) : (
-                        <div className={styles.friendAvatarPlaceholder}>
-                          {(person?.name || 'U').charAt(0).toUpperCase()}
-                        </div>
-                      )}
-                      <div>
-                        <h3 className={styles.requestTitle}>{person?.name || 'Usuario'}</h3>
-                        {person?.register && (
-                          <span className={styles.friendRegister}>Padrón: {person.register}</span>
+                      <div className={styles.profileLinkWrapper}>
+                        {personSummary ? (
+                          <UserProfileLink
+                            user={personSummary}
+                            showRegister
+                            variant="full"
+                          />
+                        ) : (
+                          <span>{person?.name || 'Usuario'}</span>
                         )}
                       </div>
                     </div>

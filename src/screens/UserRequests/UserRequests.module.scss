@@ -258,10 +258,18 @@
   font-size: 0.9rem;
   color: $color-text-light;
   font-family: $font-family-base;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 
   strong {
     color: $color-text;
   }
+}
+
+.profileLinkWrapper {
+  display: inline-flex;
+  max-width: 100%;
 }
 
 .requesterRating {
