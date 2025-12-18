@@ -22,7 +22,7 @@ const mapStudentToFriend = (student: FriendResponse): Friend => ({
  */
 export const fetchUserFriends = async (): Promise<Friend[]> => {
   try {
-    const students: FriendResponse[] = await apiFetch(`${API_BASE_URL}/friend-requests/friends`);
+    const students: FriendResponse[] = await apiFetch(`${API_BASE_URL}/students/me/friends`);
     return students.map(mapStudentToFriend);
   } catch (error) {
     console.error('Error al cargar amigos:', error);
