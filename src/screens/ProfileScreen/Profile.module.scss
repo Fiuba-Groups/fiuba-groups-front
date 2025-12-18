@@ -1,0 +1,478 @@
+@import '../../constants/styles-constants.scss';
+
+// Paleta de colores unificada
+$primary-blue: #3B82F6;
+$primary-blue-dark: #2563EB;
+$primary-blue-light: #60A5FA;
+$primary-blue-soft: #EFF6FF;
+$white: #FFFFFF;
+$gray-50: #F9FAFB;
+$gray-100: #F3F4F6;
+$gray-200: #E5E7EB;
+$gray-300: #D1D5DB;
+$gray-500: #6B7280;
+$gray-600: #4B5563;
+$gray-700: #374151;
+$gray-900: #111827;
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+
+.settingsContainer {
+    display: grid;
+    grid-template-columns: 300px 1fr; // Sidebar a la izquierda
+    padding-top: $header-height - 10px; // Espacio para el header fijo
+    min-height: 100vh;
+    background-color: $gray-50;
+    color: $gray-900;
+}
+
+.sidebar {
+    padding: 2rem 1.5rem;
+    background-color: $white;
+    border-right: 1px solid $gray-200;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.sidebarTitle {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: $gray-900;
+}
+
+.sectionGroup {
+    display: flex;
+    flex-direction: column;
+}
+
+.sectionGroupTitle {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: $gray-600;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    letter-spacing: 0.5px;
+}
+
+.sidebarOption {
+    background: none;
+    border: none;
+    color: $gray-700;
+    text-align: left;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1rem;
+    font-weight: 500;
+    width: 100%;
+    transition: all 0.2s;
+    margin-bottom: 0.25rem;
+
+    &:hover {
+        background-color: $primary-blue-soft;
+        color: $primary-blue-dark;
+    }
+
+    &.active {
+        background-color: $primary-blue-soft;
+        color: $primary-blue;
+        font-weight: 600;
+    }
+
+    .icon {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+
+    // Quitar subrayado del Link
+    text-decoration: none;
+
+    &:visited {
+        text-decoration: none;
+    }
+}
+
+.profileContainer {
+    padding: 2rem 4rem;
+    overflow-y: auto;
+}
+
+.profileTitle {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: $gray-900;
+}
+
+.photoSection {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.profilePhoto {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.photoInfo {
+    h2 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 0 0 0.25rem;
+    }
+
+    p {
+        color: $gray-600;
+        margin: 0;
+    }
+}
+
+.ratingSection {
+    margin-top: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.noRatings {
+    margin-top: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: $gray-600;
+    font-size: 0.875rem;
+    font-style: italic;
+
+    i {
+        color: #fbbf24;
+    }
+}
+
+.changePhotoBtn {
+    background-color: $primary-blue;
+    color: $white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: 500;
+    margin-top: 0.75rem;
+    transition: background-color 0.2s;
+
+    &:hover {
+        background-color: $primary-blue-dark;
+    }
+}
+
+.profileForm {
+    background-color: $white;
+    padding: 2rem;
+    border-radius: 0.75rem;
+    border: 1px solid $gray-200;
+    box-shadow: $shadow-sm;
+}
+
+.formRow {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5rem;
+
+    label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        color: $gray-700;
+    }
+}
+
+.inputWrapper {
+    width: 100%;
+}
+
+.formRow input[type="text"],
+.formRow textarea,
+.selectInput {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid $gray-300;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: all 0.2s;
+
+    &:focus {
+        outline: none;
+        border-color: $primary-blue;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+}
+
+.helpText {
+    font-size: 0.875rem;
+    color: $gray-600;
+    margin-top: 0.5rem;
+}
+
+// Estilos para la visualización del perfil
+.profileInfo {
+    background-color: $white;
+    padding: 2rem;
+    border-radius: 0.75rem;
+    border: 1px solid $gray-200;
+    box-shadow: $shadow-sm;
+}
+
+.infoRow {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid $gray-100;
+
+    &:last-of-type {
+        margin-bottom: 1rem;
+        padding-bottom: 0;
+        border-bottom: none;
+    }
+
+    label {
+        font-weight: 600;
+        font-size: 0.875rem;
+        color: $gray-600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.5rem;
+    }
+}
+
+.infoValue {
+    span {
+        font-size: 1.125rem;
+        color: $gray-900;
+        font-weight: 500;
+    }
+}
+
+.loadingState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    color: $gray-600;
+    gap: 1rem;
+    
+    p {
+        margin: 0;
+    }
+}
+
+.charCount {
+    text-align: right;
+    font-size: 0.875rem;
+    color: $gray-600;
+}
+
+.checkboxLabel {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.submitSection {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid $gray-200;
+    text-align: right;
+}
+
+.submitButton {
+    background-color: $primary-blue;
+    color: $white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+        background-color: $primary-blue-dark;
+    }
+}
+
+// Estilos para edición de nombre en perfil
+.editNameSection {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.nameInput {
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+    border: 1px solid $gray-300;
+    border-radius: 0.375rem;
+    width: 100%;
+    
+    &:focus {
+        outline: none;
+        border-color: $primary-blue;
+        box-shadow: 0 0 0 2px rgba($primary-blue, 0.1);
+    }
+}
+
+.editButtons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.saveNameButton {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.375rem 0.75rem;
+    background-color: $primary-blue;
+    color: $white;
+    border: none;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover:not(:disabled) {
+        background-color: $primary-blue-dark;
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+}
+
+.cancelEditButton {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.375rem 0.75rem;
+    background-color: $gray-200;
+    color: $gray-700;
+    border: none;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+        background-color: $gray-300;
+    }
+}
+
+.infoValueWithEdit {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.editButton {
+    display: flex;
+    align-items: center;
+    padding: 0.25rem;
+    background: transparent;
+    border: none;
+    color: $gray-500;
+    cursor: pointer;
+    border-radius: 0.25rem;
+    transition: color 0.2s, background-color 0.2s;
+
+    &:hover {
+        color: $primary-blue;
+        background-color: $gray-100;
+    }
+}
+
+.infoValueEditable {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    
+    span {
+        font-size: 1.125rem;
+        color: $gray-900;
+        font-weight: 500;
+    }
+}
+
+.editNameContainer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.editNameInput {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+    border: 1px solid $gray-300;
+    border-radius: 0.375rem;
+    
+    &:focus {
+        outline: none;
+        border-color: $primary-blue;
+        box-shadow: 0 0 0 2px rgba($primary-blue, 0.1);
+    }
+}
+
+.saveButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    background-color: $primary-blue;
+    color: $white;
+    border: none;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover:not(:disabled) {
+        background-color: $primary-blue-dark;
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+}
+
+.cancelButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    background-color: $gray-200;
+    color: $gray-700;
+    border: none;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover:not(:disabled) {
+        background-color: $gray-300;
+    }
+    
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+}

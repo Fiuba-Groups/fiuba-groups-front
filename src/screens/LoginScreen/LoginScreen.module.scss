@@ -1,0 +1,211 @@
+@import '../../constants/styles-constants.scss';
+
+.loginContent {
+  padding: $screen-padding;
+  padding-top: $screen-padding-top;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #e8f4fd 0%, #ffffff 50%, #f0f8ff 100%);
+  min-height: calc(100vh - #{$header-height});
+  position: relative;
+  overflow: hidden;
+
+  // Elementos animados de fondo
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: 
+      radial-gradient(circle at 20% 80%, rgba(0, 123, 255, 0.2) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(0, 100, 200, 0.15) 0%, transparent 50%),
+      radial-gradient(circle at 40% 40%, rgba(30, 144, 255, 0.12) 0%, transparent 50%);
+    animation: float 20s ease-in-out infinite;
+    z-index: 0;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: -30%;
+    right: -30%;
+    width: 150%;
+    height: 150%;
+    background:
+      radial-gradient(circle at 60% 70%, rgba(0, 123, 255, 0.12) 0%, transparent 40%),
+      radial-gradient(circle at 30% 30%, rgba(70, 130, 255, 0.15) 0%, transparent 60%);
+    animation: float 25s ease-in-out infinite reverse;
+    z-index: 0;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  33% {
+    transform: translate(-30px, -30px) rotate(120deg);
+  }
+  66% {
+    transform: translate(30px, -20px) rotate(240deg);
+  }
+}
+
+.loginForm {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.2);
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+  z-index: 10;
+  border: 1px solid rgba(0, 123, 255, 0.1);
+
+  // Elementos decorativos flotantes
+  &::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    width: 40px;
+    height: 40px;
+    background: radial-gradient(circle, rgba(0, 123, 255, 0.25) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: pulse 3s ease-in-out infinite;
+    z-index: -1;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: -15px;
+    width: 30px;
+    height: 30px;
+    background: radial-gradient(circle, rgba(30, 144, 255, 0.2) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: pulse 4s ease-in-out infinite;
+    z-index: -1;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+.loginTitle {
+  font-size: $font-size-title;
+  margin: 0 0 2rem 0;
+  color: $color-text;
+  font-family: $font-family-base;
+  text-align: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: $color-text;
+  font-family: $font-family-base;
+}
+
+.input {
+  padding: 0.75rem;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: $font-family-base;
+  transition: border-color 0.2s ease;
+  
+  &:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+  }
+  
+  &::placeholder {
+    color: #999;
+  }
+}
+
+.error {
+  color: #dc3545;
+  font-size: 0.9rem;
+  text-align: center;
+  margin: 0.5rem 0;
+}
+
+.success {
+  color: #28a745;
+  font-size: 0.9rem;
+  text-align: center;
+  margin: 0.5rem 0;
+  font-weight: 500;
+}
+
+.submitButton {
+  background-color: #007bff;
+  color: white;
+  border: none; 
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: $font-family-base;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background-color: #0056b3;
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+
+  &:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+  }
+}
+
+.registerLink {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  color: $color-text;
+
+  a {
+    color: #007bff;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

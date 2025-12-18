@@ -1,0 +1,112 @@
+@import '../../constants/styles-constants.scss';
+
+.floatingButton {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: $color-accent;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  padding: 0;
+  font-size: 1rem;
+  font-family: $font-family-base;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  transition: all 0.5s ease;
+  z-index: 1000;
+  overflow: hidden;
+  
+  // Estado normal: solo icono
+  .label {
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+  }
+  
+  i {
+    font-size: 1.4rem;
+    transition: all 0.5s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+  
+  // Estado hover: se expande y muestra texto
+  &:hover {
+    background: #0056b3;
+    transform: scale(1.15);
+    box-shadow: 0 6px 16px rgba(0, 123, 255, 0.4);
+    border-radius: 50px;
+    width: auto;
+    padding: 16px 24px;
+    gap: 8px;
+    
+    i {
+      font-size: 1.2rem;
+      width: auto;
+      height: auto;
+    }
+    
+    .label {
+      opacity: 1;
+      width: auto;
+      margin-left: 0;
+    }
+  }
+  
+  &:active {
+    transform: scale(1.05);
+  }
+}
+
+.label {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+// Variantes de estilo
+.floatingButton.primary {
+  background: $color-accent;
+}
+
+.floatingButton.success {
+  background: #28a745;
+  
+  &:hover {
+    background: #218838;
+  }
+}
+
+.floatingButton.danger {
+  background: #dc3545;
+  
+  &:hover {
+    background: #c82333;
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .floatingButton {
+    bottom: 16px;
+    right: 16px;
+    padding: 14px 20px;
+    font-size: 0.9rem;
+  }
+  
+  .label {
+    display: none; // Ocultar texto en móvil, solo mostrar icono
+  }
+}

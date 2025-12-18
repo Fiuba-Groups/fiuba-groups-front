@@ -1,0 +1,274 @@
+@import '../../constants/styles-constants.scss';
+
+.securityContainer {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 0;
+
+  &:hover {
+    color: #0056b3;
+  }
+}
+
+.title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 32px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: #666;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+
+  &:hover {
+    color: #007bff;
+    background: #f8f9fa;
+  }
+
+  &.active {
+    color: #007bff;
+    border-bottom-color: #007bff;
+    background: #f0f4ff;
+  }
+}
+
+.content {
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  overflow: hidden;
+}
+
+.section {
+  padding: 32px;
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 24px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+}
+
+.sectionIcon {
+  color: #007bff;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  label {
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+  }
+
+  input {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+
+    &:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+    }
+
+    &.disabledInput {
+      background: #f8f9fa;
+      color: #666;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.helpText {
+  margin: 4px 0 0 0;
+  font-size: 12px;
+  color: #666;
+  line-height: 1.4;
+}
+
+.submitButton {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background: #0056b3;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.deleteSection {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.warningBox {
+  width: 100%;
+  padding: 24px;
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 8px;
+  color: #856404;
+
+  h3 {
+    margin: 0 0 12px 0;
+    color: #856404;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .warningIcon {
+    color: #856404;
+  }
+
+  p {
+    margin: 0 0 12px 0;
+    font-weight: 500;
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 20px;
+
+    li {
+      margin-bottom: 4px;
+    }
+  }
+}
+
+.deleteButton {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background: #c82333;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .securityContainer {
+    padding: 16px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  .tabs {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .tab {
+    border-bottom: none;
+    border-left: 2px solid transparent;
+    padding: 12px 16px;
+
+    &.active {
+      border-bottom: none;
+      border-left-color: #007bff;
+    }
+  }
+
+  .section {
+    padding: 24px 16px;
+  }
+
+  .sectionTitle {
+    font-size: 18px;
+  }
+
+  .warningBox {
+    padding: 16px;
+  }
+}

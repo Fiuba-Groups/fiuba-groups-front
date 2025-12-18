@@ -1,0 +1,256 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft, Lock, Trash2, AlertTriangle } from 'lucide-react';
+import styles from './SecurityScreen.module.scss';
+import AppShell from '../../components/Shell';
+import ConfirmModal from '../../components/ConfirmModal/ConfirmModal';
+
+export default function SecurityScreen() {
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState<'password' | 'delete'>('password');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+
+  // Estados para cambiar contraseña
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmNewPassword: ''
+  });
+
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setPasswordForm(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handlePasswordSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (passwordForm.newPassword !== passwordForm.confirmNewPassword) {
+      alert('Las contraseñas no coinciden');
+      return;
+    }
+    if (passwordForm.newPassword.length < 8) {
+      alert('La contraseña debe tener al menos 8 caracteres');
+      return;
+    }
+    console.log('Cambiando contraseña:', passwordForm);
+
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('No estás autenticado');
+        return;
+      }
+
+      const res = await fetch(`http://localhost:8080/api/users/me`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          currentPassword: passwordForm.currentPassword,
+          newPassword: passwordForm.newPassword
+        })
+      });
+
+      if (!res.ok) {
+        const msg = await res.text();
+        alert(`Error: ${msg}`);
+        return;
+      }
+
+      alert('Contraseña actualizada exitosamente');
+      setPasswordForm({
+        currentPassword: '',
+        newPassword: '',
+        confirmNewPassword: ''
+      });
+
+    } catch (err) {
+      alert(`Error al cambiar la contraseña: ${err}`);
+      console.log(err);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    setIsDeleting(true);
+
+    try {
+      console.log('Eliminando cuenta...');
+
+      const token = localStorage.getItem('token');
+
+      const res = await fetch(`http://localhost:8080/api/users/me`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      if (!res.ok) {
+        const msg = await res.text();
+        alert(`Error: ${msg}`);
+        return;
+      }
+
+      // Borrar token local
+      localStorage.removeItem('token');
+
+      await new Promise(resolve => setTimeout(resolve, 2000)); // Simular delay
+      alert('Cuenta eliminada exitosamente');
+      navigate('/login');
+    } catch (error) {
+      alert(`Error al eliminar la cuenta: ${error}`);
+      console.log(error);
+    } finally {
+      setIsDeleting(false);
+      setShowDeleteModal(false);
+    }
+  };
+
+  const tabs = [
+    { id: 'password' as const, label: 'Cambiar Contraseña', icon: Lock },
+    { id: 'delete' as const, label: 'Eliminar Cuenta', icon: Trash2 }
+  ];
+
+  return (
+    <AppShell>
+      <div className={styles.securityContainer}>
+        {/* Header de navegación */}
+        <div className={styles.header}>
+          <button
+            onClick={() => navigate('/profile')}
+            className={styles.backButton}
+          >
+            <ArrowLeft size={16} />
+            Volver a ajustes
+          </button>
+          <h1 className={styles.title}>Contraseña y Seguridad</h1>
+        </div>
+
+        {/* Tabs de navegación */}
+        <div className={styles.tabs}>
+          {tabs.map(tab => {
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.id}
+                className={`${styles.tab} ${activeTab === tab.id ? styles.active : ''}`}
+                onClick={() => setActiveTab(tab.id)}
+              >
+                <Icon size={18} />
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Contenido de cada tab */}
+        <div className={styles.content}>
+          {activeTab === 'password' && (
+            <div className={styles.section}>
+              <h2 className={styles.sectionTitle}>
+                <Lock className={styles.sectionIcon} />
+                Cambiar Contraseña
+              </h2>
+
+              <form onSubmit={handlePasswordSubmit} className={styles.form}>
+                <div className={styles.formGroup}>
+                  <label>Contraseña actual</label>
+                  <input
+                    type="password"
+                    name="currentPassword"
+                    value={passwordForm.currentPassword}
+                    onChange={handlePasswordChange}
+                    placeholder="Tu contraseña actual"
+                    required
+                  />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>Nueva contraseña</label>
+                  <input
+                    type="password"
+                    name="newPassword"
+                    value={passwordForm.newPassword}
+                    onChange={handlePasswordChange}
+                    placeholder="Nueva contraseña (mínimo 8 caracteres)"
+                    required
+                  />
+                  <p className={styles.helpText}>
+                    Debe tener al menos 8 caracteres
+                  </p>
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>Confirmar nueva contraseña</label>
+                  <input
+                    type="password"
+                    name="confirmNewPassword"
+                    value={passwordForm.confirmNewPassword}
+                    onChange={handlePasswordChange}
+                    placeholder="Repite la nueva contraseña"
+                    required
+                  />
+                </div>
+
+                <button type="submit" className={styles.submitButton}>
+                  Actualizar Contraseña
+                </button>
+              </form>
+            </div>
+          )}
+
+          {activeTab === 'delete' && (
+            <div className={styles.section}>
+              <h2 className={styles.sectionTitle}>
+                <Trash2 className={styles.sectionIcon} />
+                Eliminar Cuenta
+              </h2>
+
+              <div className={styles.deleteSection}>
+                <div className={styles.warningBox}>
+                  <AlertTriangle className={styles.warningIcon} />
+                  <h3>¿Estás seguro de que quieres eliminar tu cuenta?</h3>
+                  <p>Esta acción no se puede deshacer. Se eliminarán permanentemente:</p>
+                  <ul>
+                    <li>Tu perfil y toda tu información personal</li>
+                    <li>Todas tus búsquedas de grupos</li>
+                    <li>Tu historial de solicitudes y amistades</li>
+                    <li>Todos tus datos académicos</li>
+                  </ul>
+                </div>
+
+                <button
+                  onClick={() => setShowDeleteModal(true)}
+                  className={styles.deleteButton}
+                >
+                  <Trash2 size={16} />
+                  Eliminar Mi Cuenta
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Modal de confirmación para eliminar cuenta */}
+        <ConfirmModal
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          onConfirm={handleDeleteAccount}
+          title="¿Eliminar cuenta permanentemente?"
+          message="Esta acción no se puede deshacer. Tu cuenta y todos tus datos serán eliminados permanentemente."
+          confirmText="Sí, eliminar mi cuenta"
+          cancelText="Cancelar"
+          isLoading={isDeleting}
+        />
+      </div>
+    </AppShell>
+  );
+}

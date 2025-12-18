@@ -1,0 +1,311 @@
+@import '../../constants/styles-constants.scss';
+
+// Blue and White Color Scheme
+$primary-blue: #2563eb;
+$dark-blue: #1e40af;
+$light-blue: #3b82f6;
+$sky-blue: #0ea5e9;
+$white: #ffffff;
+$off-white: #f8fafc;
+$text-dark: #1e293b;
+$text-gray: #64748b;
+$border-color: #e2e8f0;
+
+.groups-container {
+    padding: 0 20px;
+    padding-top: 20px;
+    background-color: $color-background;
+    min-height: calc(100vh - #{$header-height});
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.loadingState,
+.errorState,
+.emptyState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 60px 20px;
+    color: $color-text-light;
+
+    i {
+        font-size: 3rem;
+    }
+
+    p {
+        margin: 0;
+        font-size: 1.1rem;
+        font-family: $font-family-base;
+    }
+}
+
+.errorState {
+    color: #d32f2f;
+
+    i {
+        color: #d32f2f;
+    }
+}
+
+.loadingState {
+    i {
+        color: $color-accent;
+    }
+}
+
+.groups-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem 0;
+
+    h1 {
+        font-size: 3rem;
+        font-weight: 800;
+        color: $primary-blue;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, $primary-blue 0%, $sky-blue 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+
+        @media (max-width: 768px) {
+            font-size: 2rem;
+        }
+    }
+
+    .subtitle {
+        font-size: 1.125rem;
+        color: $text-gray;
+        font-weight: 500;
+    }
+}
+
+.groups-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 3rem auto 0;
+
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+}
+
+.group-card {
+    background: $white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(37, 99, 235, 0.05),
+        0 10px 20px rgba(37, 99, 235, 0.08);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid $border-color;
+
+    &:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 24px rgba(37, 99, 235, 0.12),
+            0 20px 40px rgba(37, 99, 235, 0.15);
+        border-color: $light-blue;
+    }
+}
+
+.group-image {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .category-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: $primary-blue;
+        color: $white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+
+    .group-card:hover & img {
+        transform: scale(1.05);
+    }
+}
+
+.group-content {
+    padding: 1.5rem;
+
+    h3 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: $text-dark;
+        margin-bottom: 0.75rem;
+        line-height: 1.3;
+    }
+
+    .description {
+        color: $text-gray;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 1.25rem;
+        display: -webkit-box;
+        line-clamp: 2;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+}
+
+.group-stats {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid $border-color;
+
+    .stat {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: $text-gray;
+        font-size: 0.875rem;
+
+        svg {
+            color: $primary-blue;
+        }
+    }
+}
+
+.view-group-btn {
+    width: 100%;
+    background: linear-gradient(135deg, $primary-blue 0%, $light-blue 100%);
+    color: $white;
+    border: none;
+    border-radius: 10px;
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+
+    &:hover {
+        background: linear-gradient(135deg, $dark-blue 0%, $primary-blue 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+
+    svg {
+        transition: transform 0.3s ease;
+    }
+
+    &:hover svg {
+        transform: translateX(3px);
+    }
+}
+
+// Wrapper para cada card con sus acciones
+.groupCardWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+// Contenedor de acciones del grupo
+.groupActions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+// Botón para finalizar grupo
+.finishButton {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    color: $white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    i {
+        font-size: 0.875rem;
+    }
+
+    &:hover:not(:disabled) {
+        background: linear-gradient(135deg, #047857 0%, #059669 100%);
+        transform: translateY(-1px);
+    }
+
+    &:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+}
+
+// Botón para calificar compañeros
+.rateButton {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+    color: $white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    i {
+        font-size: 0.875rem;
+    }
+
+    &:hover {
+        background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+        transform: translateY(-1px);
+    }
+}
+
+// Badge para grupos ya calificados
+.ratedBadge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.875rem;
+    background: $off-white;
+    color: #059669;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 500;
+
+    i {
+        font-size: 0.75rem;
+    }
+}
