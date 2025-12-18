@@ -13,8 +13,6 @@ interface GroupOfferDetailModalProps {
   onClose: () => void;
   onRequestJoin?: (offerId: string) => void;
   showJoinButton?: boolean;
-  showEmailButtons?: boolean; // Muestra botones de email para compañeros de grupo
-  showFriendButtons?: boolean; // Muestra botones de solicitud de amistad
 }
 
 /**
@@ -33,8 +31,6 @@ const GroupOfferDetailModal: React.FC<GroupOfferDetailModalProps> = ({
   onClose,
   onRequestJoin,
   showJoinButton = true,
-  showEmailButtons = false,
-  showFriendButtons = false,
 }) => {
   const [sendingEmailTo, setSendingEmailTo] = useState<string | null>(null);
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
@@ -42,6 +38,15 @@ const GroupOfferDetailModal: React.FC<GroupOfferDetailModalProps> = ({
   const [sendingFriendRequestTo, setSendingFriendRequestTo] = useState<string | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Determinar si el usuario actual es miembro del grupo
+  const isCurrentUserMember = currentUserId && offer.members?.some(m => m.id === String(currentUserId));
+  
+  // Mostrar botones de email solo si el usuario actual es miembro del grupo
+  const showEmailButtons = !!isCurrentUserMember;
+  
+  // Siempre mostrar botones de amistad (excepto para uno mismo)
+  const showFriendButtons = true;
 
   const handleViewProfile = async (memberId: string) => {
     try {
@@ -61,17 +66,15 @@ const GroupOfferDetailModal: React.FC<GroupOfferDetailModalProps> = ({
     });
   };
 
-  // Obtener el ID del usuario actual para no mostrar el botón de email para uno mismo
+  // Obtener el ID del usuario actual
   useEffect(() => {
-    if (showEmailButtons || showFriendButtons) {
-      getCurrentStudentId().then(setCurrentUserId);
-    }
-  }, [showEmailButtons, showFriendButtons]);
+    getCurrentStudentId().then(setCurrentUserId);
+  }, []);
 
   // Cargar el estado de amistad de cada miembro
   useEffect(() => {
     const loadFriendshipStatuses = async () => {
-      if (!showFriendButtons || !currentUserId || !offer.members) return;
+      if (!currentUserId || !offer.members) return;
 
       const statuses: Record<string, FriendshipStatus> = {};
       for (const member of offer.members) {
@@ -90,7 +93,7 @@ const GroupOfferDetailModal: React.FC<GroupOfferDetailModalProps> = ({
     if (currentUserId && offer.members) {
       loadFriendshipStatuses();
     }
-  }, [showFriendButtons, currentUserId, offer.members]);
+  }, [currentUserId, offer.members]);
 
   const handleSendEmail = async (memberId: string) => {
     try {
