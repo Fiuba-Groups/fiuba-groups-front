@@ -76,10 +76,7 @@ export default function HelpScreen() {
               <p>Ve a "Ajustes" desde el menú lateral y selecciona "Editar Perfil" para modificar tu información personal.</p>
             </div>
 
-            <div className={styles.faqItem}>
-              <h4>¿Cómo configurar mi privacidad?</h4>
-              <p>En "Ajustes", selecciona "Privacidad" para controlar quién puede ver tu información y perfil.</p>
-            </div>
+
           </div>
         </div>
       </div>

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import styles from './Profile.module.scss';
 import AppShell from '../../components/Shell';
 import RatingStars from '../../components/RatingStars';
-import { User, Shield, HelpCircle, BookOpen, GraduationCap, Pencil, Check, X } from 'lucide-react';
+import { User, HelpCircle, GraduationCap, Pencil, Check, X } from 'lucide-react';
 import { uploadAvatar, updateStudentProfile, updateShowcasedGroups } from '../../services/userService';
 import { fetchCurrentUser, CurrentUser, clearUserCache } from '../../services/currentUserService';
 import { fetchStudentRatings, StudentRatingSummary } from '../../services/ratingsService';
@@ -183,13 +183,6 @@ export default function ProfileScreen() {
               <User className={styles.icon} />
               Editar Perfil
             </button>
-            <Link
-              to="/profile/privacy"
-              className={styles.sidebarOption}
-            >
-              <Shield className={styles.icon} />
-              Privacidad
-            </Link>
           </div>
 
           <div className={styles.sectionGroup}>
@@ -201,10 +194,6 @@ export default function ProfileScreen() {
               <GraduationCap className={styles.icon} />
               Mi Carrera
             </Link>
-            <Link to="/academic-history" className={styles.sidebarOption}>
-              <BookOpen className={styles.icon} />
-              Historial Académico
-            </Link>
           </div>
 
           <div className={styles.sectionGroup}>
@@ -215,13 +204,6 @@ export default function ProfileScreen() {
             >
               <HelpCircle className={styles.icon} />
               Centro de Ayuda
-            </Link>
-            <Link
-              to="/profile/security"
-              className={styles.sidebarOption}
-            >
-              <Shield className={styles.icon} />
-              Contraseña y Seguridad
             </Link>
           </div>
         </aside>
