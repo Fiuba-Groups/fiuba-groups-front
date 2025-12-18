@@ -12,6 +12,11 @@ export interface CurrentUser {
     id: number;
     register: number;
     name: string; // Nombre completo del estudiante
+    showcasedGroups?: {
+      id: number;
+      title: string;
+      description: string;
+    }[];
   };
 }
 
